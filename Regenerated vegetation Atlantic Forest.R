@@ -20,7 +20,7 @@ rm(list = ls())
 
 # Projecting municipalities and raster data CRS to SAD69
 #mun <- project(mun, "EPSG:4291")
-#reg_11_21  <- project(reg_11_21, "EPSG:4291", method = "mode")
+#reg_11_21  <- project(reg_11_21, "EPSG:4291", method = "mode") # using the method "mode" to interpolate
 
 # Saving raster SAD69
 #terra::writeRaster(reg_11_21, "D:/__PESSOAL/Vinicius_T/raster_pacto/reg_11_21_SAD69_mode.tif")
@@ -32,17 +32,29 @@ rm(list = ls())
 # Loading raster and municipalities in SAD69
 
 mun_SAD69 <- terra::vect("D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/BR_Municipios_2023_SAD.shp")
-reg_11_21_SAD69 <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/reg_11_21_SAD69.tif")
+#reg_11_21_SAD69 <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/reg_11_21_SAD69_mode.tif")
 
 # Computing the area of each pixel
-pixel_area <- cellSize(reg_11_21_SAD69, unit = "m")
+#pixel_area <- cellSize(reg_11_21_SAD69, unit = "m")
 
-pixel_area_1_only <- reg_11_21_SAD69 * pixel_area
-plot(pixel_area_1_only)
+#pixel_area_1_only <- reg_11_21_SAD69 * pixel_area
+#plot(pixel_area_1_only)
 
 
 # Saving raster with area of each pixel
-terra::writeRaster(pixel_area_1_only, "D:/__PESSOAL/Vinicius_T/raster_pacto/reg_11_21_SAD69_Area.tif", overwrite = T)
+#terra::writeRaster(pixel_area_1_only, "D:/__PESSOAL/Vinicius_T/raster_pacto/reg_11_21_SAD69_Area.tif", overwrite = T)
+
+# Loading raster with pixel area, patches only 
+reg_11_21_SAD69 <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/reg_11_21_SAD69_Area.tif")
+
+# Loading binary raster 0 - 1
+binary_raster_SAD69 <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/reg_11_21_SAD69_mode.tif")
+
+
+# Calculating the area of forest for each municipality
+area_per_mun <- terra::extract(reg_11_21_SAD69 , mun_SAD69, fun = "sum", na.rm = T)
+
+
 
 
 
