@@ -5,6 +5,9 @@
 
 library(terra)
 library(sf)
+library(exactextractr)
+library(raster)
+
 
 # cleaning directory
 rm(list = ls())
@@ -62,7 +65,13 @@ plot(reg_11_21_SAD69_area_forest_only)
 
 
 # Calculating the area of forest for each municipality
-area_per_mun <- terra::extract(reg_11_21_SAD69_area_forest_only , mun_SAD69, fun = "sum", na.rm = T)
+#area_per_mun <- terra::extract(reg_11_21_SAD69_area_forest_only, mun_SAD69, fun = sum, na.rm = T) # DOES NOT WORK
 
+# Trying to extract values using the "exactextractr" package as it did not run in Terra
+
+reg_11_21_SAD69_area_forest_only_raster <- raster::raster(reg_11_21_SAD69_area_forest_only)
+mun_SAD69_sf <- sf::st_as_sf(mun_SAD69)
+
+extract_area <- exactextractr::exact_extract(reg_11_21_SAD69_area_forest_only_raster, mun_SAD69_sf, "sum")
 
 
