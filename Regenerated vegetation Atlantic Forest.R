@@ -45,16 +45,24 @@ mun_SAD69 <- terra::vect("D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipio
 #terra::writeRaster(pixel_area_1_only, "D:/__PESSOAL/Vinicius_T/raster_pacto/reg_11_21_SAD69_Area.tif", overwrite = T)
 
 # Loading raster with pixel area, patches only 
-reg_11_21_SAD69 <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/reg_11_21_SAD69_Area.tif")
+#reg_11_21_SAD69 <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/reg_11_21_SAD69_Area.tif")
 
 # Loading binary raster 0 - 1
-binary_raster_SAD69 <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/reg_11_21_SAD69_mode.tif")
+#binary_raster_SAD69 <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/reg_11_21_SAD69_mode.tif")
+
+
+#raster_ones <- mask(reg_11_21_SAD69, binary_raster_SAD69, maskvalue = 0)
+#plot(raster_ones)
+
+#terra::writeRaster(raster_ones, "D:/__PESSOAL/Vinicius_T/raster_pacto/reg_11_21_SAD69_Area_patch_only.tif", overwrite = T)
+
+# Loading binary raster with pixel area only for forest patches
+reg_11_21_SAD69_area_forest_only <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/reg_11_21_SAD69_Area_patch_only.tif")
+plot(reg_11_21_SAD69_area_forest_only)
 
 
 # Calculating the area of forest for each municipality
-area_per_mun <- terra::extract(reg_11_21_SAD69 , mun_SAD69, fun = "sum", na.rm = T)
-
-
+area_per_mun <- terra::extract(reg_11_21_SAD69_area_forest_only , mun_SAD69, fun = "sum", na.rm = T)
 
 
 
