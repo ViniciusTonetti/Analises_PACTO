@@ -20,10 +20,10 @@ rm(list = ls())
 
 # Projecting municipalities and raster data CRS to SAD69
 #mun <- project(mun, "EPSG:4291")
-#reg_11_21  <- project(reg_11_21, "EPSG:4291")
+#reg_11_21  <- project(reg_11_21, "EPSG:4291", method = "mode")
 
 # Saving raster SAD69
-#terra::writeRaster(reg_11_21, "D:/__PESSOAL/Vinicius_T/raster_pacto/reg_11_21_SAD69.tif")
+#terra::writeRaster(reg_11_21, "D:/__PESSOAL/Vinicius_T/raster_pacto/reg_11_21_SAD69_mode.tif")
 
 # Saving municipalities polygons in SAD69
 #terra::writeVector(mun, "D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/BR_Municipios_2023_SAD.shp")
