@@ -73,11 +73,17 @@ reg_11_21_SAD69_area_forest_only_raster <- raster::raster(reg_11_21_SAD69_area_f
 mun_SAD69_sf <- sf::st_as_sf(mun_SAD69)
 
 extract_area <- exactextractr::exact_extract(reg_11_21_SAD69_area_forest_only_raster, mun_SAD69_sf, "sum")
-min(extract_area)
 
+# Checking the number of columns = 14
+ncol(mun_SAD69_sf)
 
+# Creating a new column to add area of regenerating forest
+mun_SAD69_sf[,15] <- extract_area
+colnames(mun_SAD69_sf)[15] <- "sec_for"
 
+length(extract_area)
+nrow(mun_SAD69_sf)
 
-
-
+# Save to shapefile
+st_write(mun_SAD69_sf, "D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/mun_area.shp", delete_dsn = T)
 
