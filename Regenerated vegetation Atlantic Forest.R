@@ -73,5 +73,7 @@ reg_11_21_SAD69_area_forest_only_raster <- raster::raster(reg_11_21_SAD69_area_f
 mun_SAD69_sf <- sf::st_as_sf(mun_SAD69)
 
 extract_area <- exactextractr::exact_extract(reg_11_21_SAD69_area_forest_only_raster, mun_SAD69_sf, "sum")
+min(extract_area)
+
 
 
