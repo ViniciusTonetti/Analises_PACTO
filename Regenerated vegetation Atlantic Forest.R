@@ -28,3 +28,11 @@ terra::writeRaster(reg_11_21, "D:/__PESSOAL/Vinicius_T/raster_pacto/reg_11_21_SA
 # Saving municipalities polygons in SAD69
 terra::writeVector(mun, "D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/BR_Municipios_2023_SAD.shp")
 
+
+# Loading raster and municipalities in SAD69
+
+mun_SAD69 <- terra::vect("D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/BR_Municipios_2023_SAD.shp")
+reg_11_21_SAD69 <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/reg_11_21_SAD69.tif")
+
+
+
