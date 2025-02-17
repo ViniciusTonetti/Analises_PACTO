@@ -7,6 +7,8 @@ library(terra)
 library(sf)
 library(exactextractr)
 library(raster)
+library(tidyverse)
+library(writexl)
 
 
 # cleaning directory
@@ -30,12 +32,13 @@ rm(list = ls())
 # Saving municipalities polygons in SAD69
 #terra::writeVector(mun, "D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/BR_Municipios_2023_SAD.shp")
 
+
 # Loading raster and municipalities in SAD69
 
 mun_SAD69 <- terra::vect("D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/BR_Municipios_2023_SAD.shp")
 #reg_11_21_SAD69 <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/reg_11_21_SAD69_mode.tif")
 
-# Computing the area of each pixel
+# Computing the area of each pixel of the secondary forest patches
 #pixel_area <- cellSize(reg_11_21_SAD69, unit = "m")
 
 #pixel_area_1_only <- reg_11_21_SAD69 * pixel_area
@@ -74,6 +77,9 @@ reg_11_21_SAD69_area_forest_only_raster <- raster::raster(reg_11_21_SAD69_area_f
 mun_SAD69_sf <- sf::st_as_sf(mun_SAD69)
 
 extract_area <- exactextractr::exact_extract(reg_11_21_SAD69_area_forest_only_raster, mun_SAD69_sf, "sum")
+plot(reg_11_21_SAD69_area_forest_only_raster)
+#raster::writeRaster(reg_11_21_SAD69_area_forest_only_raster,
+#                    "D:/__PESSOAL/Vinicius_T/raster_pacto/reg_11_21_SAD69_Area_patch_only_raster.tif")
 
 # Checking the number of columns = 14
 #ncol(mun_SAD69_sf)
@@ -87,6 +93,19 @@ extract_area <- exactextractr::exact_extract(reg_11_21_SAD69_area_forest_only_ra
 
 # Save to shapefile
 #st_write(mun_SAD69_sf, "D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/mun_area.shp", delete_dsn = T)
+
+
+# Loading shapefile with the area of regenerated forests
+mun_with_area <- terra::vect("D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/mun_area.shp")
+
+# Extracting and saving values for the ammount of forest in each municipality and saving as Data Frame
+names(mun_with_area)
+df_area <- as.data.frame(mun_with_area[,c("NM_MUN","NM_UF","sec_for")])
+
+df_area <- df_area %>% 
+  arrange(desc(sec_for))
+
+writexl::write_xlsx(df_area, "D:/__PESSOAL/Vinicius_T/raster_pacto/reg_by_municipalities.xlsx")
 
 
 # Loading state raster
