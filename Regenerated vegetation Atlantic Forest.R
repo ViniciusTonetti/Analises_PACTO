@@ -105,6 +105,8 @@ df_area <- as.data.frame(mun_with_area[,c("NM_MUN","NM_UF","sec_for")])
 df_area <- df_area %>% 
   arrange(desc(sec_for))
 
+sum(df_area[,"sec_for"])
+
 writexl::write_xlsx(df_area, "D:/__PESSOAL/Vinicius_T/raster_pacto/reg_by_municipalities.xlsx")
 
 
