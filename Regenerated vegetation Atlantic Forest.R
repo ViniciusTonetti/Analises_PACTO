@@ -13,13 +13,12 @@ library(raster)
 rm(list = ls())
 
 # Municipalities
+
 # Shapefile downloaded from https://www.ibge.gov.br/geociencias/organizacao-do-territorio/malhas-territoriais/15774-malhas.html on 15/02/2025
 #mun <- terra::vect("D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/BR_Municipios_2023.shp")
 
-
 # Regeneration 11_21
 #reg_11_21 <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/_reg_11_21.tif")
-
 
 # Projecting municipalities and raster data CRS to SAD69
 #mun <- project(mun, "EPSG:4291")
@@ -30,7 +29,6 @@ rm(list = ls())
 
 # Saving municipalities polygons in SAD69
 #terra::writeVector(mun, "D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/BR_Municipios_2023_SAD.shp")
-
 
 # Loading raster and municipalities in SAD69
 
@@ -69,21 +67,39 @@ plot(reg_11_21_SAD69_area_forest_only)
 
 # Extracting values using the "exactextractr" package as it did not run in Terra
 
+# Converting the raster to a "raster::" object
 reg_11_21_SAD69_area_forest_only_raster <- raster::raster(reg_11_21_SAD69_area_forest_only)
+
+# Converting municipality shp to sf object
 mun_SAD69_sf <- sf::st_as_sf(mun_SAD69)
 
 extract_area <- exactextractr::exact_extract(reg_11_21_SAD69_area_forest_only_raster, mun_SAD69_sf, "sum")
 
 # Checking the number of columns = 14
-ncol(mun_SAD69_sf)
+#ncol(mun_SAD69_sf)
 
 # Creating a new column to add area of regenerating forest
-mun_SAD69_sf[,15] <- extract_area
-colnames(mun_SAD69_sf)[15] <- "sec_for"
+#mun_SAD69_sf[,15] <- extract_area
+#colnames(mun_SAD69_sf)[15] <- "sec_for"
 
-length(extract_area)
-nrow(mun_SAD69_sf)
+#length(extract_area)
+#nrow(mun_SAD69_sf)
 
 # Save to shapefile
-st_write(mun_SAD69_sf, "D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/mun_area.shp", delete_dsn = T)
+#st_write(mun_SAD69_sf, "D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/mun_area.shp", delete_dsn = T)
+
+
+# Loading state raster
+#state <- terra::vect("D:/__PESSOAL/Vinicius_T/estados_Brasil/BR_UF_2023/BR_UF_2023.shp")
+#plot(state)
+
+
+# Converting the CRS of the states to the same CRS of the raster
+state_SAD69 <- project(state, "EPSG:4291")
+
+# Converting the state polygon to sf object
+state_SAD69_sf <- sf::st_as_sf(state_SAD69)
+
+extract_area_state <- exactextractr::exact_extract(reg_11_21_SAD69_area_forest_only_raster, state_SAD69_sf, "sum")
+
 
