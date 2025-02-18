@@ -107,20 +107,50 @@ df_area <- df_area %>%
 
 sum(df_area[,"sec_for"])
 
-writexl::write_xlsx(df_area, "D:/__PESSOAL/Vinicius_T/raster_pacto/reg_by_municipalities.xlsx")
+#writexl::write_xlsx(df_area, "D:/__PESSOAL/Vinicius_T/raster_pacto/reg_by_municipalities.xlsx")
 
 
-# Loading state raster
-#state <- terra::vect("D:/__PESSOAL/Vinicius_T/estados_Brasil/BR_UF_2023/BR_UF_2023.shp")
-#plot(state)
+##### Analysis by State --------------------------------------------------------
+
+# Loading state polygon
+#state_area <- terra::vect("D:/__PESSOAL/Vinicius_T/estados_Brasil/BR_UF_2023/BR_UF_2023_area.shp")
+#plot(state_area)
 
 
 # Converting the CRS of the states to the same CRS of the raster
-state_SAD69 <- project(state, "EPSG:4291")
+state_area_SAD69 <- project(state_area, "EPSG:4291")
 
 # Converting the state polygon to sf object
-state_SAD69_sf <- sf::st_as_sf(state_SAD69)
+state_area_SAD69_sf <- sf::st_as_sf(state_area_SAD69)
 
 extract_area_state <- exactextractr::exact_extract(reg_11_21_SAD69_area_forest_only_raster, state_SAD69_sf, "sum")
 
+# Checking the number of columns = 14
+ncol(state_SAD69_sf)
+
+# Creating a new column to add area of regenerating forest
+state_SAD69_sf[,8] <- extract_area_state
+colnames(state_SAD69_sf)[8] <- "sec_for"
+
+#length(extract_area_state)
+#nrow(state_SAD69_sf)
+
+# Save to shapefile
+#st_write(state_SAD69_sf, "D:/__PESSOAL/Vinicius_T/estados_Brasil/BR_UF_2023/BR_UF_2023_area.shp", delete_dsn = T)
+
+
+
+# Loading shapefile with the area of regenerated forests in each state
+state_with_area <- terra::vect("D:/__PESSOAL/Vinicius_T/estados_Brasil/BR_UF_2023/BR_UF_2023_area.shp")
+
+# Extracting and saving values for the ammount of forest in each municipality and saving as Data Frame
+names(state_with_area)
+df_area_by_state <- as.data.frame(state_with_area[,c("NM_UF","sec_for")])
+
+df_area_by_state <- df_area_by_state  %>% 
+  arrange(desc(sec_for))
+
+sum(df_area_by_state[,"sec_for"])
+
+#writexl::write_xlsx(df_area_by_state, "D:/__PESSOAL/Vinicius_T/estados_Brasil/BR_UF_2023/reg_by_states.xlsx")
 
