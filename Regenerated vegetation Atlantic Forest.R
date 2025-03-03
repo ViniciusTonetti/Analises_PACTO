@@ -28,20 +28,22 @@ reg_11_21 <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/_reg_11_21.tif")
 
 # Projecting municipalities and raster data CRS to SAD69 Brazil Polyconic, EPSG:29101
 
-mun <- terra::project(mun, "EPSG:29101")
-reg_11_21  <- terra::project(reg_11_21, "EPSG:29101", method = "mode") # using the method "mode" to interpolate
+#mun <- terra::project(mun, "EPSG:29101")
+
+#reg_11_21  <- terra::project(reg_11_21, "EPSG:29101", method = "mode") # using the method "mode" to interpolate
 
 # Saving raster SAD69
 #terra::writeRaster(reg_11_21, "D:/__PESSOAL/Vinicius_T/raster_pacto/reg_11_21_SAD69_Polyconic.tif")
 
 # Saving municipalities polygons in SAD69
-#terra::writeVector(mun, "D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/BR_Municipios_2023_SAD.shp")
+#terra::writeVector(mun, "D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/BR_Municipios_2023_SAD69_Polyconic.shp")
 
 
-# Loading raster and municipalities in SAD69
+# Loading raster and municipalities in SAD69 Polyconic
 
-mun_SAD69 <- terra::vect("D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/BR_Municipios_2023_SAD.shp")
-#reg_11_21_SAD69 <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/reg_11_21_SAD69_mode.tif")
+mun_SAD69_Poly <- terra::vect("D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/BR_Municipios_2023_SAD69_Polyconic.shp")
+
+#reg_11_21_SAD69_Poly <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/reg_11_21_SAD69_mode.tif")
 
 # Computing the area of each pixel of the secondary forest patches
 #pixel_area <- cellSize(reg_11_21_SAD69, unit = "m")
