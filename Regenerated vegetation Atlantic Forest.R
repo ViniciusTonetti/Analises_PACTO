@@ -18,10 +18,10 @@ rm(list = ls())
 # Municipalities
 
 # Shapefile downloaded from https://www.ibge.gov.br/geociencias/organizacao-do-territorio/malhas-territoriais/15774-malhas.html on 15/02/2025
-mun <- terra::vect("D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/BR_Municipios_2023.shp")
+#mun <- terra::vect("D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/BR_Municipios_2023.shp")
 
 # Regeneration 11_21
-reg_11_21 <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/_reg_11_21.tif")
+#reg_11_21 <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/_reg_11_21.tif")
 
 
 # Reprojecting -----------------------------------------------------------------
@@ -41,7 +41,7 @@ reg_11_21 <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/_reg_11_21.tif")
 
 # Loading raster and municipalities in SAD69 Polyconic
 
-mun_SAD69_Poly <- terra::vect("D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/BR_Municipios_2023_SAD69_Polyconic.shp")
+#mun_SAD69_Poly <- terra::vect("D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/BR_Municipios_2023_SAD69_Polyconic.shp")
 
 #reg_11_21_SAD69_Poly <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/reg_11_21_SAD69_Polyconic.tif")
 #plot(reg_11_21_SAD69_Poly)
@@ -71,20 +71,22 @@ mun_SAD69_Poly <- terra::vect("D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Muni
 
 
 # Loading binary raster with pixel area only for forest patches
-reg_11_21_SAD69_area_forest_only <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/reg_11_21_SAD69_Area_patch_only.tif")
-plot(reg_11_21_SAD69_area_forest_only)
+reg_11_21_SAD69_area_forest_only_Poly <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/reg_11_21_SAD69_Area_patch_only_Poly.tif")
+plot(reg_11_21_SAD69_area_forest_only_Poly)
+
+# Loading Municipality boundaries SAD69 Polyconic
+mun_SAD69_Poly <- terra::vect("D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/BR_Municipios_2023_SAD69_Polyconic.shp")
+plot(mun_SAD69_Poly)
 
 
 # Calculating the area of forest for each municipality
-#area_per_mun <- terra::extract(reg_11_21_SAD69_area_forest_only, mun_SAD69, fun = sum, na.rm = T) # DOES NOT WORK
-
-# Extracting values using the "exactextractr" package as it did not run in Terra
+# Extracting values using the "exactextractr" package as it did not run in Terra with function extract()
 
 # Converting the raster to a "raster::" object
-reg_11_21_SAD69_area_forest_only_raster <- raster::raster(reg_11_21_SAD69_area_forest_only)
+reg_11_21_SAD69_area_forest_only_raster <- raster::raster(reg_11_21_SAD69_area_forest_only_Poly)
 
 # Converting municipality shp to sf object
-mun_SAD69_sf <- sf::st_as_sf(mun_SAD69)
+mun_SAD69_sf <- sf::st_as_sf(mun_SAD69_Poly)
 
 extract_area <- exactextractr::exact_extract(reg_11_21_SAD69_area_forest_only_raster, mun_SAD69_sf, "sum")
 plot(reg_11_21_SAD69_area_forest_only_raster)
@@ -102,11 +104,11 @@ plot(reg_11_21_SAD69_area_forest_only_raster)
 #nrow(mun_SAD69_sf)
 
 # Save to shapefile
-#st_write(mun_SAD69_sf, "D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/mun_area.shp", delete_dsn = T)
+#st_write(mun_SAD69_sf, "D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/mun_area_Poly.shp", delete_dsn = T)
 
 
 # Loading shapefile with the area of regenerated forests
-mun_with_area <- terra::vect("D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/mun_area.shp")
+mun_with_area <- terra::vect("D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/mun_area_Poly.shp")
 
 # Extracting and saving values for the ammount of forest in each municipality and saving as Data Frame
 names(mun_with_area)
@@ -117,7 +119,7 @@ df_area <- df_area %>%
 
 sum(df_area[,"sec_for"])
 
-#writexl::write_xlsx(df_area, "D:/__PESSOAL/Vinicius_T/raster_pacto/reg_by_municipalities.xlsx")
+#writexl::write_xlsx(df_area, "D:/__PESSOAL/Vinicius_T/raster_pacto/reg_by_municipalities_Poly.xlsx")
 
 
 ##### Analysis by State --------------------------------------------------------
