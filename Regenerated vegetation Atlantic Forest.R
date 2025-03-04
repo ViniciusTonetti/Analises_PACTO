@@ -179,10 +179,23 @@ sum(df_area_by_state[,"sc_fr_P"])
 # AF <- terra::vect("D:/__PESSOAL/Vinicius_T/Limite Mata Atlantica/bioma_MA_IBGE_250mil/bioma_MA_IBGE_250mil.shp")
 # plot(AF)
 
-# MapBiomas Col 9 (MB_09)
+# MapBiomas Col 9 2023 (MB_09)
 # MB_09 <- terra::rast("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2023.tif")
 # plot(MB_09)
 
+# MapBiomas Col 9 2022
+# MB_09_22 <- terra::rast("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2022.tif")
+# plot(MB_09_22)
 
+# Cropping raster
+#MB_09_AF <- mask(crop(MB_09, AF), AF)
+#MB_09_AF_22 <- mask(crop(MB_09_22, AF), AF)
 
+# Saving MB raster in WGS84 cropped for the AF considering all land cover types
+#terra::writeRaster(MB_09_AF, "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/MB_09_AF_2023_WGS_84.tif")
+
+MB_09_AF_SAD69_Poly  <- terra::project(MB_09_AF, "EPSG:29101", method = "mode")
+
+# Saving MB raster in SAD69 Brazil Polyconic cropped for the AF considering all land cover types
+#terra::writeRaster(MB_09_AF_SAD69_Poly, "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/MB_09_AF_SAD69_Poly.tif")
 
