@@ -39,6 +39,8 @@ rm(list = ls())
 #terra::writeVector(mun, "D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/BR_Municipios_2023_SAD69_Polyconic.shp")
 
 
+# Calculating areas in SAD69 Brazil Polyconic ----------------------------------
+
 # Loading raster and municipalities in SAD69 Polyconic
 
 #mun_SAD69_Poly <- terra::vect("D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/BR_Municipios_2023_SAD69_Polyconic.shp")
@@ -107,6 +109,8 @@ plot(reg_11_21_SAD69_area_forest_only_raster)
 #st_write(mun_SAD69_sf, "D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/mun_area_Poly.shp", delete_dsn = T)
 
 
+# Saving areas to Excel --------------------------------------------------------
+
 # Loading shapefile with the area of regenerated forests
 mun_with_area <- terra::vect("D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/mun_area_Poly.shp")
 
@@ -122,7 +126,7 @@ sum(df_area[,"sec_for"])
 #writexl::write_xlsx(df_area, "D:/__PESSOAL/Vinicius_T/raster_pacto/reg_by_municipalities_Poly.xlsx")
 
 
-##### Analysis by State --------------------------------------------------------
+# Analysis by State ------------------------------------------------------------
 
 # Loading state polygon
 #state_area <- terra::vect("D:/__PESSOAL/Vinicius_T/estados_Brasil/BR_UF_2023/BR_UF_2023_area.shp")
@@ -165,4 +169,7 @@ df_area_by_state <- df_area_by_state  %>%
 sum(df_area_by_state[,"sc_fr_P"])
 
 #writexl::write_xlsx(df_area_by_state, "D:/__PESSOAL/Vinicius_T/estados_Brasil/BR_UF_2023/reg_by_states_Poly.xlsx")
+
+
+# Crop
 
