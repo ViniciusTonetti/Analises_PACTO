@@ -43,29 +43,32 @@ reg_11_21 <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/_reg_11_21.tif")
 
 mun_SAD69_Poly <- terra::vect("D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/BR_Municipios_2023_SAD69_Polyconic.shp")
 
-#reg_11_21_SAD69_Poly <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/reg_11_21_SAD69_mode.tif")
+#reg_11_21_SAD69_Poly <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/reg_11_21_SAD69_Polyconic.tif")
+#plot(reg_11_21_SAD69_Poly)
+
 
 # Computing the area of each pixel of the secondary forest patches
-#pixel_area <- cellSize(reg_11_21_SAD69, unit = "m")
+#pixel_area <- cellSize(reg_11_21_SAD69_Poly, unit = "m")
 
-#pixel_area_1_only <- reg_11_21_SAD69 * pixel_area
-#plot(pixel_area_1_only)
+#pixel_area_1_only_Poly <- reg_11_21_SAD69_Poly * pixel_area
+#plot(pixel_area_1_only_Poly)
 
 
 # Saving raster with area of each pixel
-#terra::writeRaster(pixel_area_1_only, "D:/__PESSOAL/Vinicius_T/raster_pacto/reg_11_21_SAD69_Area.tif", overwrite = T)
+#terra::writeRaster(pixel_area_1_only_Poly, "D:/__PESSOAL/Vinicius_T/raster_pacto/reg_11_21_SAD69_Poly_Area.tif", overwrite = T)
 
 # Loading raster with pixel area, patches only 
-#reg_11_21_SAD69 <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/reg_11_21_SAD69_Area.tif")
+#reg_11_21_SAD69_Poly_Area <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/reg_11_21_SAD69_Poly_Area.tif")
 
 # Loading binary raster 0 - 1
-#binary_raster_SAD69 <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/reg_11_21_SAD69_mode.tif")
+#binary_raster_SAD69 <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/reg_11_21_SAD69_Polyconic.tif")
 
-
-#raster_ones <- mask(reg_11_21_SAD69, binary_raster_SAD69, maskvalue = 0)
+# Masking raster with pixel area to exclude 0 values
+#raster_ones <- mask(reg_11_21_SAD69_Poly_Area, binary_raster_SAD69, maskvalue = 0)
 #plot(raster_ones)
 
-#terra::writeRaster(raster_ones, "D:/__PESSOAL/Vinicius_T/raster_pacto/reg_11_21_SAD69_Area_patch_only.tif", overwrite = T)
+#terra::writeRaster(raster_ones, "D:/__PESSOAL/Vinicius_T/raster_pacto/reg_11_21_SAD69_Area_patch_only_Poly.tif", overwrite = T)
+
 
 # Loading binary raster with pixel area only for forest patches
 reg_11_21_SAD69_area_forest_only <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/reg_11_21_SAD69_Area_patch_only.tif")
