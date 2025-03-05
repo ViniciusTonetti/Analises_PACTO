@@ -183,19 +183,25 @@ sum(df_area_by_state[,"sc_fr_P"])
 # MB_09 <- terra::rast("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2023.tif")
 # plot(MB_09)
 
-# MapBiomas Col 9 2022
-# MB_09_22 <- terra::rast("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2022.tif")
-# plot(MB_09_22)
+# MapBiomas Col 9 2010
+# MB_09_2010 <- terra::rast("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2010.tif")
+
 
 # Cropping raster
-#MB_09_AF <- mask(crop(MB_09, AF), AF)
-#MB_09_AF_22 <- mask(crop(MB_09_22, AF), AF)
+# MB_09_AF <- mask(crop(MB_09, AF), AF)
+# MB_09_AF_2010 <- mask(crop(MB_09_2010, AF), AF)
 
 # Saving MB raster in WGS84 cropped for the AF considering all land cover types
-#terra::writeRaster(MB_09_AF, "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/MB_09_AF_2023_WGS_84.tif")
 
-MB_09_AF_SAD69_Poly  <- terra::project(MB_09_AF, "EPSG:29101", method = "mode")
+# terra::writeRaster(MB_09_AF, "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/MB_09_AF_2023_WGS_84.tif")
+# terra::writeRaster(MB_09_AF_2010, "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/MB_09_AF_2010_WGS_84.tif")
+
+
+# MB_09_AF_SAD69_Poly  <- terra::project(MB_09_AF, "EPSG:29101", method = "mode")
+# MB_09_AF_2010_SAD69_Poly  <- terra::project(MB_09_AF_2010, "EPSG:29101", method = "mode")
 
 # Saving MB raster in SAD69 Brazil Polyconic cropped for the AF considering all land cover types
-#terra::writeRaster(MB_09_AF_SAD69_Poly, "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/MB_09_AF_SAD69_Poly.tif")
+
+# terra::writeRaster(MB_09_AF_SAD69_Poly, "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/MB_09_AF_SAD69_Poly.tif")
+# terra::writeRaster(MB_09_AF_2010_SAD69_Poly, "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/MB_09_AF_2010_SAD69_Poly.tif")
 
