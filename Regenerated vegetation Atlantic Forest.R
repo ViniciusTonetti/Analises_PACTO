@@ -224,6 +224,8 @@ plot(MB_09_AF_2010_SAD69_Poly_forest_only)
 #                    "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/MB_09_AF_2010_SAD69_Poly_forest_only.tif")
 
 
+# Calculating area of forest only ----------------------------------------------
 
-
+# Loading municipalities shp
+mun <- sf::st_read("D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/BR_Municipios_2023.shp")
 
