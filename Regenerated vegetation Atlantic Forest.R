@@ -253,4 +253,21 @@ plot(pixel_area_forest_only_Poly )
 #                    "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/pixel_area_forest_only_Poly.tif")
 
 
+# Extracting values of pixel area in the forest only raster to polygons --------
+# ------------------------------------------------------------------------------
+
+pixel_area_forest_only_Poly <- raster("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/pixel_area_forest_only_Poly.tif")
+
+# Extracting area to Municipalities
+extract_area_forest_mun <- exactextractr::exact_extract(pixel_area_forest_only_Poly, mun, "sum")
+
+# Extracting area to States
+extract_area_forest_states <- exactextractr::exact_extract(pixel_area_forest_only_Poly, estados, "sum")
+
+# Creating a new column to add area of forest in 2010
+mun[,X] <- extract_area_forest_mun
+colnames(mun)[X] <- "for_area_mun"
+
+estados[,X] <- extract_area_forest_states
+colnames(estados)[X] <- "for_area_states"
 
