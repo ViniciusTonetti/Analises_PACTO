@@ -13,24 +13,30 @@ library(writexl)
 # cleaning directory -----------------------------------------------------------
 rm(list = ls())
 
+
+
+#### Reprojecting --------------------------------------------------------------
+################################################################################
+
+
 # Loading layers --------------------------------------------------------------- 
 
 # Municipalities
 
 # Shapefile downloaded from https://www.ibge.gov.br/geociencias/organizacao-do-territorio/malhas-territoriais/15774-malhas.html on 15/02/2025
-#mun <- terra::vect("D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/BR_Municipios_2023.shp")
+mun <- terra::vect("D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/BR_Municipios_2023.shp")
 
 # Regeneration 11_21
-#reg_11_21 <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/_reg_11_21.tif")
+reg_11_21 <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/_reg_11_21.tif")
 
 
 # Reprojecting -----------------------------------------------------------------
 
 # Projecting municipalities and raster data CRS to SAD69 Brazil Polyconic, EPSG:29101
 
-#mun <- terra::project(mun, "EPSG:29101")
+mun <- terra::project(mun, "EPSG:29101")
 
-#reg_11_21  <- terra::project(reg_11_21, "EPSG:29101", method = "mode") # using the method "mode" to interpolate
+reg_11_21  <- terra::project(reg_11_21, "EPSG:29101", method = "mode") # using the method "mode" to interpolate
 
 # Saving raster SAD69
 #terra::writeRaster(reg_11_21, "D:/__PESSOAL/Vinicius_T/raster_pacto/reg_11_21_SAD69_Polyconic.tif")
@@ -39,35 +45,40 @@ rm(list = ls())
 #terra::writeVector(mun, "D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/BR_Municipios_2023_SAD69_Polyconic.shp")
 
 
+
+
 # Calculating areas in SAD69 Brazil Polyconic ----------------------------------
+################################################################################
+
 
 # Loading raster and municipalities in SAD69 Polyconic
 
-#mun_SAD69_Poly <- terra::vect("D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/BR_Municipios_2023_SAD69_Polyconic.shp")
+mun_SAD69_Poly <- terra::vect("D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/BR_Municipios_2023_SAD69_Polyconic.shp")
 
-#reg_11_21_SAD69_Poly <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/reg_11_21_SAD69_Polyconic.tif")
-#plot(reg_11_21_SAD69_Poly)
+reg_11_21_SAD69_Poly <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/reg_11_21_SAD69_Polyconic.tif")
+plot(reg_11_21_SAD69_Poly)
 
 
 # Computing the area of each pixel of the secondary forest patches
-#pixel_area <- cellSize(reg_11_21_SAD69_Poly, unit = "m")
+pixel_area <- cellSize(reg_11_21_SAD69_Poly, unit = "m")
 
-#pixel_area_1_only_Poly <- reg_11_21_SAD69_Poly * pixel_area
-#plot(pixel_area_1_only_Poly)
+# Considering values only for forest pixels
+pixel_area_1_only_Poly <- reg_11_21_SAD69_Poly * pixel_area
+plot(pixel_area_1_only_Poly)
 
 
 # Saving raster with area of each pixel
 #terra::writeRaster(pixel_area_1_only_Poly, "D:/__PESSOAL/Vinicius_T/raster_pacto/reg_11_21_SAD69_Poly_Area.tif", overwrite = T)
 
 # Loading raster with pixel area, patches only 
-#reg_11_21_SAD69_Poly_Area <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/reg_11_21_SAD69_Poly_Area.tif")
+reg_11_21_SAD69_Poly_Area <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/reg_11_21_SAD69_Poly_Area.tif")
 
 # Loading binary raster 0 - 1
-#binary_raster_SAD69 <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/reg_11_21_SAD69_Polyconic.tif")
+binary_raster_SAD69 <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/reg_11_21_SAD69_Polyconic.tif")
 
 # Masking raster with pixel area to exclude 0 values
-#raster_ones <- mask(reg_11_21_SAD69_Poly_Area, binary_raster_SAD69, maskvalue = 0)
-#plot(raster_ones)
+raster_ones <- mask(reg_11_21_SAD69_Poly_Area, binary_raster_SAD69, maskvalue = 0)
+plot(raster_ones)
 
 #terra::writeRaster(raster_ones, "D:/__PESSOAL/Vinicius_T/raster_pacto/reg_11_21_SAD69_Area_patch_only_Poly.tif", overwrite = T)
 
@@ -81,7 +92,7 @@ mun_SAD69_Poly <- terra::vect("D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Muni
 plot(mun_SAD69_Poly)
 
 
-# Calculating the area of forest for each municipality
+# Calculating the area of forest for each municipality -------------------------
 # Extracting values using the "exactextractr" package as it did not run in Terra with function extract()
 
 # Converting the raster to a "raster::" object
@@ -95,15 +106,15 @@ plot(reg_11_21_SAD69_area_forest_only_raster)
 #raster::writeRaster(reg_11_21_SAD69_area_forest_only_raster,
 #                    "D:/__PESSOAL/Vinicius_T/raster_pacto/reg_11_21_SAD69_Area_patch_only_raster.tif")
 
-# Checking the number of columns = 14
-#ncol(mun_SAD69_sf)
+# Checking the number of columns
+ncol(mun_SAD69_sf) #14
 
 # Creating a new column to add area of regenerating forest
-#mun_SAD69_sf[,15] <- extract_area
-#colnames(mun_SAD69_sf)[15] <- "sec_for"
+mun_SAD69_sf[,15] <- extract_area
+colnames(mun_SAD69_sf)[15] <- "sec_for"
 
-#length(extract_area)
-#nrow(mun_SAD69_sf)
+length(extract_area)
+nrow(mun_SAD69_sf)
 
 # Save to shapefile
 #st_write(mun_SAD69_sf, "D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/mun_area_Poly.shp", delete_dsn = T)
@@ -129,8 +140,8 @@ sum(df_area[,"sec_for"])
 # Analysis by State ------------------------------------------------------------
 
 # Loading state polygon
-#state_area <- terra::vect("D:/__PESSOAL/Vinicius_T/estados_Brasil/BR_UF_2023/BR_UF_2023_area.shp")
-#plot(state_area)
+state_area <- terra::vect("D:/__PESSOAL/Vinicius_T/estados_Brasil/BR_UF_2023/BR_UF_2023_area.shp")
+plot(state_area)
 
 
 # Converting the CRS of the states to the same CRS of the raster
@@ -141,19 +152,21 @@ state_area_SAD69_sf <- sf::st_as_sf(state_area_SAD69_Poly)
 
 extract_area_state <- exactextractr::exact_extract(reg_11_21_SAD69_area_forest_only_raster, state_area_SAD69_sf, "sum")
 
-# Checking the number of columns #8
-ncol(state_area_SAD69_sf)
+# Checking the number of columns
+ncol(state_area_SAD69_sf) #8
 
 # Creating a new column to add area of regenerating forest
 state_area_SAD69_sf[,7] <- extract_area_state
 colnames(state_area_SAD69_sf)[7] <- "sec_for_Poly"
 
-#length(extract_area_state)
-#nrow(state_area_SAD69_sf)
+length(extract_area_state)
+nrow(state_area_SAD69_sf)
 
 # Save to shapefile
 #st_write(state_area_SAD69_sf, "D:/__PESSOAL/Vinicius_T/estados_Brasil/BR_UF_2023/BR_UF_2023_area_Poly.shp", delete_dsn = T)
 
+
+# Saving areas of secondary forest by State to Excel ---------------------------
 
 
 # Loading shapefile with the area of regenerated forests in each state
@@ -171,37 +184,39 @@ sum(df_area_by_state[,"sc_fr_P"])
 #writexl::write_xlsx(df_area_by_state, "D:/__PESSOAL/Vinicius_T/estados_Brasil/BR_UF_2023/reg_by_states_Poly.xlsx")
 
 
+
+# Calculating the proportion of secondary forest by municipality and state #####
+################################################################################
+
 # Cropping MapBiomas Col09 to Brazil -------------------------------------------
 
 # Loading layers
 
 # Atlantic Forest (AF) limit
-# AF <- terra::vect("D:/__PESSOAL/Vinicius_T/Limite Mata Atlantica/bioma_MA_IBGE_250mil/bioma_MA_IBGE_250mil.shp")
-# plot(AF)
-
-# MapBiomas Col 9 2023 (MB_09)
-# MB_09 <- terra::rast("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2023.tif")
-# plot(MB_09)
+AF <- terra::vect("D:/__PESSOAL/Vinicius_T/Limite Mata Atlantica/bioma_MA_IBGE_250mil/bioma_MA_IBGE_250mil.shp")
+plot(AF)
 
 # MapBiomas Col 9 2010
-# MB_09_2010 <- terra::rast("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2010.tif")
-
+MB_09_2010 <- terra::rast("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2010.tif")
 
 # Cropping raster
-# MB_09_AF <- mask(crop(MB_09, AF), AF)
-# MB_09_AF_2010 <- mask(crop(MB_09_2010, AF), AF)
+MB_09_AF_2010 <- mask(crop(MB_09_2010, AF), AF)
 
 # Saving MB raster in WGS84 cropped for the AF considering all land cover types
-
-# terra::writeRaster(MB_09_AF, "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/MB_09_AF_2023_WGS_84.tif")
-# terra::writeRaster(MB_09_AF_2010, "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/MB_09_AF_2010_WGS_84.tif")
+#terra::writeRaster(MB_09_AF_2010, "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/MB_09_AF_2010_WGS_84.tif")
 
 
-# MB_09_AF_SAD69_Poly  <- terra::project(MB_09_AF, "EPSG:29101", method = "mode")
-# MB_09_AF_2010_SAD69_Poly  <- terra::project(MB_09_AF_2010, "EPSG:29101", method = "mode")
+# Converting MB raster cropped by the AF linit to SAD69 Poly
+MB_09_AF_2010_SAD69_Poly  <- terra::project(MB_09_AF_2010, "EPSG:29101", method = "mode")
 
 # Saving MB raster in SAD69 Brazil Polyconic cropped for the AF considering all land cover types
+#terra::writeRaster(MB_09_AF_2010_SAD69_Poly, "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/MB_09_AF_2010_SAD69_Poly.tif")
 
-# terra::writeRaster(MB_09_AF_SAD69_Poly, "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/MB_09_AF_SAD69_Poly.tif")
-# terra::writeRaster(MB_09_AF_2010_SAD69_Poly, "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/MB_09_AF_2010_SAD69_Poly.tif")
+
+# Converting raster values to set all forest pixels as 1 and the remaining 0 ------
+
+
+
+
+
 
