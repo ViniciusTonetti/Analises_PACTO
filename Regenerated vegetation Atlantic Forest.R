@@ -221,11 +221,36 @@ plot(MB_09_AF_2010_SAD69_Poly_forest_only)
 
 # Saving raster MB 2010 forest only
 #terra::writeRaster(MB_09_AF_2010_SAD69_Poly_forest_only,
-#                    "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/MB_09_AF_2010_SAD69_Poly_forest_only.tif")
+#                    "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/MB_09_AF_2010_WGS84_forest_only.tif")
 
 
 # Calculating area of forest only ----------------------------------------------
 
+MB_09_AF_2010_WGS84_forest_only <- rast("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/MB_09_AF_2010_WGS84_forest_only.tif")
+MB_09_AF_2010_SAD69_Poly_forest_only <- terra::project(MB_09_AF_2010_WGS84_forest_only,"EPSG:29101", method = "mode")
+
+#terra::writeRaster(MB_09_AF_2010_SAD69_Poly_forest_only,
+#                    "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/MB_09_AF_2010_SAD69_Poly_forest_only.tif")
+
+
 # Loading municipalities shp
-mun <- sf::st_read("D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/BR_Municipios_2023.shp")
+mun <- sf::st_read("D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/mun_area_Poly.shp")
+
+# Loading states shp
+estados <- sf::st_read("D:/__PESSOAL/Vinicius_T/estados_Brasil/BR_UF_2023/BR_UF_2023_area_Poly.shp")
+
+# Loading raster 2010 forest only
+MB_09_AF_2010_SAD69_Poly_forest_only <- rast("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/MB_09_AF_2010_SAD69_Poly_forest_only")
+
+# Computing the area of each pixel of the secondary forest patches
+pixel_area_forest_only <- cellSize(MB_09_AF_2010_SAD69_Poly_forest_only, unit = "m")
+
+# Considering values only for forest pixels
+pixel_area_forest_only_Poly <- MB_09_AF_2010_SAD69_Poly_forest_only * pixel_area_forest_only
+plot(pixel_area_forest_only_Poly )
+
+#terra::writeRaster(pixel_area_forest_only_Poly,
+#                    "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/pixel_area_forest_only_Poly.tif")
+
+
 
