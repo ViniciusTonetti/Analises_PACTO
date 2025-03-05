@@ -217,4 +217,13 @@ MB_09_AF_2010_SAD69_Poly  <- terra::project(MB_09_AF_2010, "EPSG:29101", method 
 
 MB_09_AF_2010_SAD69_Poly <- terra::rast("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/MB_09_AF_2010_WGS_84.tif")
 MB_09_AF_2010_SAD69_Poly_forest_only <- terra::ifel(MB_09_AF_2010_SAD69_Poly == 3, 1, 0)
+plot(MB_09_AF_2010_SAD69_Poly_forest_only)
+
+# Saving raster MB 2010 forest only
+#terra::writeRaster(MB_09_AF_2010_SAD69_Poly_forest_only,
+#                    "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/MB_09_AF_2010_SAD69_Poly_forest_only.tif")
+
+
+
+
 
