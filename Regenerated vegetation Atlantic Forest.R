@@ -229,15 +229,12 @@ plot(MB_09_AF_2010_SAD69_Poly_forest_only)
 MB_09_AF_2010_WGS84_forest_only <- rast("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/MB_09_AF_2010_WGS84_forest_only.tif")
 MB_09_AF_2010_SAD69_Poly_forest_only <- terra::project(MB_09_AF_2010_WGS84_forest_only,"EPSG:29101", method = "mode")
 
+plot(MB_09_AF_2010_SAD69_Poly_forest_only)
+
 #terra::writeRaster(MB_09_AF_2010_SAD69_Poly_forest_only,
 #                    "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/MB_09_AF_2010_SAD69_Poly_forest_only.tif")
 
 
-# Loading municipalities shp
-mun <- sf::st_read("D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/mun_area_Poly.shp")
-
-# Loading states shp
-estados <- sf::st_read("D:/__PESSOAL/Vinicius_T/estados_Brasil/BR_UF_2023/BR_UF_2023_area_Poly.shp")
 
 # Loading raster 2010 forest only
 MB_09_AF_2010_SAD69_Poly_forest_only <- rast("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/MB_09_AF_2010_SAD69_Poly_forest_only")
@@ -247,7 +244,7 @@ pixel_area_forest_only <- cellSize(MB_09_AF_2010_SAD69_Poly_forest_only, unit = 
 
 # Considering values only for forest pixels
 pixel_area_forest_only_Poly <- MB_09_AF_2010_SAD69_Poly_forest_only * pixel_area_forest_only
-plot(pixel_area_forest_only_Poly )
+plot(pixel_area_forest_only_Poly)
 
 #terra::writeRaster(pixel_area_forest_only_Poly,
 #                    "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/pixel_area_forest_only_Poly.tif")
@@ -256,18 +253,37 @@ plot(pixel_area_forest_only_Poly )
 # Extracting values of pixel area in the forest only raster to polygons --------
 # ------------------------------------------------------------------------------
 
-pixel_area_forest_only_Poly <- raster("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/pixel_area_forest_only_Poly.tif")
+pixel_area_forest_only <- raster("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/pixel_area_forest_only_Poly.tif")
+
+# Loading municipalities shp
+mun <- sf::st_read("D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/mun_area_Poly.shp")
+
+# Loading states shp
+estados <- sf::st_read("D:/__PESSOAL/Vinicius_T/estados_Brasil/BR_UF_2023/BR_UF_2023_area_Poly.shp")
 
 # Extracting area to Municipalities
-extract_area_forest_mun <- exactextractr::exact_extract(pixel_area_forest_only_Poly, mun, "sum")
+extract_area_forest_mun <- exactextractr::exact_extract(pixel_area_forest_only, mun, "sum")
 
 # Extracting area to States
-extract_area_forest_states <- exactextractr::exact_extract(pixel_area_forest_only_Poly, estados, "sum")
+extract_area_forest_states <- exactextractr::exact_extract(pixel_area_forest_only, estados, "sum")
 
 # Creating a new column to add area of forest in 2010
-mun[,X] <- extract_area_forest_mun
-colnames(mun)[X] <- "for_area_mun"
+ncol(mun)
+mun[,16] <- extract_area_forest_mun
+colnames(mun)[16] <- "for_area_mun"
+plot(mun)
 
-estados[,X] <- extract_area_forest_states
-colnames(estados)[X] <- "for_area_states"
+ncol(estados)
+estados[,9] <- extract_area_forest_states
+colnames(estados)[9] <- "for_area_states"
+
+# Saving polygons
+
+#st_write(mun, "D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/_mun_all_areas.shp", delete_dsn = T)
+#st_write(estados, "D:/__PESSOAL/Vinicius_T/estados_Brasil/BR_UF_2023/_estados_all_areas.shp", delete_dsn = T)
+
+
+
+
+
 
