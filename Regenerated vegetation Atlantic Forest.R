@@ -283,7 +283,34 @@ colnames(estados)[9] <- "for_area_states"
 #st_write(estados, "D:/__PESSOAL/Vinicius_T/estados_Brasil/BR_UF_2023/_estados_all_areas.shp", delete_dsn = T)
 
 
+# Calculating the proportion of secondary forest in each polygon in relation
+# to the amount of forest in 2010 
+
+# Loading municipalities shp
+mun <- sf::st_read("D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/_mun_all_areas.shp")
+
+# Loading states shp
+estados <- sf::st_read("D:/__PESSOAL/Vinicius_T/estados_Brasil/BR_UF_2023/_estados_all_areas.shp")
 
 
+# Calculating proportion of secondary forest in relation to the total amount of forest in 2010
+# --------------------------------------------------------------------------------------------
+
+colnames(mun)
+ncol(mun)
+
+mun[,17] <- data.frame(mun[,"sec_for"])[,1]/data.frame(mun[,"fr_r_mn"])[,1]
+colnames(mun)[17] <- "prop_sec_fr"
+
+#st_write(mun, "D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/_mun_all_areas_prop.shp", delete_dsn = T)
+
+
+colnames(estados)
+ncol(estados)
+
+estados[,10] <- data.frame(estados[,"sc_fr_P"])[,1]/data.frame(estados[,"fr_r_st"])[,1]
+colnames(estados)[10] <- "prop_sec_fr"
+
+#st_write(estados, "D:/__PESSOAL/Vinicius_T/estados_Brasil/BR_UF_2023/_estados_all_areas_prop.shp", delete_dsn = T)
 
 
