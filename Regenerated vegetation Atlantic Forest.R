@@ -318,6 +318,11 @@ colnames(estados)[10] <- "prop_sec_fr"
 ################################################################################
 ## Extracting data for Quilombola, Assentamento, TI, and UC
 
+
+
+# Quilombola -------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+
 # cleaning directory -----------------------------------------------------------
 rm(list = ls())
 
@@ -327,9 +332,6 @@ reg <- raster::raster("D:/__PESSOAL/Vinicius_T/raster_pacto/reg_11_21_SAD69_Area
 # Loading raster 2010
 forest_2010 <- raster::raster("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/pixel_area_forest_only_Poly.tif")
 
-
-# Quilombola -------------------------------------------------------------------
-# ------------------------------------------------------------------------------
 
 
 # reprojecting Polygons and converting to sf object
@@ -361,5 +363,50 @@ colnames(quilombola_Poly)[ncol(quilombola_Poly)] <- "secondary_forest"
 prop <- quilombola_Poly_Area_reg/quilombola_Poly_Area_forest_2010
 quilombola_Poly[,ncol(quilombola_Poly)+1] <- prop
 colnames(quilombola_Poly)[ncol(quilombola_Poly)] <- "prop_reg"
+
+
+# Assentamento -----------------------------------------------------------------
+# ------------------------------------------------------------------------------
+
+# cleaning directory -----------------------------------------------------------
+rm(list = ls())
+
+# Loading raster of Secondary Forest
+reg <- raster::raster("D:/__PESSOAL/Vinicius_T/raster_pacto/reg_11_21_SAD69_Area_patch_only_raster.tif")
+
+# Loading raster 2010
+forest_2010 <- raster::raster("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/pixel_area_forest_only_Poly.tif")
+
+
+
+# reprojecting Polygons and converting to sf object
+
+assentamento <- vect("D:/__PESSOAL/Vinicius_T/dados Pacto/CAMADAS/MA_assentamento_incra2024.shp")
+assentamento_Poly <- terra::project(assentamento, "EPSG:29101")
+assentamento_Poly <- sf::st_as_sf(assentamento_Poly)
+
+# Extracting forest area values
+
+assentamento_Poly_Area_forest_2010 <- exactextractr::exact_extract(forest_2010, assentamento_Poly, "sum")
+assentamento_Poly_Area_reg <- exactextractr::exact_extract(reg, assentamento_Poly, "sum")
+
+# Creating new columns for area values
+
+# Amount of forest in 2010
+
+assentamento_Poly[,ncol(assentamento_Poly)+1] <- assentamento_Poly_Area_forest_2010
+colnames(assentamento_Poly)[ncol(assentamento_Poly)] <- "forest_area"
+
+
+# Regenerated forest 2011 - 2020
+
+assentamento_Poly[,ncol(assentamento_Poly)+1] <- assentamento_Poly_Area_reg
+colnames(assentamento_Poly)[ncol(assentamento_Poly)] <- "secondary_forest"
+
+# Proportion of regenerated forest
+
+prop <- assentamento_Poly_Area_reg/assentamento_Poly_Area_forest_2010
+assentamento_Poly[,ncol(assentamento_Poly)+1] <- prop
+colnames(assentamento_Poly)[ncol(assentamento_Poly)] <- "prop_reg"
 
 
