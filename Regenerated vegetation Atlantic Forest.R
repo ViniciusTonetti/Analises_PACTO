@@ -364,6 +364,8 @@ prop <- quilombola_Poly_Area_reg/quilombola_Poly_Area_forest_2010
 quilombola_Poly[,ncol(quilombola_Poly)+1] <- prop
 colnames(quilombola_Poly)[ncol(quilombola_Poly)] <- "prop_reg"
 
+#sf::st_write(quilombola_Poly, "D:/__PESSOAL/Vinicius_T/dados Pacto/CAMADAS/MA_area_quilombola_incra2024_Area.shp")
+
 
 # Assentamento -----------------------------------------------------------------
 # ------------------------------------------------------------------------------
@@ -376,7 +378,6 @@ reg <- raster::raster("D:/__PESSOAL/Vinicius_T/raster_pacto/reg_11_21_SAD69_Area
 
 # Loading raster 2010
 forest_2010 <- raster::raster("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/pixel_area_forest_only_Poly.tif")
-
 
 
 # reprojecting Polygons and converting to sf object
@@ -408,5 +409,56 @@ colnames(assentamento_Poly)[ncol(assentamento_Poly)] <- "secondary_forest"
 prop <- assentamento_Poly_Area_reg/assentamento_Poly_Area_forest_2010
 assentamento_Poly[,ncol(assentamento_Poly)+1] <- prop
 colnames(assentamento_Poly)[ncol(assentamento_Poly)] <- "prop_reg"
+
+#sf::st_write(assentamento_Poly, "D:/__PESSOAL/Vinicius_T/dados Pacto/CAMADAS/MA_assentamento_incra2024_Area.shp")
+
+
+# Terra Indígena ---------------------------------------------------------------
+# ------------------------------------------------------------------------------
+
+# cleaning directory -----------------------------------------------------------
+rm(list = ls())
+
+# Loading raster of Secondary Forest
+reg <- raster::raster("D:/__PESSOAL/Vinicius_T/raster_pacto/reg_11_21_SAD69_Area_patch_only_raster.tif")
+
+# Loading raster 2010
+forest_2010 <- raster::raster("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/pixel_area_forest_only_Poly.tif")
+
+
+# reprojecting Polygons and converting to sf object
+
+terra_indigena <- vect("D:/__PESSOAL/Vinicius_T/dados Pacto/CAMADAS/MA_tis_funai2024.shp")
+terra_indigena_Poly <- terra::project(terra_indigena, "EPSG:29101")
+terra_indigena_Poly <- sf::st_as_sf(terra_indigena_Poly)
+
+
+# Extracting forest area values
+
+terra_indigena_Poly_Area_forest_2010 <- exactextractr::exact_extract(forest_2010, terra_indigena_Poly, "sum")
+terra_indigena_Poly_Area_reg <- exactextractr::exact_extract(reg, terra_indigena_Poly, "sum")
+
+# Creating new columns for area values
+
+# Amount of forest in 2010
+
+terra_indigena_Poly[,ncol(terra_indigena_Poly)+1] <- terra_indigena_Poly_Area_forest_2010
+colnames(terra_indigena_Poly)[ncol(terra_indigena_Poly)] <- "forest_area"
+
+
+# Regenerated forest 2011 - 2020
+
+terra_indigena_Poly[,ncol(terra_indigena_Poly)+1] <- terra_indigena_Poly_Area_reg
+colnames(terra_indigena_Poly)[ncol(terra_indigena_Poly)] <- "secondary_forest"
+
+# Proportion of regenerated forest
+
+prop <- terra_indigena_Poly_Area_reg/terra_indigena_Poly_Area_forest_2010
+terra_indigena_Poly[,ncol(terra_indigena_Poly)+1] <- prop
+colnames(terra_indigena_Poly)[ncol(terra_indigena_Poly)] <- "prop_reg"
+
+#sf::st_write(terra_indigena_Poly, "D:/__PESSOAL/Vinicius_T/dados Pacto/CAMADAS/MA_tis_funai2024_Area.shp")
+
+
 
 
