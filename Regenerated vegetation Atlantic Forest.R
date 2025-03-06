@@ -314,3 +314,18 @@ colnames(estados)[10] <- "prop_sec_fr"
 #st_write(estados, "D:/__PESSOAL/Vinicius_T/estados_Brasil/BR_UF_2023/_estados_all_areas_prop.shp", delete_dsn = T)
 
 
+
+################################################################################
+## Extracting data for Quilombola, Assentamento, TI, and UC
+
+# Loading raster of Secondary Forest
+reg <- raster::raster("D:/__PESSOAL/Vinicius_T/raster_pacto/reg_11_21_SAD69_Area_patch_only_raster.tif")
+
+
+# reporjecting Polygons
+
+quilombola <- vect("D:/__PESSOAL/Vinicius_T/dados Pacto/CAMADAS/MA_area_quilombola_incra2024.shp")
+quilombola_Poly <- terra::project(quilombola, "EPSG:29101")
+
+
+
