@@ -318,14 +318,48 @@ colnames(estados)[10] <- "prop_sec_fr"
 ################################################################################
 ## Extracting data for Quilombola, Assentamento, TI, and UC
 
+# cleaning directory -----------------------------------------------------------
+rm(list = ls())
+
 # Loading raster of Secondary Forest
 reg <- raster::raster("D:/__PESSOAL/Vinicius_T/raster_pacto/reg_11_21_SAD69_Area_patch_only_raster.tif")
 
+# Loading raster 2010
+forest_2010 <- raster::raster("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/pixel_area_forest_only_Poly.tif")
 
-# reporjecting Polygons
+
+# Quilombola -------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+
+
+# reprojecting Polygons and converting to sf object
 
 quilombola <- vect("D:/__PESSOAL/Vinicius_T/dados Pacto/CAMADAS/MA_area_quilombola_incra2024.shp")
 quilombola_Poly <- terra::project(quilombola, "EPSG:29101")
+quilombola_Poly <- sf::st_as_sf(quilombola_Poly)
 
+# Extracting forest area values
+
+quilombola_Poly_Area_forest_2010 <- exactextractr::exact_extract(forest_2010, quilombola_Poly, "sum")
+quilombola_Poly_Area_reg <- exactextractr::exact_extract(reg, quilombola_Poly, "sum")
+
+# Creating new columns for area values
+
+# Amount of forest in 2010
+
+quilombola_Poly[,ncol(quilombola_Poly)+1] <- quilombola_Poly_Area_forest_2010
+colnames(quilombola_Poly)[ncol(quilombola_Poly)] <- "forest_area"
+
+
+# Regenerated forest 2011 - 2020
+
+quilombola_Poly[,ncol(quilombola_Poly)+1] <- quilombola_Poly_Area_reg
+colnames(quilombola_Poly)[ncol(quilombola_Poly)] <- "secondary_forest"
+
+# Proportion of regenerated forest
+
+prop <- quilombola_Poly_Area_reg/quilombola_Poly_Area_forest_2010
+quilombola_Poly[,ncol(quilombola_Poly)+1] <- prop
+colnames(quilombola_Poly)[ncol(quilombola_Poly)] <- "prop_reg"
 
 
