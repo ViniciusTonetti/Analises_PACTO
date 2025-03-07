@@ -530,3 +530,5 @@ reg_resampled <- resample(reg, MB_2010, method = "near")
 
 # Masking
 masked_MB <- terra::mask(MB_2010, reg_resampled, maskvalue = 0)
+plot(masked_MB)
+
