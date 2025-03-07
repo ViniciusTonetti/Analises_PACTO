@@ -524,8 +524,9 @@ reg <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/_reg_11_21.tif")
 AF_WGS84 <- terra::vect("D:/__PESSOAL/Vinicius_T/Limite Mata Atlantica/bioma_MA_IBGE_250mil/bioma_MA_IBGE_250mil.shp")
 #plot(AF_WGS84)
 
-# Cropping MB to match extent
-MB_2010 <- crop(MB_2010, reg)
+# Resample to match extent
+reg_resampled <- resample(reg, MB_2010, method = "near")
+#terra::writeRaster(reg_resampled, "D:/__PESSOAL/Vinicius_T/raster_pacto/_reg_11_21_resampled.tif")
 
 # Masking
-masked_MB <- terra::mask(MB_2010, reg, maskvalue = 0)
+masked_MB <- terra::mask(MB_2010, reg_resampled, maskvalue = 0)
