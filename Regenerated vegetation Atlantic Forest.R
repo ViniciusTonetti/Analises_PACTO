@@ -524,8 +524,8 @@ reg <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/_reg_11_21.tif")
 AF_WGS84 <- terra::vect("D:/__PESSOAL/Vinicius_T/Limite Mata Atlantica/bioma_MA_IBGE_250mil/bioma_MA_IBGE_250mil.shp")
 #plot(AF_WGS84)
 
-# Expanding reg to match MB_2010
-reg <- terra::extend(reg, MB_2010)
+# Cropping MB to match extent
+MB_2010 <- crop(MB_2010, reg)
 
 # Masking
 masked_MB <- terra::mask(MB_2010, reg, maskvalue = 0)
