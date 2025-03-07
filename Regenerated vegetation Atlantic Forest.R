@@ -46,7 +46,6 @@ reg_11_21  <- terra::project(reg_11_21, "EPSG:29101", method = "mode") # using t
 
 
 
-
 # Calculating areas in SAD69 Brazil Polyconic ----------------------------------
 ################################################################################
 
@@ -458,6 +457,57 @@ terra_indigena_Poly[,ncol(terra_indigena_Poly)+1] <- prop
 colnames(terra_indigena_Poly)[ncol(terra_indigena_Poly)] <- "prop_reg"
 
 #sf::st_write(terra_indigena_Poly, "D:/__PESSOAL/Vinicius_T/dados Pacto/CAMADAS/MA_tis_funai2024_Area.shp")
+
+
+# UC ---------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+
+# cleaning directory -----------------------------------------------------------
+rm(list = ls())
+
+# Loading raster of Secondary Forest
+reg <- raster::raster("D:/__PESSOAL/Vinicius_T/raster_pacto/reg_11_21_SAD69_Area_patch_only_raster.tif")
+
+# Loading raster 2010
+forest_2010 <- raster::raster("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/pixel_area_forest_only_Poly.tif")
+
+
+# reprojecting Polygons and converting to sf object
+
+UC <- vect("D:/__PESSOAL/Vinicius_T/dados Pacto/CAMADAS/MA_UC_mma2024.shp")
+UC_Poly <- terra::project(UC, "EPSG:29101")
+UC_Poly <- sf::st_as_sf(UC_Poly)
+
+
+# Extracting forest area values
+
+UC_Poly_Area_forest_2010 <- exactextractr::exact_extract(forest_2010, UC_Poly, "sum")
+UC_Poly_Area_reg <- exactextractr::exact_extract(reg, UC_Poly, "sum")
+
+# Creating new columns for area values
+
+# Amount of forest in 2010
+
+UC_Poly[,ncol(UC_Poly)+1] <- UC_Poly_Area_forest_2010
+colnames(UC_Poly)[ncol(UC_Poly)] <- "forest_area"
+
+
+# Regenerated forest 2011 - 2020
+
+UC_Poly[,ncol(UC_Poly)+1] <- UC_Poly_Area_reg
+colnames(UC_Poly)[ncol(UC_Poly)] <- "secondary_forest"
+
+# Proportion of regenerated forest
+
+prop <- UC_Poly_Area_reg/UC_Poly_Area_forest_2010
+UC_Poly[,ncol(UC_Poly)+1] <- prop
+colnames(UC_Poly)[ncol(UC_Poly)] <- "prop_reg"
+
+#sf::st_write(UC_Poly, "D:/__PESSOAL/Vinicius_T/dados Pacto/CAMADAS/MA_UC_mma2024_Area.shp")
+
+
+## Previous land cover type ----------------------------------------------------
+################################################################################
 
 
 
