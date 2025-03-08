@@ -547,16 +547,18 @@ dir <- "D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T21
 tiles_reg <- list.files(dir)
 
 
-# Loop to merge and save files
+# Loop to merge, crop and save raster merged
 
 for(i in 1:length(unique(substr(tiles_reg, 1, 11)))){
 unique(substr(tiles_reg, 1, 11))[i]
 names <- tiles_reg[grepl(unique(substr(tiles_reg, 1, 11))[i], tiles_reg)]
 tiles <- lapply(names, rast)
 merged_tile <- do.call(merge, tiles)
+cropped <- mask(crop(merged_tile, AF), AF)
 directory <- "D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto"
-writeRaster(merged_tile,
-            paste(directory, paste(unique(substr(tiles_reg, 1, 11))[i], ".tif", sep = ""), sep = "/"))
+writeRaster(cropped,
+            paste(directory, paste(unique(substr(tiles_reg, 1, 11))[i], ".tif", sep = ""), sep = "/"),
+            overwrite = T, gdal=c("COMPRESS=DEFLATE", "TFW=YES"))
 
 }
 
