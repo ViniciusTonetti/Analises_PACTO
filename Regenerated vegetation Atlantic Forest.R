@@ -528,6 +528,36 @@ reg_resampled <- resample(reg, MB_2010, method = "near")
 masked_MB <- terra::mask(MB_2010, reg_resampled, maskvalue = 0)
 #plot(masked_MB)
 #terra::writeRaster(masked_MB , "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/previous_land_cover_type.tif")
-masked_MB[]
+
+# Frequency of each previous land cover type
+previous_land_use_count <- freq(masked_MB)
+
+
+## Merging tiles individual rasters reg ----------------------------------------
+################################################################################
+
+# Loading AF limits to crop merged tiles
+
+AF <- terra::vect("D:/__PESSOAL/Vinicius_T/Limite Mata Atlantica/bioma_MA_IBGE_250mil/bioma_MA_IBGE_250mil.shp")
+
+
+dir <- "D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto"
+
+# File names
+tiles_reg <- list.files(dir)
+
+
+# Loop to merge and save files
+
+for(i in 1:length(unique(substr(tiles_reg, 1, 11)))){
+unique(substr(tiles_reg, 1, 11))[i]
+names <- tiles_reg[grepl(unique(substr(tiles_reg, 1, 11))[i], tiles_reg)]
+tiles <- lapply(names, rast)
+merged_tile <- do.call(merge, tiles)
+directory <- "D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto"
+writeRaster(merged_tile,
+            paste(directory, paste(unique(substr(tiles_reg, 1, 11))[i], ".tif", sep = ""), sep = "/"))
+
+}
 
 
