@@ -533,7 +533,7 @@ masked_MB <- terra::mask(MB_2010, reg_resampled, maskvalue = 0)
 previous_land_use_count <- freq(masked_MB)
 
 
-## Merging tiles individual rasters reg ----------------------------------------
+## Hotspots of regeneration and deforestation of secondary forests -------------
 ################################################################################
 
 # cleaning directory -----------------------------------------------------------
@@ -606,6 +606,26 @@ summed_stack_1_only <- raster::reclassify(summed_stack_r, reclass_matrix)
 #raster::writeRaster(summed_stack_1_only,
 #                    "D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/summed_reg_1_only.tif",
 #                    options = c("COMPRESS=LZW", "ZLEVEL=9"))
+
+
+# Raster of the final secondary forest map
+reg_11_21 <- raster::raster("D:/__PESSOAL/Vinicius_T/raster_pacto/_reg_11_21.tif")
+
+secondary_forest_loss <- summed_stack_1_only - reg_11_21
+plot(secondary_forest_loss)
+
+reclass_matrix <- matrix(c(0, 0,
+                           1, 1,
+                           -1, 0),
+                         ncol = 2, byrow = T)
+
+secondary_forest_loss <- raster::reclassify(secondary_forest_loss, reclass_matrix)
+
+
+raster::writeRaster(secondary_forest_loss,
+                    "D:/__PESSOAL/Vinicius_T/raster_pacto/secondary_forest_loss.tif",
+                    options = c("COMPRESS=LZW", "ZLEVEL=9"))
+
 
 
 
