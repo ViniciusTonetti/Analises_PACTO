@@ -584,9 +584,9 @@ rast_stack <- rast(c("D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pac
 
 summed_stack <- app(rast_stack, fun = sum, na.rm = T)
 
-writeRaster(summed_stack,
-            "D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/summed_reg.tif",
-            gdal=c("COMPRESS=DEFLATE", "TFW=YES"))
+#writeRaster(summed_stack,
+#            "D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/summed_reg.tif",
+#            gdal=c("COMPRESS=DEFLATE", "TFW=YES"))
 
 # Convert values = 2, to 1
 
@@ -603,9 +603,9 @@ reclass_matrix <- matrix(c(0, 0,
 
 summed_stack_1_only <- raster::reclassify(summed_stack_r, reclass_matrix)
 
-raster::writeRaster(summed_stack_1_only,
-                    "D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/summed_reg_1_only.tif",
-                    options = c("COMPRESS=LZW", "ZLEVEL=9"))
+#raster::writeRaster(summed_stack_1_only,
+#                    "D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/summed_reg_1_only.tif",
+#                    options = c("COMPRESS=LZW", "ZLEVEL=9"))
 
 
 
