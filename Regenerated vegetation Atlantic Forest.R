@@ -603,10 +603,9 @@ reclass_matrix <- matrix(c(0, 0,
 
 summed_stack_1_only <- raster::reclassify(summed_stack_r, reclass_matrix)
 
+raster::writeRaster(summed_stack_1_only,
+                    "D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/summed_reg_1_only.tif",
+                    options = c("COMPRESS=LZW", "ZLEVEL=9"))
 
-summed_stack_1_only <- terra::ifel(summed_stack == 2, 1, summed_stack)
-
-summed_stack[which(summed_stack[] == 2)] <- 1
-values(summed_stack)[values(summed_stack) == 2] <- 1
 
 
