@@ -691,4 +691,21 @@ colnames(mun)[19] <- "defo_mun"
 mun[,20] <- data.frame(mun[,19])[,1]/data.frame(mun[,18])[,1]
 colnames(mun)[20] <- "prop_defo"
 
-sf::st_write(mun, "D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/_mun_all_areas_prop_total_reg_defo.shp")
+#sf::st_write(mun, "D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/_mun_all_areas_prop_total_reg_defo.shp")
+
+
+
+ncol(estados)
+
+estados[,11] <- for_reg_state 
+colnames(estados)[11] <- "for_reg"
+
+estados[,12] <- defo_state
+colnames(estados)[12] <- "defo_est"
+
+# Proportion of deforestation in relation to the total amount of forest that regenerated 
+estados[,13] <- data.frame(estados[,12])[,1]/data.frame(estados[,11])[,1]
+colnames(estados)[13] <- "prop_defo"
+
+#sf::st_write(estados, "D:/__PESSOAL/Vinicius_T/estados_Brasil/BR_UF_2023/_estados_all_areas_prop_total_reg_defo.shp")
+
