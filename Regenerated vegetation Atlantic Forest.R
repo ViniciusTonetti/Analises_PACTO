@@ -14,10 +14,8 @@ library(writexl)
 rm(list = ls())
 
 
-
 #### Reprojecting --------------------------------------------------------------
 ################################################################################
-
 
 # Loading layers --------------------------------------------------------------- 
 
@@ -45,10 +43,8 @@ reg_11_21  <- terra::project(reg_11_21, "EPSG:29101", method = "mode") # using t
 #terra::writeVector(mun, "D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/BR_Municipios_2023_SAD69_Polyconic.shp")
 
 
-
 # Calculating areas in SAD69 Brazil Polyconic ----------------------------------
 ################################################################################
-
 
 # Loading raster and municipalities in SAD69 Polyconic
 
@@ -674,5 +670,9 @@ secondary_forest_loss <- raster::raster("D:/__PESSOAL/Vinicius_T/raster_pacto/se
 mun <- sf::st_read("D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/_mun_all_areas_prop.shp")
 estados <- sf::st_read("D:/__PESSOAL/Vinicius_T/estados_Brasil/BR_UF_2023/_estados_all_areas_prop.shp")
 
+for_reg_mun <- extract_area <- exactextractr::exact_extract(all_secondary_forest, mun, "sum")
+for_reg_state <- extract_area <- exactextractr::exact_extract(all_secondary_forest, estados, "sum")
 
+defo_mun <- extract_area <- exactextractr::exact_extract(secondary_forest_loss, mun, "sum")
+defo_state <- extract_area <- exactextractr::exact_extract(estados, estados, "sum")
 
