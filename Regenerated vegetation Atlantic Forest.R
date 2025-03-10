@@ -691,3 +691,4 @@ colnames(mun)[19] <- "defo_mun"
 mun[,20] <- data.frame(mun[,19])[,1]/data.frame(mun[,18])[,1]
 colnames(mun)[20] <- "prop_defo"
 
+sf::st_write(mun, "D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/_mun_all_areas_prop_total_reg_defo.shp")
