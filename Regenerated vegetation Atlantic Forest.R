@@ -626,6 +626,53 @@ raster::writeRaster(secondary_forest_loss,
                     "D:/__PESSOAL/Vinicius_T/raster_pacto/secondary_forest_loss.tif",
                     options = c("COMPRESS=LZW", "ZLEVEL=9"))
 
+# Converting to a Terra object to project to EPSG 29101 and calculate area
+secondary_forest_loss <- terra::rast(secondary_forest_loss)
+
+secondary_forest_loss <- terra::project(secondary_forest_loss , "EPSG:29101", method = "mode") # using the method "mode" to interpolate
+
+# Computing the area of each pixel of the secondary forest patches
+pixel_area <- cellSize(secondary_forest_loss, unit = "m")
+
+# Considering values only for forest pixels
+secondary_forest_loss_Area <- secondary_forest_loss * pixel_area
+plot(secondary_forest_loss_Area)
+
+#terra::writeRaster(secondary_forest_loss_Area,
+#                   "D:/__PESSOAL/Vinicius_T/raster_pacto/secondary_forest_loss_Area.tif",
+#                    gdal=c("COMPRESS=DEFLATE", "TFW=YES"))
+
+
+all_secondary_forest <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/summed_reg_1_only.tif")
+
+
+all_secondary_forest <- terra::project(all_secondary_forest , "EPSG:29101", method = "mode") # using the method "mode" to interpolate
+
+# Computing the area of each pixel of the secondary forest patches
+pixel_area <- cellSize(all_secondary_forest, unit = "m")
+
+# Considering values only for forest pixels
+all_secondary_forest_Area <- all_secondary_forest * pixel_area
+plot(all_secondary_forest_Area)
+
+#terra::writeRaster(all_secondary_forest_Area,
+#                   "D:/__PESSOAL/Vinicius_T/raster_pacto/All_secondary_forest_loss_Area.tif",
+#                   gdal=c("COMPRESS=DEFLATE", "TFW=YES"))
+
+
+
+# Extracting areas of all forest regeneration and secondary forest loss to polygons
+# ----------------------------------------------------------------------------------
+
+# cleaning directory -----------------------------------------------------------
+rm(list = ls())
+
+
+all_secondary_forest <- raster::raster("D:/__PESSOAL/Vinicius_T/raster_pacto/All_secondary_forest_loss_Area.tif")
+secondary_forest_loss <- raster::raster("D:/__PESSOAL/Vinicius_T/raster_pacto/secondary_forest_loss_Area.tif")
+
+mun <- sf::st_read("D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/_mun_all_areas_prop.shp")
+estados <- sf::st_read("D:/__PESSOAL/Vinicius_T/estados_Brasil/BR_UF_2023/_estados_all_areas_prop.shp")
 
 
 
