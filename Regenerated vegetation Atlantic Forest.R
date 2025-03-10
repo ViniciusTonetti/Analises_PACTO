@@ -674,5 +674,20 @@ for_reg_mun <- extract_area <- exactextractr::exact_extract(all_secondary_forest
 for_reg_state <- extract_area <- exactextractr::exact_extract(all_secondary_forest, estados, "sum")
 
 defo_mun <- extract_area <- exactextractr::exact_extract(secondary_forest_loss, mun, "sum")
-defo_state <- extract_area <- exactextractr::exact_extract(estados, estados, "sum")
+defo_state <- extract_area <- exactextractr::exact_extract(secondary_forest_loss, estados, "sum")
+
+
+# Creating a new column to add area of regenerating forest
+
+ncol(mun)
+
+mun[,18] <- for_reg_mun 
+colnames(mun)[18] <- "for_reg"
+
+mun[,19] <- defo_mun
+colnames(mun)[19] <- "defo_mun"
+
+# Proportion of deforestation in relation to the total amount of forest that regenerated 
+mun[,20] <- data.frame(mun[,19])[,1]/data.frame(mun[,18])[,1]
+colnames(mun)[20] <- "prop_defo"
 
