@@ -709,3 +709,28 @@ colnames(estados)[13] <- "prop_defo"
 
 #sf::st_write(estados, "D:/__PESSOAL/Vinicius_T/estados_Brasil/BR_UF_2023/_estados_all_areas_prop_total_reg_defo.shp")
 
+
+################################################################################
+## Saving area values in dataframes --------------------------------------------
+
+# cleaning directory -----------------------------------------------------------
+rm(list = ls())
+
+
+mun <- sf::st_read("D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/_mun_all_areas_prop_total_reg_defo.shp")
+colnames(mun)
+
+mun_data <- data.frame(mun[,c("NM_MUN", "NM_UF", "sec_for", "fr_r_mn", "prp_sc_", "for_reg", "defo_mun", "prop_defo")])[,c(1:8)]
+
+colnames(mun_data) <- c("Município", "Estado", "reg_for_2011_2020", "total_forest_area_2010", "prop_reg_forest",
+                     "total_forest_reg", "total_reg_defo", "prop_reg_defo")
+
+reg_2011_2020_mun <- mun_data[,c("Município", "Estado", "prop_reg_forest", "reg_for_2011_2020", "total_forest_area_2010")]
+
+reg_2011_2020_mun <- reg_2011_2020_mun %>% 
+  arrange(desc(prop_reg_forest))
+
+writexl::write_xlsx(reg_2011_2020_mun, "D:/__PESSOAL/Vinicius_T/data_frames_result_areas/reg_2011_2020_mun.xlsx")
+
+
+
