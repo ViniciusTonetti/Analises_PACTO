@@ -725,10 +725,26 @@ mun_data <- data.frame(mun[,c("NM_MUN", "NM_UF", "sec_for", "fr_r_mn", "prp_sc_"
 colnames(mun_data) <- c("Município", "Estado", "reg_for_2011_2020", "total_forest_area_2010", "prop_reg_forest",
                      "total_forest_reg", "total_reg_defo", "prop_reg_defo")
 
+
+# Reg 2011_2020 ----------------------------------------------------------------
+
 reg_2011_2020_mun <- mun_data[,c("Município", "Estado", "prop_reg_forest", "reg_for_2011_2020", "total_forest_area_2010")]
 
 reg_2011_2020_mun <- reg_2011_2020_mun %>% 
   arrange(desc(prop_reg_forest))
+
+writexl::write_xlsx(reg_2011_2020_mun, "D:/__PESSOAL/Vinicius_T/data_frames_result_areas/reg_2011_2020_mun.xlsx")
+
+
+# Total reg and ----------------------------------------------------------------
+
+total_reg_mun <- mun_data[,c("Município", "Estado", "total_forest_reg")]
+prop_defo__mun <- mun_data[,c("Município", "Estado", "prop_reg_defo", "total_forest_reg", "total_reg_defo")]
+
+
+
+total_reg___mun <- total_reg_defo__mun %>% 
+  arrange(desc(total_forest_reg))
 
 writexl::write_xlsx(reg_2011_2020_mun, "D:/__PESSOAL/Vinicius_T/data_frames_result_areas/reg_2011_2020_mun.xlsx")
 
