@@ -713,6 +713,11 @@ colnames(estados)[13] <- "prop_defo"
 ################################################################################
 ## Saving area values in dataframes --------------------------------------------
 
+
+# Municipalities ---------------------------------------------------------------
+# ------------------------------------------------------------------------------
+
+
 # cleaning directory -----------------------------------------------------------
 rm(list = ls())
 
@@ -764,3 +769,132 @@ total_prop_defo_mun <- total_prop_defo_mun %>%
 
 
 
+# States -----------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+
+
+# cleaning directory -----------------------------------------------------------
+rm(list = ls())
+
+
+estados <- sf::st_read("D:/__PESSOAL/Vinicius_T/estados_Brasil/BR_UF_2023/_estados_all_areas_prop_total_reg_defo.shp")
+colnames(estados)
+
+estados_data <- data.frame(estados[,c("NM_UF", "sc_fr_P", "fr_r_st",
+                                      "prp_sc_", "for_reg", "defo_est",
+                                      "prop_defo")])[,c(1:8)]
+
+# Column names
+
+# sc_fr_P = area of secondary forest that regenerated between 2011 - 2020
+# fr_r_st = area of forest in 2010
+# prp_sc_ = Proportion of secondary forest that regenerated between 2011 - 2020 in relation to the total amount in 2010
+# for_reg = Total amount of forest that regenerated between 2011 and 2020
+# defo_est = Total amount of deforestation of the total amount of forest that regenerated between 2011 and 2020
+# prop_defo = Secondary forest deforestation in relation to the total amount of forest that regenerated
+
+colnames(estados_data) <- c("Estado", "reg_2011_2020_ha", "total_area_2010_ha",
+                            "prop_reg_ha", "total_reg_ha", "total_defo_ha",
+                            "prop_reg_defo_ha")
+
+
+# Reg 2011_2020 ----------------------------------------------------------------
+
+reg_2011_2020_estados <- estados_data[,c("Estado", "reg_2011_2020_ha",
+                                         "prop_reg_ha", "total_area_2010_ha")]
+
+reg_2011_2020_estados <- reg_2011_2020_estados %>% 
+  arrange(desc(reg_2011_2020_ha)) %>% 
+  mutate(across(c("reg_2011_2020_ha", "prop_reg_ha", "total_area_2010_ha"),
+                ~ .x /10000))
+
+#writexl::write_xlsx(reg_2011_2020_estados, "D:/__PESSOAL/Vinicius_T/data_frames_result_areas/reg_2011_2020_estados.xlsx")
+
+
+# Total reg --------------------------------------------------------------------
+
+total_reg_estados <- estados_data[,c("Estado", "total_reg_ha")]
+
+total_reg_estados <- total_reg_estados %>% 
+  arrange(desc(total_reg_ha)) %>% 
+  mutate(across(c("total_reg_ha"),
+                ~ .x /10000))
+
+#writexl::write_xlsx(total_reg_estados, "D:/__PESSOAL/Vinicius_T/data_frames_result_areas/total_reg_2011_2020_estados.xlsx")
+
+
+# Total and propotional deforestation ------------------------------------------
+
+total_prop_defo_estados <- estados_data[,c("Estado", "total_defo_ha", "prop_reg_defo_ha")]
+
+total_prop_defo_estados <- total_prop_defo_estados %>% 
+  arrange(desc(total_defo_ha)) %>% 
+  mutate(across(c("total_defo_ha", "prop_reg_defo_ha"),
+                ~ .x /10000))
+
+#writexl::write_xlsx(total_prop_defo_estados, "D:/__PESSOAL/Vinicius_T/data_frames_result_areas/total_prop_defo_estados.xlsx")
+
+
+
+# Quilombola, Assentamento, Terra Indígena, UC ---------------------------------
+# ------------------------------------------------------------------------------
+
+
+# cleaning directory -----------------------------------------------------------
+rm(list = ls())
+
+
+# Quilombola -------------------------------------------------------------------
+
+reg_2011_2020_quilombola <- sf::st_read("D:/__PESSOAL/Vinicius_T/dados Pacto/CAMADAS/MA_area_quilombola_incra2024_Area.shp")
+
+reg_2011_2020_quilombola <- data.frame(reg_2011_2020_quilombola[,c("nm_cmnd", "nm_mncp", "cd_uf",
+                                                                   "forst_r", "scndry_", "prop_rg")])[,1:6]
+
+# Column names, meaning
+
+# forst_r = Amount of forest in 2010
+# scndry_ = Amount of secondary forest 2011-2020
+# prop_rg = Proportion of regenerated forest in relation to the amount in 2010
+
+colnames(reg_2011_2020_quilombola) <- c("nome_quilombo", "municipio_quilombo", "estado_quilombo",
+                                        "total_area_2010_ha", "reg_2011_2020_ha", "prop_reg_ha")
+
+
+reg_2011_2020_quilombola <- reg_2011_2020_quilombola %>% 
+  arrange(desc(reg_2011_2020_ha)) %>% 
+  mutate(across(c("total_area_2010_ha", "reg_2011_2020_ha", "prop_reg_ha"),
+                ~ .x /10000))
+
+#writexl::write_xlsx(reg_2011_2020_quilombola, "D:/__PESSOAL/Vinicius_T/data_frames_result_areas/reg_2011_2020_quilombo.xlsx")
+
+
+
+# Assentamento -----------------------------------------------------------------
+
+# cleaning directory -----------------------------------------------------------
+rm(list = ls())
+
+reg_2011_2020_assentamento <- sf::st_read("D:/__PESSOAL/Vinicius_T/dados Pacto/CAMADAS/MA_assentamento_incra2024_Area.shp")
+
+reg_2011_2020_assentamento <- data.frame(reg_2011_2020_assentamento[,c("nom_prj", "municip", "uf",
+                                                                   "forst_r", "scndry_", "prop_rg")])[,1:6]
+
+# Column names, meaning
+
+# forst_r = Amount of forest in 2010
+# scndry_ = Amount of secondary forest 2011-2020
+# prop_rg = Proportion of regenerated forest in relation to the amount in 2010
+
+colnames(reg_2011_2020_assentamento) <- c("nome_assentamento", "municipio_assentamento", "estado_assentamento",
+                                          "total_area_2010_ha", "reg_2011_2020_ha", "prop_reg_ha")
+
+
+reg_2011_2020_assentamento <- reg_2011_2020_assentamento %>% 
+  arrange(desc(reg_2011_2020_ha)) %>% 
+  mutate(across(c("total_area_2010_ha", "reg_2011_2020_ha", "prop_reg_ha"),
+                ~ .x /10000))
+
+#writexl::write_xlsx(reg_2011_2020_assentamento, "D:/__PESSOAL/Vinicius_T/data_frames_result_areas/reg_2011_2020_assentamento.xlsx")
+
+ 
