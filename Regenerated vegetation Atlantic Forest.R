@@ -722,31 +722,45 @@ colnames(mun)
 
 mun_data <- data.frame(mun[,c("NM_MUN", "NM_UF", "sec_for", "fr_r_mn", "prp_sc_", "for_reg", "defo_mun", "prop_defo")])[,c(1:8)]
 
-colnames(mun_data) <- c("Município", "Estado", "reg_for_2011_2020", "total_forest_area_2010", "prop_reg_forest",
-                     "total_forest_reg", "total_reg_defo", "prop_reg_defo")
+colnames(mun_data) <- c("Município", "Estado", "reg_2011_2020_ha", "total_area_2010_ha",
+                        "prop_reg_ha", "total_reg_ha", "total_defo_ha", "prop_reg_defo_ha")
 
 
 # Reg 2011_2020 ----------------------------------------------------------------
 
-reg_2011_2020_mun <- mun_data[,c("Município", "Estado", "prop_reg_forest", "reg_for_2011_2020", "total_forest_area_2010")]
+reg_2011_2020_mun <- mun_data[,c("Município", "Estado", "reg_2011_2020_ha",
+                                 "prop_reg_ha", "total_area_2010_ha")]
 
 reg_2011_2020_mun <- reg_2011_2020_mun %>% 
-  arrange(desc(prop_reg_forest))
+  arrange(desc(reg_2011_2020_ha)) %>% 
+  mutate(across(c("reg_2011_2020_ha", "prop_reg_ha", "total_area_2010_ha"),
+                 ~ .x /10000))
 
-writexl::write_xlsx(reg_2011_2020_mun, "D:/__PESSOAL/Vinicius_T/data_frames_result_areas/reg_2011_2020_mun.xlsx")
-
-
-# Total reg and ----------------------------------------------------------------
-
-total_reg_mun <- mun_data[,c("Município", "Estado", "total_forest_reg")]
-prop_defo__mun <- mun_data[,c("Município", "Estado", "prop_reg_defo", "total_forest_reg", "total_reg_defo")]
+#writexl::write_xlsx(reg_2011_2020_mun, "D:/__PESSOAL/Vinicius_T/data_frames_result_areas/reg_2011_2020_mun.xlsx")
 
 
+# Total reg --------------------------------------------------------------------
 
-total_reg___mun <- total_reg_defo__mun %>% 
-  arrange(desc(total_forest_reg))
+total_reg_mun <- mun_data[,c("Município", "Estado", "total_reg_ha")]
 
-writexl::write_xlsx(reg_2011_2020_mun, "D:/__PESSOAL/Vinicius_T/data_frames_result_areas/reg_2011_2020_mun.xlsx")
+total_reg_mun <- total_reg_mun %>% 
+  arrange(desc(total_reg_ha)) %>% 
+  mutate(across(c("total_reg_ha"),
+                ~ .x /10000))
+
+#writexl::write_xlsx(total_reg_mun, "D:/__PESSOAL/Vinicius_T/data_frames_result_areas/total_reg_2011_2020_mun.xlsx")
+
+
+# Total and propotional deforestation ------------------------------------------
+
+total_prop_defo_mun <- mun_data[,c("Município", "Estado", "total_defo_ha", "prop_reg_defo_ha")]
+
+total_prop_defo_mun <- total_prop_defo_mun %>% 
+  arrange(desc(total_defo_ha)) %>% 
+  mutate(across(c("total_defo_ha", "prop_reg_defo_ha"),
+                ~ .x /10000))
+
+#writexl::write_xlsx(total_prop_defo_mun, "D:/__PESSOAL/Vinicius_T/data_frames_result_areas/total_prop_defo_mun.xlsx")
 
 
 
