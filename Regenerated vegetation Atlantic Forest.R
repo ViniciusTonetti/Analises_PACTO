@@ -897,4 +897,32 @@ reg_2011_2020_assentamento <- reg_2011_2020_assentamento %>%
 
 #writexl::write_xlsx(reg_2011_2020_assentamento, "D:/__PESSOAL/Vinicius_T/data_frames_result_areas/reg_2011_2020_assentamento.xlsx")
 
+
+# Terra indígena ---------------------------------------------------------------
+
+# cleaning directory -----------------------------------------------------------
+rm(list = ls())
+
+reg_2011_2020_TI <- sf::st_read("D:/__PESSOAL/Vinicius_T/dados Pacto/CAMADAS/MA_tis_funai2024_Area.shp")
+
+reg_2011_2020_TI <- data.frame(reg_2011_2020_TI[,c("terr_nm", "municp_", "uf_sigl",
+                                                             "forst_r", "scndry_", "prop_rg")])[,1:6]
+
+# Column names, meaning
+
+# forst_r = Amount of forest in 2010
+# scndry_ = Amount of secondary forest 2011-2020
+# prop_rg = Proportion of regenerated forest in relation to the amount in 2010
+
+colnames(reg_2011_2020_assentamento) <- c("nome_assentamento", "municipio_assentamento", "estado_assentamento",
+                                          "total_area_2010_ha", "reg_2011_2020_ha", "prop_reg_ha")
+
+
+reg_2011_2020_assentamento <- reg_2011_2020_assentamento %>% 
+  arrange(desc(reg_2011_2020_ha)) %>% 
+  mutate(across(c("total_area_2010_ha", "reg_2011_2020_ha", "prop_reg_ha"),
+                ~ .x /10000))
+
+#writexl::write_xlsx(reg_2011_2020_assentamento, "D:/__PESSOAL/Vinicius_T/data_frames_result_areas/reg_2011_2020_assentamento.xlsx")
+
  
