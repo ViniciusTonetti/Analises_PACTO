@@ -906,7 +906,7 @@ rm(list = ls())
 reg_2011_2020_TI <- sf::st_read("D:/__PESSOAL/Vinicius_T/dados Pacto/CAMADAS/MA_tis_funai2024_Area.shp")
 
 reg_2011_2020_TI <- data.frame(reg_2011_2020_TI[,c("terr_nm", "municp_", "uf_sigl",
-                                                             "forst_r", "scndry_", "prop_rg")])[,1:6]
+                                                   "forst_r", "scndry_", "prop_rg")])[,1:6]
 
 # Column names, meaning
 
@@ -914,15 +914,46 @@ reg_2011_2020_TI <- data.frame(reg_2011_2020_TI[,c("terr_nm", "municp_", "uf_sig
 # scndry_ = Amount of secondary forest 2011-2020
 # prop_rg = Proportion of regenerated forest in relation to the amount in 2010
 
-colnames(reg_2011_2020_assentamento) <- c("nome_assentamento", "municipio_assentamento", "estado_assentamento",
-                                          "total_area_2010_ha", "reg_2011_2020_ha", "prop_reg_ha")
+colnames(reg_2011_2020_TI) <- c("nome_TI", "municipio_TI", "estado_TI",
+                                "total_area_2010_ha", "reg_2011_2020_ha", "prop_reg_ha")
 
 
-reg_2011_2020_assentamento <- reg_2011_2020_assentamento %>% 
+reg_2011_2020_TI <- reg_2011_2020_TI %>% 
   arrange(desc(reg_2011_2020_ha)) %>% 
   mutate(across(c("total_area_2010_ha", "reg_2011_2020_ha", "prop_reg_ha"),
-                ~ .x /10000))
+                ~ .x /10000)) %>% 
+  mutate(across(where(is.numeric), round))
 
-#writexl::write_xlsx(reg_2011_2020_assentamento, "D:/__PESSOAL/Vinicius_T/data_frames_result_areas/reg_2011_2020_assentamento.xlsx")
+#writexl::write_xlsx(reg_2011_2020_TI, "D:/__PESSOAL/Vinicius_T/data_frames_result_areas/reg_2011_2020_TI.xlsx")
 
- 
+
+# UC ---------------------------------------------------------------------------
+
+# cleaning directory -----------------------------------------------------------
+rm(list = ls())
+
+reg_2011_2020_UC <- sf::st_read("D:/__PESSOAL/Vinicius_T/dados Pacto/CAMADAS/MA_UC_mma2024_Area.shp")
+
+reg_2011_2020_UC <- data.frame(reg_2011_2020_UC[,c("nome_uc", "grupo", "categor", 
+                                                   "municip", "uf",
+                                                   "forst_r", "scndry_", "prop_rg")])[,1:8]
+
+# Column names, meaning
+
+# forst_r = Amount of forest in 2010
+# scndry_ = Amount of secondary forest 2011-2020
+# prop_rg = Proportion of regenerated forest in relation to the amount in 2010
+
+colnames(reg_2011_2020_UC) <- c("nome_UC", "Grupo", "Categoria",
+                                "municipio_UC", "estado_UC",
+                                "total_area_2010_ha", "reg_2011_2020_ha", "prop_reg_ha")
+
+
+reg_2011_2020_UC <- reg_2011_2020_UC %>% 
+  arrange(desc(reg_2011_2020_ha)) %>% 
+  mutate(across(c("total_area_2010_ha", "reg_2011_2020_ha", "prop_reg_ha"),
+                ~ .x /10000)) %>% 
+  mutate(across(where(is.numeric), round))
+
+#writexl::write_xlsx(reg_2011_2020_UC, "D:/__PESSOAL/Vinicius_T/data_frames_result_areas/reg_2011_2020_UC.xlsx")
+
