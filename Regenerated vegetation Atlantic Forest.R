@@ -9,10 +9,17 @@ library(exactextractr)
 library(raster)
 library(tidyverse)
 library(writexl)
+library(future.apply)
+
 
 # cleaning directory -----------------------------------------------------------
 rm(list = ls())
 
+
+# Defining number of nucleous available in R
+numb_cores <- parallel::detectCores() - 1
+
+plan(multisession, workers =  numb_cores)
 
 #### Reprojecting --------------------------------------------------------------
 ################################################################################
@@ -554,7 +561,7 @@ setwd(dir)
 for(i in 1:length(unique(substr(tiles_reg, 1, 11)))){
 unique(substr(tiles_reg, 1, 11))[i]
 names <- tiles_reg[grepl(unique(substr(tiles_reg, 1, 11))[i], tiles_reg)]
-tiles <- lapply(names, rast)
+tiles <- lapply(names, terra::rast)
 merged_tile <- do.call(merge, tiles)
 cropped <- mask(crop(merged_tile, AF), AF)
 directory <- "D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto"
@@ -956,4 +963,31 @@ reg_2011_2020_UC <- reg_2011_2020_UC %>%
   mutate(across(where(is.numeric), round))
 
 #writexl::write_xlsx(reg_2011_2020_UC, "D:/__PESSOAL/Vinicius_T/data_frames_result_areas/reg_2011_2020_UC.xlsx")
+
+
+################################################################################
+# Area of regenerated forest per year 2011 - 2021
+
+# cleaning directory -----------------------------------------------------------
+rm(list = ls())
+
+
+# Changing CRS from WGS84 to SAD69 Brazil Polyconic ----------------------------
+
+dir <- "D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto"
+setwd(dir)
+
+reg_year <- list.files(dir, pattern = "_1ha.tif")
+
+stack_reg_year <- terra::rast(reg_year)
+
+for(i in 1:length(names(stack_reg_year))){
+obj_names <- gsub(".tif", "_SAD69",reg_year[i])
+projected_raster <- terra::project(stack_reg_year[[i]], "EPSG:29101", method = "mode")
+output_path <- file.path(dir, paste(obj_names[i], ".tif", sep = ""))
+terra::writeRaster(projected_raster, output_path,
+                   gdal=c("COMPRESS=DEFLATE", "TFW=YES"))
+}
+
+
 
