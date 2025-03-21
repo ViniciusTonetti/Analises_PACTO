@@ -984,8 +984,8 @@ stack_reg_year <- terra::rast(reg_year)
 for(i in 1:length(names(stack_reg_year))){
 obj_names <- gsub(".tif", "_SAD69",reg_year[i])
 projected_raster <- terra::project(stack_reg_year[[i]], "EPSG:29101", method = "mode")
-output_path <- file.path(dir, paste(obj_names[i], ".tif", sep = ""))
-terra::writeRaster(projected_raster, output_path,
+output_path <- file.path(dir, paste(obj_names, ".tif", sep = ""))
+terra::writeRaster(x = projected_raster, filename = output_path,
                    gdal=c("COMPRESS=DEFLATE", "TFW=YES"))
 }
 
