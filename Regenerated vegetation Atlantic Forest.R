@@ -583,15 +583,16 @@ rast_stack <- rast(c("D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pac
                      "D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/regen17_1ha.tif",
                      "D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/regen18_1ha.tif",
                      "D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/regen19_1ha.tif",
-                     "D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/regen20_1ha.tif"))
+                     "D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/regen20_1ha.tif",
+                     "D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/regen21_1ha.tif"))
 
 summed_stack <- app(rast_stack, fun = sum, na.rm = T)
 
-#writeRaster(summed_stack,
-#            "D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/summed_reg.tif",
-#            gdal=c("COMPRESS=DEFLATE", "TFW=YES"))
+writeRaster(summed_stack,
+            "D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/summed_reg.tif",
+            gdal=c("COMPRESS=DEFLATE", "TFW=YES"), overwrite = T)
 
-# Convert values = 2, to 1
+# Convert values = 2 and 3, to 1
 
 summed_stack <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/summed_reg.tif")
 
@@ -601,14 +602,15 @@ summed_stack_r <- raster::raster(summed_stack)
 
 reclass_matrix <- matrix(c(0, 0,
                            1, 1,
-                           2, 1),
+                           2, 1,
+                           3, 1),
                         ncol = 2, byrow = T)
 
 summed_stack_1_only <- raster::reclassify(summed_stack_r, reclass_matrix)
 
-#raster::writeRaster(summed_stack_1_only,
-#                    "D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/summed_reg_1_only.tif",
-#                    options = c("COMPRESS=LZW", "ZLEVEL=9"))
+raster::writeRaster(summed_stack_1_only,
+                    "D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/summed_reg_1_only.tif",
+                    options = c("COMPRESS=LZW", "ZLEVEL=9"))
 
 
 # Raster of the final secondary forest map
