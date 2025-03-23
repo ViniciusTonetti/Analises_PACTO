@@ -616,7 +616,15 @@ raster::writeRaster(summed_stack_1_only,
 # Raster of the final secondary forest map
 reg_11_21 <- raster::raster("D:/__PESSOAL/Vinicius_T/raster_pacto/_reg_11_21.tif")
 
+summed_stack_1_only <-  terra::rast(summed_stack_1_only)
+reg_11_21 <- terra::rast(reg_11_21)
+
+# Putting into the same extent
+summed_stack_1_only <- terra::resample(summed_stack_1_only, reg_11_21, method = "near")
+
 secondary_forest_loss <- summed_stack_1_only - reg_11_21
+
+
 plot(secondary_forest_loss)
 
 reclass_matrix <- matrix(c(0, 0,
@@ -627,12 +635,12 @@ reclass_matrix <- matrix(c(0, 0,
 secondary_forest_loss <- raster::reclassify(secondary_forest_loss, reclass_matrix)
 
 
-raster::writeRaster(secondary_forest_loss,
+terra::writeRaster(secondary_forest_loss,
                     "D:/__PESSOAL/Vinicius_T/raster_pacto/secondary_forest_loss.tif",
-                    options = c("COMPRESS=LZW", "ZLEVEL=9"))
+                   gdal=c("COMPRESS=DEFLATE", "TFW=YES"), overwrite = T)
 
 # Converting to a Terra object to project to EPSG 29101 and calculate area
-secondary_forest_loss <- terra::rast(secondary_forest_loss)
+secondary_forest_loss <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/secondary_forest_loss.tif")
 
 secondary_forest_loss <- terra::project(secondary_forest_loss , "EPSG:29101", method = "mode") # using the method "mode" to interpolate
 
@@ -643,9 +651,9 @@ pixel_area <- cellSize(secondary_forest_loss, unit = "m")
 secondary_forest_loss_Area <- secondary_forest_loss * pixel_area
 plot(secondary_forest_loss_Area)
 
-#terra::writeRaster(secondary_forest_loss_Area,
-#                   "D:/__PESSOAL/Vinicius_T/raster_pacto/secondary_forest_loss_Area.tif",
-#                    gdal=c("COMPRESS=DEFLATE", "TFW=YES"))
+terra::writeRaster(secondary_forest_loss_Area,
+                   "D:/__PESSOAL/Vinicius_T/raster_pacto/secondary_forest_loss_Area.tif",
+                    gdal=c("COMPRESS=DEFLATE", "TFW=YES"))
 
 
 all_secondary_forest <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/summed_reg_1_only.tif")
@@ -660,9 +668,9 @@ pixel_area <- cellSize(all_secondary_forest, unit = "m")
 all_secondary_forest_Area <- all_secondary_forest * pixel_area
 plot(all_secondary_forest_Area)
 
-#terra::writeRaster(all_secondary_forest_Area,
-#                   "D:/__PESSOAL/Vinicius_T/raster_pacto/All_secondary_forest_loss_Area.tif",
-#                   gdal=c("COMPRESS=DEFLATE", "TFW=YES"))
+terra::writeRaster(all_secondary_forest_Area,
+                   "D:/__PESSOAL/Vinicius_T/raster_pacto/All_secondary_forest_loss_Area.tif",
+                   gdal=c("COMPRESS=DEFLATE", "TFW=YES"))
 
 
 
