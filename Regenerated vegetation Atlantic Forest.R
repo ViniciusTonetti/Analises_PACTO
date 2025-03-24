@@ -645,9 +645,12 @@ reclass_matrix <- matrix(c(0, 0,
                           -1, 0),
                          ncol = 2, byrow = T)
 
+secondary_forest_loss <- raster::raster("D:/__PESSOAL/Vinicius_T/raster_pacto/secondary_forest_loss.tif")
 secondary_forest_loss <- raster::reclassify(secondary_forest_loss, reclass_matrix)
 
-
+raster::writeRaster(secondary_forest_loss,
+                    "D:/__PESSOAL/Vinicius_T/raster_pacto/secondary_forest_loss_0_1.tif",
+                    options = c("COMPRESS=LZW", "ZLEVEL=9"))
 
 
 # Converting to a Terra object to project to EPSG 29101 and calculate area
@@ -1075,5 +1078,4 @@ colnames(areas_reg_per_year) <- c("reg_year", "area_ha")
 areas_reg_per_year[,2] <- round(areas_reg_per_year[,2])
 
 write_xlsx(areas_reg_per_year, "D:/__PESSOAL/Vinicius_T/data_frames_result_areas/reg_per_year.xlsx")
-
 
