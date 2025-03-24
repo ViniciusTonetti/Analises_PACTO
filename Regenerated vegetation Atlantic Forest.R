@@ -712,17 +712,13 @@ terra::writeRaster(secondary_forest_loss_area,
                    gdal=c("COMPRESS=DEFLATE", "TFW=YES"))
 
 
-
-
-
 mun <- sf::st_read("D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/_mun_all_areas_prop_total_reg_defo.shp")
-estados <- sf::st_read("D:/__PESSOAL/Vinicius_T/estados_Brasil/BR_UF_2023/_estados_all_areas_prop.shp")
 
-for_reg_mun <- extract_area <- exactextractr::exact_extract(all_secondary_forest, mun, "sum")
-for_reg_state <- extract_area <- exactextractr::exact_extract(all_secondary_forest, estados, "sum")
+all_reg <- raster::raster("D:/__PESSOAL/Vinicius_T/raster_pacto/All_secondary_forest_GAIN_Area.tif")
+all_defo <- raster::raster("D:/__PESSOAL/Vinicius_T/raster_pacto/All_secondary_forest_LOSS_Area.tif")
 
-defo_mun <- extract_area <- exactextractr::exact_extract(secondary_forest_loss, mun, "sum")
-defo_state <- extract_area <- exactextractr::exact_extract(secondary_forest_loss, estados, "sum")
+for_reg_mun <- extract_area <- exactextractr::exact_extract(all_reg, mun, "sum")
+defo_mun <- extract_area <- exactextractr::exact_extract(all_defo, mun, "sum")
 
 
 # Creating a new column to add area of regenerating forest
