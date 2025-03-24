@@ -615,30 +615,40 @@ raster::writeRaster(summed_stack_1_only,
 
 
 # Raster of the final secondary forest map
-reg_11_21 <- raster::raster("D:/__PESSOAL/Vinicius_T/raster_pacto/_reg_11_21.tif")
 
-summed_stack_1_only <-  terra::rast(summed_stack_1_only)
-reg_11_21 <- terra::rast(reg_11_21)
+# cleaning directory -----------------------------------------------------------
+rm(list = ls())
 
-# Putting into the same extent
-summed_stack_1_only <- terra::resample(summed_stack_1_only, reg_11_21, method = "near")
+summed_stack_1_only <-  terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/summed_reg_1_only.tif")
+reg_11_21 <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/_reg_11_21.tif")
 
-secondary_forest_loss <- summed_stack_1_only - reg_11_21
+# Putting into the same CRS
+summed_stack_1_only <- terra::project(summed_stack_1_only, "EPSG:29101", method = "mode")
+reg_11_21 <- terra::project(reg_11_21, "EPSG:29101", method = "mode")
+
+reg_11_21_resampled <- resample(reg_11_21, summed_stack_1_only, method = "near")
+
+plot(summed_stack_1_only)
+plot(reg_11_21_resampled)
 
 
+secondary_forest_loss <- summed_stack_1_only - reg_11_21_resampled
 plot(secondary_forest_loss)
+
+
+terra::writeRaster(secondary_forest_loss,
+                   "D:/__PESSOAL/Vinicius_T/raster_pacto/secondary_forest_loss.tif",
+                   gdal=c("COMPRESS=DEFLATE", "TFW=YES"), overwrite = T)
 
 reclass_matrix <- matrix(c(0, 0,
                            1, 1,
-                           -1, 0),
+                          -1, 0),
                          ncol = 2, byrow = T)
 
 secondary_forest_loss <- raster::reclassify(secondary_forest_loss, reclass_matrix)
 
 
-terra::writeRaster(secondary_forest_loss,
-                    "D:/__PESSOAL/Vinicius_T/raster_pacto/secondary_forest_loss.tif",
-                   gdal=c("COMPRESS=DEFLATE", "TFW=YES"), overwrite = T)
+
 
 # Converting to a Terra object to project to EPSG 29101 and calculate area
 secondary_forest_loss <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/secondary_forest_loss.tif")
@@ -1053,13 +1063,17 @@ names <- gsub(".tif", "", reg_year_sad69_Area)
 mtx <- matrix(names, ncol = 2, nrow = 11)
 
 for (i in 1:length(reg_year_sad69_Area)) {
-mtx[i,2] <- cellStats(stack_reg_year[[i]], stat = 'sum')
+  mtx[i,2] <- cellStats(stack_reg_year[[i]], stat = 'sum')
 }
 
-#
+areas_reg_per_year <- data.frame(mtx)
+areas_reg_per_year[,2] <- as.numeric(areas_reg_per_year[,2])
 
+areas_reg_per_year[,2] <- areas_reg_per_year[,2]/10000
 
+colnames(areas_reg_per_year) <- c("reg_year", "area_ha")
+areas_reg_per_year[,2] <- round(areas_reg_per_year[,2])
 
-
+write_xlsx(areas_reg_per_year, "D:/__PESSOAL/Vinicius_T/data_frames_result_areas/reg_per_year.xlsx")
 
 
