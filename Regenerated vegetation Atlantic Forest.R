@@ -1033,9 +1033,32 @@ for(i in 1:length(names(stack_reg_year))){
 }
 
 
-# Extracting area for each year in municipalities ------------------------------
+# Calculating area of forest regeneration for each year ------------------------
 
-mun <- sf::st_read("D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/BR_Municipios_2023.shp")
+# cleaning directory
+rm(list = ls())
+
+dir <- "D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto"
+setwd(dir)
+
+reg_year_sad69_Area <- list.files(dir, pattern = "_1ha_SAD69_Area.tif")
+
+stack_reg_year <- raster::stack(reg_year_sad69_Area)
+
+
+# Loop to save area values for each individual pixel and saving in a matrix
+
+names <- gsub(".tif", "", reg_year_sad69_Area)
+
+mtx <- matrix(names, ncol = 2, nrow = 11)
+
+for (i in 1:length(reg_year_sad69_Area)) {
+mtx[i,2] <- cellStats(stack_reg_year[[i]], stat = 'sum')
+}
+
+
+
+
 
 
 
