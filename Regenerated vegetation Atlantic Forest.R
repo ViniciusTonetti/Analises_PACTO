@@ -721,19 +721,25 @@ for_reg_mun <- extract_area <- exactextractr::exact_extract(all_reg, mun, "sum")
 defo_mun <- extract_area <- exactextractr::exact_extract(all_defo, mun, "sum")
 
 
-# Creating a new column to add area of regenerating forest
+for_reg_mun_ha <- for_reg_mun/10000
+defo_mun_ha <- defo_mun/10000
+
+sum(for_reg_mun_ha)
+
+# Adding reg and defo to the shapefile
+
+mun[,"for_reg"] <- for_reg_mun_ha
+mun[,"defo_mun"] <- defo_mun_ha
 
 ncol(mun)
+colnames(mun)
 
-mun[,18] <- for_reg_mun 
-colnames(mun)[18] <- "for_reg"
-
-mun[,19] <- defo_mun
-colnames(mun)[19] <- "defo_mun"
 
 # Proportion of deforestation in relation to the total amount of forest that regenerated 
-mun[,20] <- data.frame(mun[,19])[,1]/data.frame(mun[,18])[,1]
-colnames(mun)[20] <- "prop_defo"
+mun[,"prop_defo"] <- data.frame(mun[,"defo_mun"])[,1]/
+                     data.frame(mun[,"for_reg"])[,1]
+
+#sf::st_write(mun, "D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/_mun_all_areas_prop_total_reg_defo.shp")
 
 
 # Extracting data for municipalities after including reg 2021
@@ -743,25 +749,6 @@ mun_all_areas[,"for_reg"] <- for_reg_mun
 mun_all_areas[,"defo_mun"] <- defo_mun
 mun_all_areas[,19] <- data.frame(mun_all_areas[,18])[,1]/
                                  data.frame(mun_all_areas[,17])[,1]
-
-
-#sf::st_write(mun_all_areas, "D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/_mun_all_areas_prop_total_reg_defo.shp")
-
-
-
-ncol(estados)
-
-estados[,11] <- for_reg_state 
-colnames(estados)[11] <- "for_reg"
-
-estados[,12] <- defo_state
-colnames(estados)[12] <- "defo_est"
-
-# Proportion of deforestation in relation to the total amount of forest that regenerated 
-estados[,13] <- data.frame(estados[,12])[,1]/data.frame(estados[,11])[,1]
-colnames(estados)[13] <- "prop_defo"
-
-#sf::st_write(estados, "D:/__PESSOAL/Vinicius_T/estados_Brasil/BR_UF_2023/_estados_all_areas_prop_total_reg_defo.shp")
 
 
 ################################################################################
