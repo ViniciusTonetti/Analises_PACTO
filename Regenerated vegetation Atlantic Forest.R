@@ -1076,3 +1076,33 @@ areas_reg_per_year[,2] <- round(areas_reg_per_year[,2])
 
 write_xlsx(areas_reg_per_year, "D:/__PESSOAL/Vinicius_T/data_frames_result_areas/reg_per_year.xlsx")
 
+
+################################################################################
+# Creating the Bivariate map
+
+# cleaning directory
+rm(list = ls())
+
+# Loading Municipalities
+
+mun <- sf::st_read("D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/_mun_all_areas_prop_total_reg_defo.shp")
+
+# Creating the bivariate index
+
+mun$bivariate_index <- mun$for_reg + mun$defo_mun
+
+
+ggplot(mun) +
+  geom_sf(aes(fill = bivariate_index), color = "black") +
+  scale_fill_gradientn(
+    colors = c("#1A9850", "#E6F598", "#FEE08B", "#3288BD", "#3F007D"),
+    values = scales::rescale(c(min(mun$bivariate_index), 
+                               median(mun$bivariate_index), 
+                               max(mun$bivariate_index))),
+    name = "Forest Regeneration and Deforestation"
+  ) +
+  theme_minimal() +
+  labs(title = "Bivariate Map of Forest Regeneration and Deforestation",
+       subtitle = "High regeneration and low deforestation in green, low regeneration and high deforestation in purple") +
+  theme(legend.position = "bottom") 
+
