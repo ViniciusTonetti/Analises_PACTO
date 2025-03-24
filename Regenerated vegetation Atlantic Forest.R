@@ -1009,12 +1009,32 @@ terra::writeRaster(x = projected_raster, filename = output_path,
                    gdal=c("COMPRESS=DEFLATE", "TFW=YES"))
 }
 
+# ------------------------------------------------------------------------------
 
-# Extracting regenerating forest per year
-################################################################################
+# cleaning directory
+rm(list = ls())
+
+dir <- "D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto"
+setwd(dir)
+
+reg_year_sad69 <- list.files(dir, pattern = "_1ha_SAD69.tif")
+
+stack_reg_year <- terra::rast(reg_year_sad69)
 
 
+for(i in 1:length(names(stack_reg_year))){
+  obj_names <- gsub(".tif", "", reg_year_sad69[i])
+  pixel_area <- cellSize(stack_reg_year[[i]], unit = "m")
+  pixel_area_only_1 <- pixel_area * stack_reg_year[[i]]
+  output_path <- file.path(dir, paste(obj_names, "_Area.tif", sep = ""))
+  terra::writeRaster(x = pixel_area_only_1, filename = output_path,
+                     gdal=c("COMPRESS=DEFLATE", "TFW=YES"))
+}
 
-<- terra::project(reg_11_21, "EPSG:29101", method = "mode") # using the method "mode" to interpolate
+
+# Extracting area for each year in municipalities ------------------------------
+
+mun <- sf::st_read("D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/BR_Municipios_2023.shp")
+
 
 
