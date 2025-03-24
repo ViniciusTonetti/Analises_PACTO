@@ -653,10 +653,9 @@ raster::writeRaster(secondary_forest_loss,
                     options = c("COMPRESS=LZW", "ZLEVEL=9"))
 
 
-# Converting to a Terra object to project to EPSG 29101 and calculate area
-secondary_forest_loss <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/secondary_forest_loss.tif")
-
-secondary_forest_loss <- terra::project(secondary_forest_loss , "EPSG:29101", method = "mode") # using the method "mode" to interpolate
+# Calculating areas total regeneration and deforestation of regenerating forests
+secondary_forest_loss <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/secondary_forest_loss_0_1.tif")
+all_regeneration <- terra::rast("")
 
 # Computing the area of each pixel of the secondary forest patches
 pixel_area <- cellSize(secondary_forest_loss, unit = "m")
@@ -695,8 +694,26 @@ terra::writeRaster(all_secondary_forest_Area,
 rm(list = ls())
 
 
-all_secondary_forest <- raster::raster("D:/__PESSOAL/Vinicius_T/raster_pacto/All_secondary_forest_loss_Area.tif")
-secondary_forest_loss <- raster::raster("D:/__PESSOAL/Vinicius_T/raster_pacto/secondary_forest_loss_Area.tif")
+all_secondary_forest <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/summed_reg_1_only.tif")
+secondary_forest_loss <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/secondary_forest_loss_0_1.tif")
+
+all_secondary_forest_area <- cellSize(all_secondary_forest, unit = "m")
+all_secondary_forest_area <- all_secondary_forest_area * all_secondary_forest
+
+secondary_forest_loss_area <- cellSize(secondary_forest_loss, unit = "m")
+secondary_forest_loss_area <- secondary_forest_loss_area * secondary_forest_loss
+
+terra::writeRaster(all_secondary_forest_area,
+                   "D:/__PESSOAL/Vinicius_T/raster_pacto/All_secondary_forest_GAIN_Area.tif",
+                   gdal=c("COMPRESS=DEFLATE", "TFW=YES"))
+
+terra::writeRaster(secondary_forest_loss_area,
+                   "D:/__PESSOAL/Vinicius_T/raster_pacto/All_secondary_forest_LOSS_Area.tif",
+                   gdal=c("COMPRESS=DEFLATE", "TFW=YES"))
+
+
+
+
 
 mun <- sf::st_read("D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/_mun_all_areas_prop_total_reg_defo.shp")
 estados <- sf::st_read("D:/__PESSOAL/Vinicius_T/estados_Brasil/BR_UF_2023/_estados_all_areas_prop.shp")
