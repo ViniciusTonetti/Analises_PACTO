@@ -720,7 +720,7 @@ all_defo <- raster::raster("D:/__PESSOAL/Vinicius_T/raster_pacto/All_secondary_f
 for_reg_mun <- extract_area <- exactextractr::exact_extract(all_reg, mun, "sum")
 defo_mun <- extract_area <- exactextractr::exact_extract(all_defo, mun, "sum")
 
-
+# Converting areas from square meters to hectares
 for_reg_mun_ha <- for_reg_mun/10000
 defo_mun_ha <- defo_mun/10000
 
