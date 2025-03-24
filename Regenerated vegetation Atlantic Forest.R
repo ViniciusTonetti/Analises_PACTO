@@ -574,17 +574,17 @@ writeRaster(cropped,
 
 # Loading cropped raster to sum 
 
-rast_stack <- rast(c("D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/regen11_1ha.tif",
-                     "D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/regen12_1ha.tif",
-                     "D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/regen13_1ha.tif",
-                     "D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/regen14_1ha.tif",
-                     "D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/regen15_1ha.tif",
-                     "D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/regen16_1ha.tif",
-                     "D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/regen17_1ha.tif",
-                     "D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/regen18_1ha.tif",
-                     "D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/regen19_1ha.tif",
-                     "D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/regen20_1ha.tif",
-                     "D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/regen21_1ha.tif"))
+rast_stack <- rast(c("D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/regen11_1ha_SAD69.tif",
+                     "D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/regen12_1ha_SAD69.tif",
+                     "D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/regen13_1ha_SAD69.tif",
+                     "D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/regen14_1ha_SAD69.tif",
+                     "D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/regen15_1ha_SAD69.tif",
+                     "D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/regen16_1ha_SAD69.tif",
+                     "D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/regen17_1ha_SAD69.tif",
+                     "D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/regen18_1ha_SAD69.tif",
+                     "D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/regen19_1ha_SAD69.tif",
+                     "D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/regen20_1ha_SAD69.tif",
+                     "D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/regen21_1ha_SAD69.tif"))
 
 summed_stack <- app(rast_stack, fun = sum, na.rm = T)
 
@@ -684,7 +684,7 @@ rm(list = ls())
 all_secondary_forest <- raster::raster("D:/__PESSOAL/Vinicius_T/raster_pacto/All_secondary_forest_loss_Area.tif")
 secondary_forest_loss <- raster::raster("D:/__PESSOAL/Vinicius_T/raster_pacto/secondary_forest_loss_Area.tif")
 
-mun <- sf::st_read("D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/_mun_all_areas_prop.shp")
+mun <- sf::st_read("D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/_mun_all_areas_prop_total_reg_defo.shp")
 estados <- sf::st_read("D:/__PESSOAL/Vinicius_T/estados_Brasil/BR_UF_2023/_estados_all_areas_prop.shp")
 
 for_reg_mun <- extract_area <- exactextractr::exact_extract(all_secondary_forest, mun, "sum")
@@ -708,7 +708,17 @@ colnames(mun)[19] <- "defo_mun"
 mun[,20] <- data.frame(mun[,19])[,1]/data.frame(mun[,18])[,1]
 colnames(mun)[20] <- "prop_defo"
 
-#sf::st_write(mun, "D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/_mun_all_areas_prop_total_reg_defo.shp")
+
+# Extracting data for municipalities after including reg 2021
+
+mun_all_areas <- sf::st_read("D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/_mun_all_areas_prop_total_reg_defo.shp")
+mun_all_areas[,"for_reg"] <- for_reg_mun
+mun_all_areas[,"defo_mun"] <- defo_mun
+mun_all_areas[,19] <- data.frame(mun_all_areas[,18])[,1]/
+                                 data.frame(mun_all_areas[,17])[,1]
+
+
+#sf::st_write(mun_all_areas, "D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/_mun_all_areas_prop_total_reg_defo.shp")
 
 
 
@@ -758,7 +768,7 @@ reg_2011_2020_mun <- reg_2011_2020_mun %>%
   mutate(across(c("reg_2011_2020_ha", "prop_reg_ha", "total_area_2010_ha"),
                  ~ .x /10000))
 
-#writexl::write_xlsx(reg_2011_2020_mun, "D:/__PESSOAL/Vinicius_T/data_frames_result_areas/reg_2011_2020_mun.xlsx")
+#writexl::write_xlsx(reg_2011_2020_mun, "D:/__PESSOAL/Vinicius_T/data_frames_result_areas/reg_2011_2021_mun.xlsx")
 
 
 # Total reg --------------------------------------------------------------------
@@ -999,5 +1009,12 @@ terra::writeRaster(x = projected_raster, filename = output_path,
                    gdal=c("COMPRESS=DEFLATE", "TFW=YES"))
 }
 
+
+# Extracting regenerating forest per year
+################################################################################
+
+
+
+<- terra::project(reg_11_21, "EPSG:29101", method = "mode") # using the method "mode" to interpolate
 
 
