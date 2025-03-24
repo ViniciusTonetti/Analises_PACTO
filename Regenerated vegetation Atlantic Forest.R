@@ -1056,6 +1056,7 @@ for (i in 1:length(reg_year_sad69_Area)) {
 mtx[i,2] <- cellStats(stack_reg_year[[i]], stat = 'sum')
 }
 
+#
 
 
 
