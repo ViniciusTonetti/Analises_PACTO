@@ -587,6 +587,7 @@ rast_stack <- rast(c("D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pac
                      "D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/regen21_1ha_SAD69.tif"))
 
 summed_stack <- app(rast_stack, fun = sum, na.rm = T)
+plot(summed_stack)
 
 writeRaster(summed_stack,
             "D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/summed_reg.tif",
