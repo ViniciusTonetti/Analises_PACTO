@@ -768,13 +768,13 @@ colnames(mun)
 
 mun_data <- data.frame(mun[,c("NM_MUN", "NM_UF", "sec_for", "fr_r_mn", "prp_sc_", "for_reg", "defo_mun", "prop_defo")])[,c(1:8)]
 
-colnames(mun_data) <- c("Município", "Estado", "reg_2011_2020_ha", "total_area_2010_ha",
+colnames(mun_data) <- c("Município", "Estado", "reg_2011_2021_ha", "total_area_2010_ha",
                         "prop_reg_ha", "total_reg_ha", "total_defo_ha", "prop_reg_defo_ha")
 
 
-# Reg 2011_2020 ----------------------------------------------------------------
+# Reg 2011_2021 ----------------------------------------------------------------
 
-reg_2011_2020_mun <- mun_data[,c("Município", "Estado", "reg_2011_2020_ha",
+reg_2011_2020_mun <- mun_data[,c("Município", "Estado", "reg_2011_2021_ha",
                                  "prop_reg_ha", "total_area_2010_ha")]
 
 reg_2011_2020_mun <- reg_2011_2020_mun %>% 
@@ -790,11 +790,10 @@ reg_2011_2020_mun <- reg_2011_2020_mun %>%
 total_reg_mun <- mun_data[,c("Município", "Estado", "total_reg_ha")]
 
 total_reg_mun <- total_reg_mun %>% 
-  arrange(desc(total_reg_ha)) %>% 
-  mutate(across(c("total_reg_ha"),
-                ~ .x /10000))
+  arrange(desc(total_reg_ha))
 
-#writexl::write_xlsx(total_reg_mun, "D:/__PESSOAL/Vinicius_T/data_frames_result_areas/total_reg_2011_2020_mun.xlsx")
+
+#writexl::write_xlsx(total_reg_mun, "D:/__PESSOAL/Vinicius_T/data_frames_result_areas/total_reg_2011_2021_mun.xlsx")
 
 
 # Total and propotional deforestation ------------------------------------------
@@ -802,9 +801,7 @@ total_reg_mun <- total_reg_mun %>%
 total_prop_defo_mun <- mun_data[,c("Município", "Estado", "total_defo_ha", "prop_reg_defo_ha")]
 
 total_prop_defo_mun <- total_prop_defo_mun %>% 
-  arrange(desc(total_defo_ha)) %>% 
-  mutate(across(c("total_defo_ha", "prop_reg_defo_ha"),
-                ~ .x /10000))
+  arrange(desc(prop_reg_defo_ha))
 
 #writexl::write_xlsx(total_prop_defo_mun, "D:/__PESSOAL/Vinicius_T/data_frames_result_areas/total_prop_defo_mun.xlsx")
 
