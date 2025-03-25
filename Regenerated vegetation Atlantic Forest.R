@@ -548,7 +548,7 @@ previous_land_use_freq <- terra::freq(MB_08_previous_land_use)
 
 previous_land_use_freq <- data.frame(previous_land_use_freq)
 
-previous_land_use_freq %>% 
+previous_land_use_freq <- previous_land_use_freq %>% 
   mutate(value = as.character(value)) %>% 
   mutate(case_when(
     value == "0"  ~ "NA",
