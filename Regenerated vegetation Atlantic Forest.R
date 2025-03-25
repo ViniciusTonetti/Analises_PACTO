@@ -1346,7 +1346,7 @@ reg_per_state <- readxl::read_excel("D:/__PESSOAL/Vinicius_T/data_frames_result_
          group = factor(ifelse(rank <= 8, "Top 8", "Bottom 7"), levels = c("Top 8", "Bottom 7"))))
 
 (bar_chart_state <- ggplot(reg_per_state, aes(x = area_ha, y = reorder(state, area_ha))) +
-    geom_bar(stat = "identity", fill = "gray50", width = 0.9) +
+    geom_bar(stat = "identity", fill = "gray50", width = 0.8) +
     labs(x = "", y = "", title = "") +
     facet_wrap(~group, scales = "free_y", ncol = 2, dir = "h") +
     scale_x_continuous(
@@ -1359,7 +1359,8 @@ reg_per_state <- readxl::read_excel("D:/__PESSOAL/Vinicius_T/data_frames_result_
       axis.ticks.y = element_blank(),
       panel.spacing = unit(2, "cm"),
       strip.text = element_blank(),
-      text = element_text(size = 8)
+      text = element_text(size = 10),
+      axis.text.y = element_text(margin = margin(r = -9))
     ))
 
 ggsave("D:/__PESSOAL/Vinicius_T/bar_chart/bar_chart_state.png", plot = bar_chart_state, width = 30, height = 7, units = "cm")
