@@ -523,16 +523,39 @@ AF <- terra::vect("D:/__PESSOAL/Vinicius_T/Limite Mata Atlantica/bioma_MA_IBGE_2
 MB_2008 <- terra::rast("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2008.tif")
 #plot(MB_2008)
 
+# MB 2010 in WGS84
+MB_2010 <- terra::rast("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2010.tif")
+#plot(MB_2008)
+
+# Cropping to the AF limit
+
+MB_2008_AF <- mask(crop(MB_2008, AF), AF)
+#plot(MB_2008_AF)
+
+terra::writeRaster(MB_2008_AF, "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2008_AF.tif",
+                   gdal=c("COMPRESS=DEFLATE", "TFW=YES"), overwrite = T)
+
+MB_2010_AF <- mask(crop(MB_2010, AF), AF)
+#plot(MB_2010_AF)
+
+terra::writeRaster(MB_2010_AF, "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2010_AF.tif",
+                   gdal=c("COMPRESS=DEFLATE", "TFW=YES"), overwrite = T)
+
+
 # Reg map in WGS84
 reg <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/_reg_11_21.tif")
 #plot(reg)
+reg_11_21_AF <- mask(crop(reg, AF), AF)
+terra::writeRaster(reg_11_21_AF, "D:/__PESSOAL/Vinicius_T/raster_pacto/_reg_11_21_AF.tif",
+                   gdal=c("COMPRESS=DEFLATE", "TFW=YES"), overwrite = T)
+
 
 # Resample to match extent
-reg_resampled <- resample(reg, MB_2008, method = "near")
+reg_resampled <- resample(reg_11_21_AF, MB_2008, method = "near")
 #terra::writeRaster(reg_resampled, "D:/__PESSOAL/Vinicius_T/raster_pacto/_reg_11_21_resampled.tif")
 
 # Masking
-masked_MB <- terra::mask(MB_2008, reg_resampled, maskvalue = 0)
+masked_MB <- terra::mask(MB_2008, reg_11_21_AF, maskvalue = 0)
 #plot(masked_MB)
 
 # Cropping to the AF limit
