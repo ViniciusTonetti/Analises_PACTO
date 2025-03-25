@@ -586,8 +586,6 @@ previous_land_use_freq %>%
   select(land_cover_type, percentage, pixel_values) %>% 
   arrange(desc(percentage))
 
-
-
 #writexl::write_xlsx(previous_land_use_freq, "D:/__PESSOAL/Vinicius_T/data_frames_result_areas/freq_previous_land_use.xlsx")
 
 
