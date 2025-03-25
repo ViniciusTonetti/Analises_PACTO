@@ -20,7 +20,6 @@ rm(list = ls())
 
 # Defining number of nucleous available in R
 numb_cores <- parallel::detectCores() - 1
-
 plan(multisession, workers =  numb_cores)
 
 #### Reprojecting --------------------------------------------------------------
@@ -99,7 +98,7 @@ plot(mun_SAD69_Poly)
 # Calculating the area of forest for each municipality -------------------------
 # Extracting values using the "exactextractr" package as it did not run in Terra with function extract()
 
-# Converting the raster to a "raster::" object
+# Converting the Terra raster to a "raster::" object
 reg_11_21_SAD69_area_forest_only_raster <- raster::raster(reg_11_21_SAD69_area_forest_only_Poly)
 
 # Converting municipality shp to sf object
