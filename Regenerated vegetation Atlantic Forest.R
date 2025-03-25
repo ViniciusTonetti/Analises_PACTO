@@ -540,8 +540,14 @@ masked_MB_AF <- mask(crop(masked_MB, AF), AF)
 
 #terra::writeRaster(masked_MB_AF, "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/previous_land_cover_type_MB_2008.tif")
 
+
+MB_08_previous_land_use <- terra::rast("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/previous_land_cover_type_MB_2008.tif")
+
 # Frequency of each previous land cover type
-previous_land_use_count <- freq(masked_MB_AF)
+previous_land_use_freq <- terra::freq(MB_08_previous_land_use)
+
+previous_land_use_freq <- previous_land_use_freq %>% 
+                            arrange(desc(count))
 
 
 ## Hotspots of regeneration and deforestation of secondary forests -------------
@@ -1087,7 +1093,7 @@ write_xlsx(areas_reg_per_year, "D:/__PESSOAL/Vinicius_T/data_frames_result_areas
 
 
 ################################################################################
-# Creating the Bivariate map
+# Creating the Bivariate map ---------------------------------------------------
 
 # cleaning directory
 rm(list = ls())
@@ -1162,3 +1168,11 @@ mun <- mun %>%
 
 # Save the modified polygon for use in QGIS
 st_write(mun, "D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/_bivariate_map_muni.shp", delete_dsn = TRUE)
+
+
+################################################################################
+# Bar chart reg per year -------------------------------------------------------
+
+reg_per_year <- writexl::readxl("")
+
+
