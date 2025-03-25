@@ -10,6 +10,7 @@ library(raster)
 library(tidyverse)
 library(writexl)
 library(future.apply)
+library(classInt)
 
 
 # cleaning directory -----------------------------------------------------------
@@ -1087,22 +1088,69 @@ rm(list = ls())
 
 mun <- sf::st_read("D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/_mun_all_areas_prop_total_reg_defo.shp")
 
-# Creating the bivariate index
 
-mun$bivariate_index <- mun$for_reg + mun$defo_mun
+# Ensure the variables are numeric
+mun <- mun %>%
+  mutate(for_reg = as.numeric(for_reg),
+         defo_mun = as.numeric(defo_mun))
 
 
-ggplot(mun) +
-  geom_sf(aes(fill = bivariate_index), color = "black") +
-  scale_fill_gradientn(
-    colors = c("#1A9850", "#E6F598", "#FEE08B", "#3288BD", "#3F007D"),
-    values = scales::rescale(c(min(mun$bivariate_index), 
-                               median(mun$bivariate_index), 
-                               max(mun$bivariate_index))),
-    name = "Forest Regeneration and Deforestation"
-  ) +
-  theme_minimal() +
-  labs(title = "Bivariate Map of Forest Regeneration and Deforestation",
-       subtitle = "High regeneration and low deforestation in green, low regeneration and high deforestation in purple") +
-  theme(legend.position = "bottom") 
+# Remove municipalities where both variables are zero
+mun <- mun %>%
+  filter(!(for_reg == 0 & defo_mun == 0)) %>%
+  filter(!is.na(for_reg) & !is.na(defo_mun))
 
+
+# Remove NA
+mun <- mun %>%
+  filter(!is.na(for_reg) & !is.na(defo_mun))
+
+
+# Define number of classes (3 per variable)
+num_classes <- 3
+
+# Function to create unique breaks
+get_unique_breaks <- function(var, num_classes) {
+  breaks <- classIntervals(var, num_classes, style = "quantile")$brks
+  unique_breaks <- unique(breaks)  # Remove duplicates
+  if (length(unique_breaks) < num_classes + 1) {
+    unique_breaks <- seq(min(var), max(var), length.out = num_classes + 1)  # Create equal breaks
+  }
+  return(unique_breaks)
+}
+
+
+# Classify "for_reg" using unique breaks
+breaks_for_reg <- get_unique_breaks(mun$for_reg, num_classes)
+mun <- mun %>%
+  mutate(class_for_reg = cut(for_reg, breaks = breaks_for_reg, include.lowest = TRUE, labels = c(1, 2, 3)))
+
+
+# Classify "defo_mun" using unique breaks
+breaks_defo_mun <- get_unique_breaks(mun$defo_mun, num_classes)
+mun <- mun %>%
+  mutate(class_defo_mun = cut(defo_mun, breaks = breaks_defo_mun, include.lowest = TRUE, labels = c(1, 2, 3)))
+
+
+# Combine classifications into a bivariate category
+mun <- mun %>%
+  mutate(bivar_class = paste0(class_for_reg, "-", class_defo_mun))
+
+
+# Define bivariate color scheme
+bivar_colors <- data.frame(
+  bivar_class = c("3-1", "3-2", "3-3",
+                  "2-1", "2-2", "2-3",
+                  "1-1", "1-2", "1-3"),
+  bivar_color = c("#1A9850", "#E6F598", "#FEE08B",  # Green - High Regen, Low Deforest
+                  "#3288BD", "#66C2A5", "#FDAE61",  # Blue - Medium Regen, Medium Deforest
+                  "#3F007D", "#D73027", "#A50026")  # Purple - Low Regen, High Deforest
+)
+
+
+# Merge color data into the municipality dataset
+mun <- mun %>%
+  left_join(bivar_colors, by = "bivar_class")
+
+# Save the modified polygon for use in QGIS
+st_write(mun, "D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/_bivariate_map_muni.shp", delete_dsn = TRUE)
