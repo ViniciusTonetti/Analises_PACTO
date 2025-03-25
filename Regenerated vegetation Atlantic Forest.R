@@ -9,6 +9,7 @@ library(exactextractr)
 library(raster)
 library(tidyverse)
 library(writexl)
+library(readxl)
 library(future.apply)
 library(classInt)
 
@@ -1212,6 +1213,20 @@ st_write(mun, "D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/_biv
 ################################################################################
 # Bar chart reg per year -------------------------------------------------------
 
-reg_per_year <- writexl::readxl("")
+# cleaning directory
+rm(list = ls())
+
+# Loading excel spreadsheet
+reg_per_year <- readxl::read_excel("D:/__PESSOAL/Vinicius_T/data_frames_result_areas/reg_per_year.xlsx")
+
+ggplot(reg_per_year, aes(x = factor(reg_year), y = area_ha))+
+  geom_bar(stat = "identity", fill = "gray50") +
+  labs(x = "Year", y = "Area (thousand hectares)", title = "") +
+  scale_y_continuous(breaks = c(50000, 100000, 150000, 200000, 224000),
+                     labels = c("50", "100", "150", "200", "224"),
+                     expand = c(0.01, 0))+
+  theme_classic() + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
 
 
