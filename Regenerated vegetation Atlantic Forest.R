@@ -1219,14 +1219,19 @@ rm(list = ls())
 # Loading excel spreadsheet
 reg_per_year <- readxl::read_excel("D:/__PESSOAL/Vinicius_T/data_frames_result_areas/reg_per_year.xlsx")
 
-ggplot(reg_per_year, aes(x = factor(reg_year), y = area_ha))+
-  geom_bar(stat = "identity", fill = "gray50") +
-  labs(x = "Year", y = "Area (thousand hectares)", title = "") +
-  scale_y_continuous(breaks = c(50000, 100000, 150000, 200000, 224000),
-                     labels = c("50", "100", "150", "200", "224"),
-                     expand = c(0.01, 0))+
-  theme_classic() + 
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+(bar_chart <- ggplot(reg_per_year, aes(x = factor(reg_year), y = area_ha))+
+             geom_bar(stat = "identity", fill = "gray50") +
+             labs(x = "", y = "Area of regenerated forest (thousand hectares)", title = "") +
+             scale_y_continuous(breaks = c(50000, 100000, 150000, 200000, 224000),
+                                labels = c("50", "100", "150", "200", "224"),
+                                expand = c(0.01, 0))+
+             theme_classic() + 
+             theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 12),
+                   axis.text.y = element_text(size = 12),       
+                   axis.title.x = element_text(size = 14),      
+                   axis.title.y = element_text(size = 14)))
+
+#ggsave("D:/__PESSOAL/Vinicius_T/bar_chart/bar_chart.png", plot = bar_chart, width = 20, height = 15, units = "cm")
 
 
 
