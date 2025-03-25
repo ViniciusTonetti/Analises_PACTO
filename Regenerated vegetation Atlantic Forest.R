@@ -1329,4 +1329,42 @@ reg_per_year <- readxl::read_excel("D:/__PESSOAL/Vinicius_T/data_frames_result_a
 #ggsave("D:/__PESSOAL/Vinicius_T/bar_chart/bar_chart.png", plot = bar_chart, width = 20, height = 15, units = "cm")
 
 
+################################################################################
+# Bar chart reg per state ------------------------------------------------------
+
+# cleaning directory
+rm(list = ls())
+
+# Loading excel spreadsheet
+reg_per_state <- readxl::read_excel("D:/__PESSOAL/Vinicius_T/data_frames_result_areas/reg_2011_2020_estados.xlsx")
+
+(reg_per_state <- reg_per_state %>% 
+  filter(reg_2011_2020_ha != 0) %>% 
+  select(-prop_reg_ha) %>% 
+  rename(state = Estado, area_ha = reg_2011_2020_ha) %>% 
+  mutate(rank = rank(-area_ha), 
+         group = factor(ifelse(rank <= 8, "Top 8", "Bottom 7"), levels = c("Top 8", "Bottom 7"))))
+
+(bar_chart_state <- ggplot(reg_per_state, aes(x = area_ha, y = reorder(state, area_ha))) +
+    geom_bar(stat = "identity", fill = "gray50", width = 0.9) +
+    labs(x = "", y = "", title = "") +
+    facet_wrap(~group, scales = "free_y", ncol = 2, dir = "h") +
+    scale_x_continuous(
+      breaks = c(0, 29513, 100000, 200000, 300000, 423887),
+      labels = c("0","29,513","100", "200", "300", "423,887")  
+    ) +
+    theme_classic() +
+    theme(
+      axis.line.y = element_blank(),
+      axis.ticks.y = element_blank(),
+      panel.spacing = unit(2, "cm"),
+      strip.text = element_blank(),
+      text = element_text(size = 8)
+    ))
+
+ggsave("D:/__PESSOAL/Vinicius_T/bar_chart/bar_chart_state.png", plot = bar_chart_state, width = 30, height = 7, units = "cm")
+
+
+
+
 
