@@ -532,44 +532,71 @@ MB_2010 <- terra::rast("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage
 MB_2008_AF <- mask(crop(MB_2008, AF), AF)
 #plot(MB_2008_AF)
 
-terra::writeRaster(MB_2008_AF, "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2008_AF.tif",
-                   gdal=c("COMPRESS=DEFLATE", "TFW=YES"), overwrite = T)
+#terra::writeRaster(MB_2008_AF, "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2008_AF.tif",
+#                   gdal=c("COMPRESS=DEFLATE", "TFW=YES"), overwrite = T)
 
 MB_2010_AF <- mask(crop(MB_2010, AF), AF)
 #plot(MB_2010_AF)
 
-terra::writeRaster(MB_2010_AF, "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2010_AF.tif",
-                   gdal=c("COMPRESS=DEFLATE", "TFW=YES"), overwrite = T)
+#terra::writeRaster(MB_2010_AF, "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2010_AF.tif",
+#                   gdal=c("COMPRESS=DEFLATE", "TFW=YES"), overwrite = T)
 
 
 # Reg map in WGS84
 reg <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/_reg_11_21.tif")
 #plot(reg)
+
 reg_11_21_AF <- mask(crop(reg, AF), AF)
-terra::writeRaster(reg_11_21_AF, "D:/__PESSOAL/Vinicius_T/raster_pacto/_reg_11_21_AF.tif",
-                   gdal=c("COMPRESS=DEFLATE", "TFW=YES"), overwrite = T)
+#terra::writeRaster(reg_11_21_AF, "D:/__PESSOAL/Vinicius_T/raster_pacto/_reg_11_21_AF.tif",
+#                   gdal=c("COMPRESS=DEFLATE", "TFW=YES"), overwrite = T)
+
+
+
+MB_2008_AF <- terra::rast("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2008_AF.tif")
+#plot(MB_2008_AF)
+MB_2010_AF <- terra::rast("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2010_AF.tif")
+#plot(MB_2010_AF)
+reg_11_21_AF <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/_reg_11_21_AF.tif")
+#plot(reg_11_21_AF)
 
 
 # Resample to match extent
-reg_resampled <- resample(reg_11_21_AF, MB_2008, method = "near")
-#terra::writeRaster(reg_resampled, "D:/__PESSOAL/Vinicius_T/raster_pacto/_reg_11_21_AF_resampled.tif")
+reg_resampled_AF <- resample(reg_11_21_AF, MB_2008_AF, method = "near")
+#plot(reg_resampled_AF)
+#terra::writeRaster(reg_resampled_AF, "D:/__PESSOAL/Vinicius_T/raster_pacto/_reg_11_21_AF_resampled.tif")
 
-# Masking
-masked_MB <- terra::mask(MB_2008, reg_11_21_AF, maskvalue = 0)
+
+# Masking ----------------------------------------------------------------------
+
+reg_resampled_AF <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/_reg_11_21_AF_resampled.tif")
+#plot(reg_resampled)
+
+MB_2008_AF <- terra::rast("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2008_AF.tif")
+MB_2010_AF <- terra::rast("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2010_AF.tif")
+
+
+masked_MB_2008 <- terra::mask(MB_2008_AF, reg_resampled_AF, maskvalue = 0)
 #plot(masked_MB)
+#terra::writeRaster(masked_MB_2008, "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/previous_land_cover_type_MB_2008.tif")
 
+masked_MB_2010 <- terra::mask(MB_2010_AF, reg_resampled_AF, maskvalue = 0)
+#plot(masked_MB)
+#terra::writeRaster(masked_MB_2010, "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/previous_land_cover_type_MB_2010.tif")
 
-#terra::writeRaster(masked_MB_AF, "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/previous_land_cover_type_MB_2008.tif")
+MB_08_previous_land_use <- terra::rast("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/previous_land_cover_type_MB_2008.tif")
+MB_10_previous_land_use <- terra::rast("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/previous_land_cover_type_MB_2010.tif")
 
+# Frequency of each previous land cover type -----------------------------------
+
+# 2008
 
 MB_08_previous_land_use <- terra::rast("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/previous_land_cover_type_MB_2008.tif")
 
-# Frequency of each previous land cover type
-previous_land_use_freq <- terra::freq(MB_08_previous_land_use)
+previous_land_use_freq_08 <- terra::freq(MB_08_previous_land_use)
 
-previous_land_use_freq <- data.frame(previous_land_use_freq)
+previous_land_use_freq_08 <- data.frame(previous_land_use_freq_08)
 
-previous_land_use_freq <- previous_land_use_freq %>% 
+previous_land_use_freq_08 <- previous_land_use_freq_08 %>% 
   mutate(value = as.character(value)) %>% 
   mutate(case_when(
     value == "0"  ~ "NA",
@@ -607,8 +634,56 @@ previous_land_use_freq <- previous_land_use_freq %>%
   select(land_cover_type, percentage, pixel_values) %>% 
   arrange(desc(percentage))
 
-#writexl::write_xlsx(previous_land_use_freq, "D:/__PESSOAL/Vinicius_T/data_frames_result_areas/freq_previous_land_use.xlsx")
+#writexl::write_xlsx(previous_land_use_freq_08, "D:/__PESSOAL/Vinicius_T/data_frames_result_areas/freq_previous_land_use_2008.xlsx")
 
+
+# 2010 -------------------------------------------------------------------------
+
+MB_10_previous_land_use <- terra::rast("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/previous_land_cover_type_MB_2010.tif")
+
+previous_land_use_freq_10 <- terra::freq(MB_10_previous_land_use)
+
+previous_land_use_freq_10 <- data.frame(previous_land_use_freq_10)
+
+previous_land_use_freq_10 <- previous_land_use_freq_10 %>% 
+  mutate(value = as.character(value)) %>% 
+  mutate(case_when(
+    value == "0"  ~ "NA",
+    value == "3"  ~ "Forest",
+    value == "4"  ~ "Savanna",
+    value == "5"  ~ "Mangrove",
+    value == "9"  ~ "Forest plantation",
+    value == "11" ~ "Wetland",
+    value == "12" ~ "Grassland",
+    value == "15" ~ "Pasture",
+    value == "20" ~ "Sugar cane",
+    value == "21" ~ "Mosaic of Uses",
+    value == "23" ~ "Beach, Dune and Sand Spot",
+    value == "24" ~ "Urban area",
+    value == "25" ~ "Other non vegetated areas",
+    value == "29" ~ "Rocky Outcrop",
+    value == "30" ~ "Mining",
+    value == "31" ~ "Acquaculture",
+    value == "32" ~ "Hypersaline Tidal Flat",
+    value == "33" ~ "River, Lake and Ocean",
+    value == "39" ~ "Soybean",
+    value == "40" ~ "Rice",
+    value == "41" ~ "Other temporary crops",
+    value == "46" ~ "Coffee",
+    value == "47" ~ "Citrus",
+    value == "48" ~ "Other Perennial Crops",
+    value == "49" ~ "Wooded Sandbank Vegetation",
+    value == "50" ~ "Herbaceous Sandbank Vegetation")) %>%
+  select(-layer) %>% 
+  rename(pixel_values = value,
+         frequency_of_pixels = count,
+         land_cover_type = "case_when(...)") %>% 
+  mutate(total_pixels = sum(frequency_of_pixels)) %>% 
+  mutate(percentage = round((frequency_of_pixels/total_pixels)*100, 2)) %>% 
+  select(land_cover_type, percentage, pixel_values) %>% 
+  arrange(desc(percentage))
+
+#writexl::write_xlsx(previous_land_use_freq_10, "D:/__PESSOAL/Vinicius_T/data_frames_result_areas/freq_previous_land_use_2010.xlsx")
 
 ## Hotspots of regeneration and deforestation of secondary forests -------------
 ################################################################################
