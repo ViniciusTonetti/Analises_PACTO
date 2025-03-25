@@ -516,22 +516,22 @@ colnames(UC_Poly)[ncol(UC_Poly)] <- "prop_reg"
 # cleaning directory -----------------------------------------------------------
 rm(list = ls())
 
-# MB 2010 in WGS84
-MB_2010 <- terra::rast("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/MB_09_AF_2010_WGS_84.tif")
-#plot(MB_2010)
+# MB 2008 in WGS84
+MB_2008 <- terra::rast("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2008.tif")
+#plot(MB_2008)
 
 # Reg map in WGS84
 reg <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/_reg_11_21.tif")
 #plot(reg)
 
 # Resample to match extent
-reg_resampled <- resample(reg, MB_2010, method = "near")
+reg_resampled <- resample(reg, MB_2008, method = "near")
 #terra::writeRaster(reg_resampled, "D:/__PESSOAL/Vinicius_T/raster_pacto/_reg_11_21_resampled.tif")
 
 # Masking
-masked_MB <- terra::mask(MB_2010, reg_resampled, maskvalue = 0)
+masked_MB <- terra::mask(MB_2008, reg_resampled, maskvalue = 0)
 #plot(masked_MB)
-#terra::writeRaster(masked_MB , "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/previous_land_cover_type.tif")
+#terra::writeRaster(masked_MB , "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/previous_land_cover_type_MB_2008.tif")
 
 # Frequency of each previous land cover type
 previous_land_use_count <- freq(masked_MB)
