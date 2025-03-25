@@ -546,8 +546,48 @@ MB_08_previous_land_use <- terra::rast("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09
 # Frequency of each previous land cover type
 previous_land_use_freq <- terra::freq(MB_08_previous_land_use)
 
-previous_land_use_freq <- previous_land_use_freq %>% 
-                            arrange(desc(count))
+previous_land_use_freq <- data.frame(previous_land_use_freq)
+
+previous_land_use_freq %>% 
+  mutate(value = as.character(value)) %>% 
+  mutate(case_when(
+    value == "0"  ~ "NA",
+    value == "3"  ~ "Forest",
+    value == "4"  ~ "Savanna",
+    value == "5"  ~ "Mangrove",
+    value == "9"  ~ "Forest plantation",
+    value == "11" ~ "Wetland",
+    value == "12" ~ "Grassland",
+    value == "15" ~ "Pasture",
+    value == "20" ~ "Sugar cane",
+    value == "21" ~ "Mosaic of Uses",
+    value == "23" ~ "Beach, Dune and Sand Spot",
+    value == "24" ~ "Urban area",
+    value == "25" ~ "Other non vegetated areas",
+    value == "29" ~ "Rocky Outcrop",
+    value == "30" ~ "Mining",
+    value == "31" ~ "Acquaculture",
+    value == "32" ~ "Hypersaline Tidal Flat",
+    value == "33" ~ "River, Lake and Ocean",
+    value == "39" ~ "Soybean",
+    value == "40" ~ "Rice",
+    value == "41" ~ "Other temporary crops",
+    value == "46" ~ "Coffee",
+    value == "47" ~ "Citrus",
+    value == "48" ~ "Other Perennial Crops",
+    value == "49" ~ "Wooded Sandbank Vegetation",
+    value == "50" ~ "Herbaceous Sandbank Vegetation")) %>%
+  select(-layer) %>% 
+  rename(pixel_values = value,
+         frequency_of_pixels = count,
+         land_cover_type = "case_when(...)") %>% 
+  mutate(total_pixels = sum(frequency_of_pixels)) %>% 
+  mutate(percentage = round((frequency_of_pixels/total_pixels)*100, 2)) %>% 
+  select(land_cover_type, percentage, pixel_values)
+
+
+
+#writexl::write_xlsx(previous_land_use_freq, "D:/__PESSOAL/Vinicius_T/data_frames_result_areas/freq_previous_land_use.xlsx")
 
 
 ## Hotspots of regeneration and deforestation of secondary forests -------------
