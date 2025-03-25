@@ -583,7 +583,8 @@ previous_land_use_freq %>%
          land_cover_type = "case_when(...)") %>% 
   mutate(total_pixels = sum(frequency_of_pixels)) %>% 
   mutate(percentage = round((frequency_of_pixels/total_pixels)*100, 2)) %>% 
-  select(land_cover_type, percentage, pixel_values)
+  select(land_cover_type, percentage, pixel_values) %>% 
+  arrange(desc(percentage))
 
 
 
