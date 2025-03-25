@@ -552,14 +552,12 @@ terra::writeRaster(reg_11_21_AF, "D:/__PESSOAL/Vinicius_T/raster_pacto/_reg_11_2
 
 # Resample to match extent
 reg_resampled <- resample(reg_11_21_AF, MB_2008, method = "near")
-#terra::writeRaster(reg_resampled, "D:/__PESSOAL/Vinicius_T/raster_pacto/_reg_11_21_resampled.tif")
+#terra::writeRaster(reg_resampled, "D:/__PESSOAL/Vinicius_T/raster_pacto/_reg_11_21_AF_resampled.tif")
 
 # Masking
 masked_MB <- terra::mask(MB_2008, reg_11_21_AF, maskvalue = 0)
 #plot(masked_MB)
 
-# Cropping to the AF limit
-masked_MB_AF <- mask(crop(masked_MB, AF), AF)
 
 #terra::writeRaster(masked_MB_AF, "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/previous_land_cover_type_MB_2008.tif")
 
