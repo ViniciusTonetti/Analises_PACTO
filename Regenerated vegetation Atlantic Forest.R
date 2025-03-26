@@ -1123,8 +1123,7 @@ rm(list = ls())
 reg_2011_2020_UC <- sf::st_read("D:/__PESSOAL/Vinicius_T/dados Pacto/CAMADAS/MA_UC_mma2024_Area.shp")
 
 reg_2011_2020_UC <- data.frame(reg_2011_2020_UC[,c("nome_uc", "grupo", "categor", 
-                                                   "municip", "uf",
-                                                   "forst_r", "scndry_", "prop_rg")])[,1:8]
+                                                   "municip", "uf", "scndry_")])[,1:6]
 
 # Column names, meaning
 
@@ -1134,14 +1133,13 @@ reg_2011_2020_UC <- data.frame(reg_2011_2020_UC[,c("nome_uc", "grupo", "categor"
 
 colnames(reg_2011_2020_UC) <- c("nome_UC", "Grupo", "Categoria",
                                 "municipio_UC", "estado_UC",
-                                "total_area_2010_ha", "reg_2011_2020_ha", "prop_reg_ha")
+                                "reg_2011_2020_ha")
 
 
 reg_2011_2020_UC <- reg_2011_2020_UC %>% 
   arrange(desc(reg_2011_2020_ha)) %>% 
-  mutate(across(c("total_area_2010_ha", "reg_2011_2020_ha", "prop_reg_ha"),
-                ~ .x /10000)) %>% 
-  mutate(across(where(is.numeric), round))
+  mutate(across(c("reg_2011_2020_ha"),
+                ~ .x /10000))
 
 #writexl::write_xlsx(reg_2011_2020_UC, "D:/__PESSOAL/Vinicius_T/data_frames_result_areas/reg_2011_2020_UC.xlsx")
 
