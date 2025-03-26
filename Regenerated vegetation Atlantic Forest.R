@@ -1336,14 +1336,36 @@ reg_per_year <- readxl::read_excel("D:/__PESSOAL/Vinicius_T/data_frames_result_a
 rm(list = ls())
 
 # Loading excel spreadsheet
-reg_per_state <- readxl::read_excel("D:/__PESSOAL/Vinicius_T/data_frames_result_areas/reg_2011_2020_estados.xlsx")
+reg_per_state <- readxl::read_excel("D:/_Vinicius/artigos/2024.12.d04 - Pacto, secondary forests, natural regeneration/dataframes/dataframes/reg_2011_2020_estados.xlsx")
 
-(reg_per_state <- reg_per_state %>% 
+reg_per_state <- reg_per_state %>% 
   filter(reg_2011_2020_ha != 0) %>% 
   select(-prop_reg_ha) %>% 
   rename(state = Estado, area_ha = reg_2011_2020_ha) %>% 
   mutate(rank = rank(-area_ha), 
-         group = factor(ifelse(rank <= 8, "Top 8", "Bottom 7"), levels = c("Top 8", "Bottom 7"))))
+         group = factor(ifelse(rank <= 8, "Top 8", "Bottom 7"), levels = c("Top 8", "Bottom 7"))) %>% 
+  mutate(case_when(
+    state == "Minas Gerais" ~ "Minas Gerais (MG)",
+    state == "Paraná" ~ "Paraná (PR)",
+    state == "Bahia" ~ "Bahia (BA)",
+    state == "São Paulo" ~ "São Paulo (SP)",
+    state == "Santa Catarina" ~ "Santa Catarina (SC)",
+    state == "Rio Grande do Sul" ~ "Rio Grande do Sul (RS)",
+    state == "Espírito Santo" ~ "Espírito Santo (ES)",
+    state == "Rio de Janeiro" ~ "Rio de Janeiro (RJ)",
+    state == "Pernambuco" ~ "Pernambuco (PE)",
+    state == "Alagoas" ~ "Alagoas (AL)",
+    state == "Sergipe" ~ "Sergipe (SE)",
+    state == "Mato Grosso do Sul" ~ "Mato Grosso do Sul (MS)",
+    state == "Paraíba" ~ "Paraíba (PB)",
+    state == "Goiás" ~ "Goiás (GO)",
+    state == "Rio Grande do Norte" ~ "Rio Grande do Norte (RN)",
+  )) %>%
+  select(c("case_when(...)", "area_ha", "rank", "group")) %>% 
+  rename(state = `case_when(...)`)
+
+
+
 
 (bar_chart_state <- ggplot(reg_per_state, aes(x = area_ha, y = reorder(state, area_ha))) +
     geom_bar(stat = "identity", fill = "gray50", width = 0.8) +
@@ -1363,7 +1385,7 @@ reg_per_state <- readxl::read_excel("D:/__PESSOAL/Vinicius_T/data_frames_result_
       axis.text.y = element_text(margin = margin(r = -9))
     ))
 
-ggsave("D:/__PESSOAL/Vinicius_T/bar_chart/bar_chart_state.png", plot = bar_chart_state, width = 30, height = 7, units = "cm")
+ggsave("D:/_Vinicius/artigos/2024.12.d04 - Pacto, secondary forests, natural regeneration/Figuras/Bar Chart/bar_chart_state.png", plot = bar_chart_state, width = 30, height = 7, units = "cm")
 
 
 
