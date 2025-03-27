@@ -1420,8 +1420,6 @@ for (i in 1:length(names(annual_stack))) {
   raster <- mask(crop(annual_stack[[i]], AF), AF)
   terra::writeRaster(raster, paste(dir, obj_name, "_AF.tif", sep = ""),
     gdal=c("COMPRESS=DEFLATE", "TFW=YES"), overwrite = T)
-  
-  
 }
 
   
