@@ -1364,6 +1364,44 @@ reg_per_state <- readxl::read_excel("D:/__PESSOAL/Vinicius_T/data_frames_result_
 ggsave("D:/__PESSOAL/Vinicius_T/bar_chart/bar_chart_state.png", plot = bar_chart_state, width = 30, height = 7, units = "cm")
 
 
+################################################################################
+## APP FBDS --------------------------------------------------------------------
 
+APP <- terra::vect("D:/__PESSOAL/Vinicius_T/app_FBDS/app fbds/app.gpkg")
+plot(APP)
+
+
+################################################################################
+## Anual deforestation 
+
+# cleaning directory
+rm(list = ls())
+
+annual_stack <- terra::rast(c("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2011.tif",
+                             "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2012.tif",
+                             "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2013.tif",
+                             "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2014.tif",
+                             "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2015.tif",
+                             "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2016.tif",
+                             "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2017.tif",
+                             "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2018.tif",
+                             "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2019.tif",
+                             "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2020.tif",
+                             "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2021.tif"))
+
+AF <- terra::vect("D:/__PESSOAL/Vinicius_T/Limite Mata Atlantica/bioma_MA_IBGE_250mil/bioma_MA_IBGE_250mil.shp")
+  
+dir <- "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/"
+
+for (i in 1:length(names(annual_stack))) {
+  obj_name <- names(annual_stack[[i]])
+  obj_name <- mask(crop(annual_stack[[i]], AF), AF)
+  terra::writeRaster(obj_name, paste(dir, obj_name, "_AF.tif", sep = ""),
+    gdal=c("COMPRESS=DEFLATE", "TFW=YES"), overwrite = T)
+  
+  
+}
+
+  
 
 
