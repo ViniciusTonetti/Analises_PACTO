@@ -1417,8 +1417,8 @@ dir <- "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/"
 
 for (i in 1:length(names(annual_stack))) {
   obj_name <- names(annual_stack[[i]])
-  obj_name <- mask(crop(annual_stack[[i]], AF), AF)
-  terra::writeRaster(obj_name, paste(dir, obj_name, "_AF.tif", sep = ""),
+  raster <- mask(crop(annual_stack[[i]], AF), AF)
+  terra::writeRaster(raster, paste(dir, obj_name, "_AF.tif", sep = ""),
     gdal=c("COMPRESS=DEFLATE", "TFW=YES"), overwrite = T)
   
   
