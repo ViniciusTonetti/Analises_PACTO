@@ -1431,3 +1431,29 @@ terra::writeRaster(MB_2023_AF, paste(dir, "brasil_coverage_2023", "_AF.tif", sep
                    gdal=c("COMPRESS=DEFLATE", "TFW=YES"), overwrite = T)
 
 
+################################################################################
+## Proportion of deforestation in relation to 2010
+
+# cleaning directory 
+rm(list = ls())
+
+mun <- terra::vect("D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/_mun_all_areas_prop_total_reg_defo.shp")
+names(mun)
+
+# fr_r_mn - total amount of forest in 2010
+# defo_mun - deforestation of all forest that regenerated (individual years summed up) 
+
+prop_defo_2010 <- data.frame(mun[,"defo_mun"])/data.frame(mun[,"fr_r_mn"])
+
+# Adding prportional deforestation in relation to 2010 in the mun polygon
+mun[,ncol(mun)+1] <- prop_defo_2010
+ncol(mun) #20
+data.frame(mun[,ncol(mun)])
+
+# pdefo_10 - proportion of total deforestation in relation to 2010
+names(mun)[ncol(mun)] <- "pdefo_10"
+
+
+
+
+
