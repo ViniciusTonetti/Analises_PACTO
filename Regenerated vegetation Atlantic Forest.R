@@ -1422,6 +1422,12 @@ for (i in 1:length(names(annual_stack))) {
     gdal=c("COMPRESS=DEFLATE", "TFW=YES"), overwrite = T)
 }
 
-  
+# Cropping 2023 after asking Marcos --------------------------------------------
+
+
+MB_2023 <- terra::rast("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2023.tif")
+MB_2023_AF <- mask(crop(MB_2023, AF), AF)
+terra::writeRaster(MB_2023_AF, paste(dir, "brasil_coverage_2023", "_AF.tif", sep = ""),
+                   gdal=c("COMPRESS=DEFLATE", "TFW=YES"), overwrite = T)
 
 
