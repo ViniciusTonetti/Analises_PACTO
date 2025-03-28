@@ -1452,8 +1452,17 @@ data.frame(mun[,ncol(mun)])
 
 # pdefo_10 - proportion of total deforestation in relation to 2010
 names(mun)[ncol(mun)] <- "pdefo_10"
+names(mun)
 
+#terra::writeVector(mun, "D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/_mun_all_areas_prop_total_reg_defo.shp", overwrite = T)
 
+# Calculating quantiles to mask Mun with low forest cover
+
+forest_2010_all_values <- data.frame(mun[,"fr_r_mn"])
+forest_2010_higher_zero <- forest_2010_all_values[forest_2010_all_values > 0]
+
+quantile(forest_2010_higher_zero, probs = 0.10, na.rm = T)
+max(forest_2010_higher_zero)
 
 
 
