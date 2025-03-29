@@ -1123,8 +1123,7 @@ rm(list = ls())
 reg_2011_2020_UC <- sf::st_read("D:/__PESSOAL/Vinicius_T/dados Pacto/CAMADAS/MA_UC_mma2024_Area.shp")
 
 reg_2011_2020_UC <- data.frame(reg_2011_2020_UC[,c("nome_uc", "grupo", "categor", 
-                                                   "municip", "uf",
-                                                   "forst_r", "scndry_", "prop_rg")])[,1:8]
+                                                   "municip", "uf", "scndry_")])[,1:6]
 
 # Column names, meaning
 
@@ -1134,14 +1133,13 @@ reg_2011_2020_UC <- data.frame(reg_2011_2020_UC[,c("nome_uc", "grupo", "categor"
 
 colnames(reg_2011_2020_UC) <- c("nome_UC", "Grupo", "Categoria",
                                 "municipio_UC", "estado_UC",
-                                "total_area_2010_ha", "reg_2011_2020_ha", "prop_reg_ha")
+                                "reg_2011_2020_ha")
 
 
 reg_2011_2020_UC <- reg_2011_2020_UC %>% 
   arrange(desc(reg_2011_2020_ha)) %>% 
-  mutate(across(c("total_area_2010_ha", "reg_2011_2020_ha", "prop_reg_ha"),
-                ~ .x /10000)) %>% 
-  mutate(across(where(is.numeric), round))
+  mutate(across(c("reg_2011_2020_ha"),
+                ~ .x /10000))
 
 #writexl::write_xlsx(reg_2011_2020_UC, "D:/__PESSOAL/Vinicius_T/data_frames_result_areas/reg_2011_2020_UC.xlsx")
 
@@ -1387,6 +1385,83 @@ reg_per_state <- reg_per_state %>%
 ggsave("D:/_Vinicius/artigos/2024.12.d04 - Pacto, secondary forests, natural regeneration/Figuras/Bar Chart/bar_chart_state.png", plot = bar_chart_state, width = 30, height = 7, units = "cm")
 
 
+################################################################################
+## APP FBDS --------------------------------------------------------------------
+
+APP <- terra::vect("D:/__PESSOAL/Vinicius_T/app_FBDS/app fbds/app.gpkg")
+plot(APP)
+
+
+################################################################################
+## Anual deforestation 
+
+# cleaning directory
+rm(list = ls())
+
+annual_stack <- terra::rast(c("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2011.tif",
+                             "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2012.tif",
+                             "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2013.tif",
+                             "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2014.tif",
+                             "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2015.tif",
+                             "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2016.tif",
+                             "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2017.tif",
+                             "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2018.tif",
+                             "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2019.tif",
+                             "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2020.tif",
+                             "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2021.tif"))
+
+AF <- terra::vect("D:/__PESSOAL/Vinicius_T/Limite Mata Atlantica/bioma_MA_IBGE_250mil/bioma_MA_IBGE_250mil.shp")
+  
+dir <- "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/"
+
+for (i in 1:length(names(annual_stack))) {
+  obj_name <- names(annual_stack[[i]])
+  raster <- mask(crop(annual_stack[[i]], AF), AF)
+  terra::writeRaster(raster, paste(dir, obj_name, "_AF.tif", sep = ""),
+    gdal=c("COMPRESS=DEFLATE", "TFW=YES"), overwrite = T)
+}
+
+# Cropping 2023 after asking Marcos --------------------------------------------
+
+
+MB_2023 <- terra::rast("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2023.tif")
+MB_2023_AF <- mask(crop(MB_2023, AF), AF)
+terra::writeRaster(MB_2023_AF, paste(dir, "brasil_coverage_2023", "_AF.tif", sep = ""),
+                   gdal=c("COMPRESS=DEFLATE", "TFW=YES"), overwrite = T)
+
+
+################################################################################
+## Proportion of deforestation in relation to 2010
+
+# cleaning directory 
+rm(list = ls())
+
+mun <- terra::vect("D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/_mun_all_areas_prop_total_reg_defo.shp")
+names(mun)
+
+# fr_r_mn - total amount of forest in 2010
+# defo_mun - deforestation of all forest that regenerated (individual years summed up) 
+
+prop_defo_2010 <- data.frame(mun[,"defo_mun"])/data.frame(mun[,"fr_r_mn"])
+
+# Adding prportional deforestation in relation to 2010 in the mun polygon
+mun[,ncol(mun)+1] <- prop_defo_2010
+ncol(mun) #20
+data.frame(mun[,ncol(mun)])
+
+# pdefo_10 - proportion of total deforestation in relation to 2010
+names(mun)[ncol(mun)] <- "pdefo_10"
+names(mun)
+
+#terra::writeVector(mun, "D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/_mun_all_areas_prop_total_reg_defo.shp", overwrite = T)
+
+# Calculating quantiles to mask Mun with low forest cover
+
+forest_2010_all_values <- data.frame(mun[,"fr_r_mn"])
+forest_2010_higher_zero <- forest_2010_all_values[forest_2010_all_values > 0]
+
+quantile(forest_2010_higher_zero, probs = 0.10, na.rm = T)
+max(forest_2010_higher_zero)
 
 
 
