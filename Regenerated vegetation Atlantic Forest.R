@@ -1336,6 +1336,7 @@ rm(list = ls())
 # Loading excel spreadsheet
 reg_per_state <- readxl::read_excel("D:/_Vinicius/artigos/2024.12.d04 - Pacto, secondary forests, natural regeneration/dataframes/dataframes/reg_2011_2020_estados.xlsx")
 
+
 reg_per_state <- reg_per_state %>% 
   filter(reg_2011_2020_ha != 0) %>% 
   select(-prop_reg_ha) %>% 
@@ -1365,24 +1366,81 @@ reg_per_state <- reg_per_state %>%
 
 
 
-(bar_chart_state <- ggplot(reg_per_state, aes(x = reorder(state, area_ha), y = area_ha)) +
-    geom_bar(stat = "identity", fill = "gray50", width = 0.8) +
+(bar_chart_state <- ggplot(reg_per_state, aes(x = reorder(state, -area_ha), y = area_ha)) +
+    geom_bar(stat = "identity", fill = "#7B9FCF", width = 0.8) +
     labs(x = "", y = "", title = "") +
     scale_y_continuous(
-      breaks = c(0, 29513, 100000, 200000, 300000, 423887),
-      labels = c("0","29,513","100", "200", "300", "423,887")  
+      breaks = c(0, 100000, 200000, 300000, 423887),
+      labels = c("0","100", "200", "300", "423,887"),
+      expand = expansion(mult = c(0, 0.05))  # Reduce space below the bars
     ) +
     theme_classic() +
     theme(
-      axis.line.y = element_blank(),
+      
       axis.ticks.y = element_blank(),
-      panel.spacing = unit(2, "cm"),
       strip.text = element_blank(),
-      text = element_text(size = 10),
-      axis.text.y = element_text(margin = margin(r = -9))
+      text = element_text(size = 25),
+      axis.text.y = element_text(margin = margin(r = -1)),
+      axis.text.x = element_text(angle = 45, hjust = 1)
     ))
 
-ggsave("D:/_Vinicius/artigos/2024.12.d04 - Pacto, secondary forests, natural regeneration/Figuras/Bar Chart/bar_chart_state.png", plot = bar_chart_state, width = 30, height = 7, units = "cm")
+ggsave("D:/_Vinicius/artigos/2024.12.d04 - Pacto, secondary forests, natural regeneration/Figuras/Bar Chart/bar_chart_REG_state.png", plot = bar_chart_state, width = 60, height = 20, units = "cm")
+
+
+## Defo per state
+
+defo_per_state <- readxl::read_excel("D:/_Vinicius/artigos/2024.12.d04 - Pacto, secondary forests, natural regeneration/dataframes/dataframes/total_defo_states.xlsx")
+
+
+state_order <- rev(c("MG", "PR", "BA", "SP",  
+  "SC", "RS", "ES", "RJ", "PE", "AL", "SE", 
+  "MS", "PB", "GO", "RN"
+))
+
+
+defo_per_state <- defo_per_state %>% 
+  filter(defo_est != 0) %>% 
+  mutate(case_when(
+    NM_UF == "Minas Gerais" ~ "MG",
+    NM_UF == "Paraná" ~ "PR",
+    NM_UF == "Bahia" ~ "BA",
+    NM_UF == "São Paulo" ~ "SP",
+    NM_UF == "Santa Catarina" ~ "SC",
+    NM_UF == "Rio Grande do Sul" ~ "RS",
+    NM_UF == "Espírito Santo" ~ "ES",
+    NM_UF == "Rio de Janeiro" ~ "RJ",
+    NM_UF == "Pernambuco" ~ "PE",
+    NM_UF == "Alagoas" ~ "AL",
+    NM_UF == "Sergipe" ~ "SE",
+    NM_UF == "Mato Grosso do Sul" ~ "MS",
+    NM_UF == "Paraíba" ~ "PB",
+    NM_UF == "Goiás" ~ "GO",
+    NM_UF == "Rio Grande do Norte" ~ "RN",
+  )) %>%
+  select(c("case_when(...)", defo_est)) %>% 
+  rename(state = `case_when(...)`) %>% 
+  mutate(state = factor(state, levels = state_order))
+
+
+(bar_chart_DEFO_state <- ggplot(defo_per_state, aes(x = state, y = defo_est/10000)) +
+    geom_bar(stat = "identity", fill = "#ee6b6e", width = 0.8) +
+    labs(x = "", y = "", title = "") +
+    scale_y_reverse(  # Reverse the y-axis
+      breaks = c(0, 20000, 40000, 60000, 87755),
+      labels = c("0", "20000", "40000", "60000", "87755"),
+      expand = expansion(mult = c(0, 0.05))  # Reduce space below the bars
+    ) +
+    theme_classic() +
+    theme(
+      axis.text.y = element_text(margin = margin(r = 10)),
+      axis.ticks.y = element_line(),  
+      axis.line.y = element_line(),  
+      axis.title.y = element_text(margin = margin(r = 10)),
+      text = element_text(size = 25)
+    ))
+
+
+ggsave("D:/_Vinicius/artigos/2024.12.d04 - Pacto, secondary forests, natural regeneration/Figuras/Bar Chart/bar_chart_DEFO_state.png", plot = bar_chart_DEFO_state, width = 60, height = 20, units = "cm")
 
 
 ################################################################################
