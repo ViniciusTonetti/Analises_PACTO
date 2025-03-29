@@ -1427,8 +1427,8 @@ defo_per_state <- defo_per_state %>%
     labs(x = "", y = "", title = "") +
     scale_y_reverse(  # Reverse the y-axis
       breaks = c(0, 20000, 40000, 60000, 87755),
-      labels = c("0", "20000", "40000", "60000", "87755"),
-      expand = expansion(mult = c(0, 0.05))  # Reduce space below the bars
+      labels = c("0", "20,000", "40,000", "60,000", "87,755"),
+      expand = expansion(mult = c(0.19, 0.05))  # Reduce space below the bars
     ) +
     theme_classic() +
     theme(
@@ -1436,6 +1436,7 @@ defo_per_state <- defo_per_state %>%
       axis.ticks.y = element_line(),  
       axis.line.y = element_line(),  
       axis.title.y = element_text(margin = margin(r = 10)),
+      axis.text.x = element_text(angle = 45, hjust = 1.5, vjust = 3), 
       text = element_text(size = 25)
     ))
 
