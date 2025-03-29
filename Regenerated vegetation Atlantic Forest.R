@@ -1371,14 +1371,14 @@ reg_per_state <- reg_per_state %>%
     labs(x = "", y = "", title = "") +
     scale_y_continuous(
       breaks = c(0, 100000, 200000, 300000, 423887),
-      labels = c("0","100", "200", "300", "423,887"),
-      expand = expansion(mult = c(0.01, 0.05)) 
+      labels = c("0","100", "200", "300", "423"),
+      expand = expansion(mult = c(0.02, 0.05)) 
     ) +
     theme_classic() +
     theme(
       strip.text = element_blank(),
       text = element_text(size = 28),
-      axis.text.y = element_text(margin = margin(r = 2)),
+      axis.text.y = element_text(margin = margin(r = 4)),
       axis.text.x = element_text(angle = 45, hjust = 1)
     ))
 
@@ -1425,7 +1425,7 @@ defo_per_state <- defo_per_state %>%
     labs(x = "", y = "", title = "") +
     scale_y_reverse(  # Reverse the y-axis
       breaks = c(0, 20000, 40000, 60000, 87755),
-      labels = c("0", "20,000", "40,000", "60,000", "87,755"),
+      labels = c("0", "20", "40", "60", "87"),
       expand = expansion(mult = c(0.19, 0.05))  # Reduce space below the bars
     ) +
     theme_classic() +
