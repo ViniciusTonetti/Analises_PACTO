@@ -1367,11 +1367,10 @@ reg_per_state <- reg_per_state %>%
 
 
 
-(bar_chart_state <- ggplot(reg_per_state, aes(x = area_ha, y = reorder(state, area_ha))) +
+(bar_chart_state <- ggplot(reg_per_state, aes(x = reorder(state, area_ha), y = area_ha)) +
     geom_bar(stat = "identity", fill = "gray50", width = 0.8) +
     labs(x = "", y = "", title = "") +
-    facet_wrap(~group, scales = "free_y", ncol = 2, dir = "h") +
-    scale_x_continuous(
+    scale_y_continuous(
       breaks = c(0, 29513, 100000, 200000, 300000, 423887),
       labels = c("0","29,513","100", "200", "300", "423,887")  
     ) +
