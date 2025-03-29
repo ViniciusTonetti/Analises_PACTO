@@ -1344,21 +1344,21 @@ reg_per_state <- reg_per_state %>%
   mutate(rank = rank(-area_ha), 
          group = factor(ifelse(rank <= 8, "Top 8", "Bottom 7"), levels = c("Top 8", "Bottom 7"))) %>% 
   mutate(case_when(
-    state == "Minas Gerais" ~ "Minas Gerais (MG)",
-    state == "Paraná" ~ "Paraná (PR)",
-    state == "Bahia" ~ "Bahia (BA)",
-    state == "São Paulo" ~ "São Paulo (SP)",
-    state == "Santa Catarina" ~ "Santa Catarina (SC)",
-    state == "Rio Grande do Sul" ~ "Rio Grande do Sul (RS)",
-    state == "Espírito Santo" ~ "Espírito Santo (ES)",
-    state == "Rio de Janeiro" ~ "Rio de Janeiro (RJ)",
-    state == "Pernambuco" ~ "Pernambuco (PE)",
-    state == "Alagoas" ~ "Alagoas (AL)",
-    state == "Sergipe" ~ "Sergipe (SE)",
-    state == "Mato Grosso do Sul" ~ "Mato Grosso do Sul (MS)",
-    state == "Paraíba" ~ "Paraíba (PB)",
-    state == "Goiás" ~ "Goiás (GO)",
-    state == "Rio Grande do Norte" ~ "Rio Grande do Norte (RN)",
+    state == "Minas Gerais" ~ "MG",
+    state == "Paraná" ~ "PR",
+    state == "Bahia" ~ "BA",
+    state == "São Paulo" ~ "SP",
+    state == "Santa Catarina" ~ "SC",
+    state == "Rio Grande do Sul" ~ "RS",
+    state == "Espírito Santo" ~ "ES",
+    state == "Rio de Janeiro" ~ "RJ",
+    state == "Pernambuco" ~ "PE",
+    state == "Alagoas" ~ "AL",
+    state == "Sergipe" ~ "SE",
+    state == "Mato Grosso do Sul" ~ "MS",
+    state == "Paraíba" ~ "PB",
+    state == "Goiás" ~ "GO",
+    state == "Rio Grande do Norte" ~ "RN",
   )) %>%
   select(c("case_when(...)", "area_ha", "rank", "group")) %>% 
   rename(state = `case_when(...)`)
@@ -1372,15 +1372,13 @@ reg_per_state <- reg_per_state %>%
     scale_y_continuous(
       breaks = c(0, 100000, 200000, 300000, 423887),
       labels = c("0","100", "200", "300", "423,887"),
-      expand = expansion(mult = c(0, 0.05))  # Reduce space below the bars
+      expand = expansion(mult = c(0.01, 0.05)) 
     ) +
     theme_classic() +
     theme(
-      
-      axis.ticks.y = element_blank(),
       strip.text = element_blank(),
-      text = element_text(size = 25),
-      axis.text.y = element_text(margin = margin(r = -1)),
+      text = element_text(size = 28),
+      axis.text.y = element_text(margin = margin(r = 2)),
       axis.text.x = element_text(angle = 45, hjust = 1)
     ))
 
