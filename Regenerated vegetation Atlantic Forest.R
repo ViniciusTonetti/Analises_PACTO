@@ -1443,7 +1443,15 @@ names(mun)
 # fr_r_mn - total amount of forest in 2010
 # defo_mun - deforestation of all forest that regenerated (individual years summed up) 
 
-prop_defo_2010 <- data.frame(mun[,"defo_mun"])/data.frame(mun[,"fr_r_mn"])
+# Checking if area values are in hectare
+
+max(data.frame(mun[,"defo_mun"])) # hectares
+max(data.frame(mun[,"fr_r_mn"])) # square meters
+
+defo_mun <- data.frame(mun[,"defo_mun"])
+forest_area_2010 <- data.frame(mun[,"fr_r_mn"])/10000
+
+prop_defo_2010 <- defo_mun/forest_area_2010
 
 # Adding prportional deforestation in relation to 2010 in the mun polygon
 mun[,ncol(mun)+1] <- prop_defo_2010
@@ -1458,10 +1466,9 @@ names(mun)
 
 # Calculating quantiles to mask Mun with low forest cover
 
-forest_2010_all_values <- data.frame(mun[,"fr_r_mn"])
-forest_2010_higher_zero <- forest_2010_all_values[forest_2010_all_values > 0]
+forest_2010_higher_zero <- forest_area_2010[forest_area_2010 > 0]
 
-quantile(forest_2010_higher_zero, probs = 0.10, na.rm = T)
+quantile(forest_2010_higher_zero, probs = 0.5, na.rm = T)
 max(forest_2010_higher_zero)
 
 
