@@ -1625,7 +1625,7 @@ for(i in 1:length(reg_year)){
   reg_anual_reclass_SAD69 <- terra::project(reg_anual_reclass, "EPSG:29101", method = "mode")
   
   # Calculating area of raster
-  pixel_area <- cellSize(reg_anual_reclass_SAD69, unit = "m")
+  pixel_area <- terra::cellSize(reg_anual_reclass_SAD69, unit = "m")
     
   reg_anual_reclass_SAD69_Area <- reg_anual_reclass_SAD69 * pixel_area
   
@@ -1642,6 +1642,6 @@ for(i in 1:length(reg_year)){
 areas <- data.frame(mtx)
 colnames(areas) <- c("raster_year", "area_ha")
 
-writexl::write_xlsx(areas, "D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/area_annual_losses.xlsx")
+writexl::write_xlsx(areas, "D:/__PESSOAL/Vinicius_T/data_frames_result_areas/area_annual_losses.xlsx")
 
 
