@@ -1589,7 +1589,7 @@ raster::writeRaster(MB_2023_AF_forest_only,
                     "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2023_AF_forest_only.tif",
                     options = c("COMPRESS=LZW", "ZLEVEL=9"))
 
-MB_2023_AF_forest_only <- raster::raster("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2023_AF_forest_only.tif")
+MB_2023_AF_forest_only <- terra::rast("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2023_AF_forest_only.tif")
 
 reg_year <- list.files(dir, pattern = "_1ha.tif")
 
@@ -1602,8 +1602,9 @@ names_rasters <- gsub(".tif", "", reg_year)
 
 mtx <- matrix(names_rasters, ncol = 2, nrow = length(names_rasters), byrow = F)
 
+MB_2023_AF_forest_only <- raster::raster("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2023_AF_forest_only.tif")
 
-for(i in 1:length(names(reg_year))){
+for(i in 1:length(reg_year)){
   
   # Summing annual raster to total reg 2011-2021 with values converted to 2
   summed_raster <- raster::raster(reg_resampled_AF_stack[[i]]) + MB_2023_AF_forest_only
