@@ -1580,24 +1580,23 @@ reclass_matrix <- matrix(c(0, 0,
                            26, 0,
                            33, 0,
                            31, 0,
-                           27, 0
-                           
-                           
-                           
-                           
-                           
-                           
-                           
-                           ),
+                           27, 0),
                            ncol = 2, byrow = T)
 
 MB_2023_AF_forest_only <- raster::reclassify(MB_2023_AF, reclass_matrix)
 
+raster::writeRaster(MB_2023_AF_forest_only,
+                    "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2023_AF_forest_only.tif",
+                    options = c("COMPRESS=LZW", "ZLEVEL=9"))
+
+MB_2023_AF_forest_only <- terra::rast("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2023_AF_forest_only.tif")
 
 reg_year <- list.files(dir, pattern = "_1ha.tif")
 
 setwd(dir)
-stack_reg_year <- raster::stack(reg_year)
+stack_reg_year <- terra::rast(reg_year)
+
+reg_resampled_AF_stack <- terra::resample(stack_reg_year, MB_2023_AF_forest_only, method = "near")
 
 names_rasters <- gsub(".tif", "", reg_year)
 
@@ -1607,7 +1606,7 @@ mtx <- matrix(names_rasters, ncol = 2, nrow = length(names_rasters), byrow = F)
 for(i in 1:length(names(reg_year))){
   
   # Summing annual raster to total reg 2011-2021 with values converted to 2
-  summed_raster <- stack_reg_year[[i]] + reg_2011_2021_pixel_2
+  summed_raster <- raster::raster(reg_resampled_AF_stack[[i]]) + reg_2011_2021_pixel_2
   
   # Reclassifying summed raster pixel values
   reclass_matrix_sum <- matrix(c(0, 0,
@@ -1615,7 +1614,6 @@ for(i in 1:length(names(reg_year))){
                                  2, 0,
                                  3, 0),
                                  ncol = 2, byrow = T)
-  
   
   reg_anual_reclass <- raster::reclassify(summed_raster, reclass_matrix_sum)
   
@@ -1644,5 +1642,5 @@ areas <- data.frame(mtx)
 colnames(areas) <- c("raster_year", "area_ha")
 
 writexl::write_xlsx(areas, "D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/area_annual_losses.xlsx")
-
+bluet
 
