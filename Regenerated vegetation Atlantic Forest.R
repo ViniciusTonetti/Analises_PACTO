@@ -1578,7 +1578,7 @@ for(i in 1:length(names(reg_year))){
   reg_anual_reclass <- terra::rast(reg_anual_reclass)
   
   # Converting summed raster reclassified to SAD69
-  reg_anual_reclass_SAD69 <- terra::project(reg_anual_reclass_SAD69, "EPSG:29101", method = "mode")
+  reg_anual_reclass_SAD69 <- terra::project(reg_anual_reclass, "EPSG:29101", method = "mode")
   
   # Calculating area of raster
   pixel_area <- cellSize(reg_anual_reclass_SAD69, unit = "m")
