@@ -1554,6 +1554,10 @@ reg_year <- list.files(dir, pattern = "_1ha.tif")
 setwd(dir)
 stack_reg_year <- raster::stack(reg_year)
 
+names_rasters <- gsub(".tif", "", reg_year)
+
+mtx <- matrix(names_rasters, ncol = 2, nrow = length(names_rasters), byrow = F)
+
 
 for(i in 1:length(names(reg_year))){
   
@@ -1581,11 +1585,18 @@ for(i in 1:length(names(reg_year))){
     
   reg_anual_reclass_SAD69_Area <- reg_anual_reclass_SAD69 * pixel_area
   
+  # Sum pixel values
+  sum_pixels <- terra::global(reg_anual_reclass_SAD69_Area, "sum", na.rm = T)
   
+  # Converting values from square meters to hectare
+  sum_pixels_ha <- sum_pixels/10000
+  
+  mtx[i,2] <- sum_pixels_ha
 
 }
 
+areas <- data.frame(mtx)
 
-
+colnames(areas) <- c("raster_year", "area_ha")
 
 
