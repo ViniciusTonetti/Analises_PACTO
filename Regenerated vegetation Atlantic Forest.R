@@ -1562,7 +1562,7 @@ mtx <- matrix(names_rasters, ncol = 2, nrow = length(names_rasters), byrow = F)
 for(i in 1:length(names(reg_year))){
   
   # Summing annual raster to total reg 2011-2021 with values converted to 2
-  summed_raster <- stack_reg_year[[1]] + reg_2011_2021_pixel_2
+  summed_raster <- stack_reg_year[[i]] + reg_2011_2021_pixel_2
   
   # Reclassifying summed raster pixel values
   reclass_matrix_sum <- matrix(c(0, 0,
