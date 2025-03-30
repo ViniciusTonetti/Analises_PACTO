@@ -1529,3 +1529,64 @@ max(forest_2010_higher_zero)
 
 
 
+################################################################################
+# Loss of annual regeneration in relation to 2023
+
+# cleaning directory 
+rm(list = ls())
+
+dir <- ("D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto")
+
+reg_2011_2021 <- raster::raster("D:/__PESSOAL/Vinicius_T/raster_pacto/_reg_11_21_AF.tif")
+
+
+# Converting 1 pixel values from raster reg 11-21 that persisted until 2023 to 2
+
+reclass_matrix <- matrix(c(0, 0,
+                           1, 2),
+                           ncol = 2, byrow = T)
+
+reg_2011_2021_pixel_2 <- raster::reclassify(reg_2011_2021, reclass_matrix)
+
+
+reg_year <- list.files(dir, pattern = "_1ha.tif")
+
+setwd(dir)
+stack_reg_year <- raster::stack(reg_year)
+
+
+for(i in 1:length(names(reg_year))){
+  
+  # Summing annual raster to total reg 2011-2021 with values converted to 2
+  summed_raster <- stack_reg_year[[1]] + reg_2011_2021_pixel_2
+  
+  # Reclassifying summed raster pixel values
+  reclass_matrix_sum <- matrix(c(0, 0,
+                                 1, 1,
+                                 2, 0,
+                                 3, 0),
+                                 ncol = 2, byrow = T)
+  
+  
+  reg_anual_reclass <- raster::reclassify(summed_raster, reclass_matrix_sum)
+  
+  # converting summed raster to a Terra object
+  reg_anual_reclass <- terra::rast(reg_anual_reclass)
+  
+  # Converting summed raster reclassified to SAD69
+  reg_anual_reclass_SAD69 <- terra::project(reg_anual_reclass_SAD69, "EPSG:29101", method = "mode")
+  
+  
+  
+  
+  
+  
+  output_path <- file.path(dir, paste(obj_names, ".tif", sep = ""))
+  terra::writeRaster(x = projected_raster, filename = output_path,
+                     gdal=c("COMPRESS=DEFLATE", "TFW=YES"))
+}
+
+
+
+
+
