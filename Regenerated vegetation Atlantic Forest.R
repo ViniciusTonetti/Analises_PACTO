@@ -1537,17 +1537,61 @@ rm(list = ls())
 
 dir <- ("D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto")
 
-MB_2023_AF_forest_only <- raster::raster("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2023_AF.tif")
-
+# Converting MB 2023 to forest only
+MB_2023_AF <- raster::raster("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2023_AF.tif")
 
 
 # Converting pixel values MB 2023
 
 reclass_matrix <- matrix(c(0, 0,
-                           1, 2),
+                           1, 0,
+                           3, 1,
+                           4, 0,
+                           5, 1,
+                           6, 0,
+                           49, 1,
+                           10, 0,
+                           11, 0,
+                           12, 0,
+                           32, 0,
+                           29, 0,
+                           50, 0,
+                           14, 0,
+                           15, 0,
+                           18, 0,
+                           19, 0,
+                           39, 0,
+                           20, 0,
+                           40, 0,
+                           62, 0,
+                           41, 0,
+                           36, 0,
+                           46, 0,
+                           47, 0,
+                           35, 0,
+                           48, 0,
+                           9, 0,
+                           21, 0,
+                           22, 0,
+                           23, 0,
+                           24, 0,
+                           30, 0,
+                           25, 0,
+                           26, 0,
+                           33, 0,
+                           31, 0,
+                           27, 0
+                           
+                           
+                           
+                           
+                           
+                           
+                           
+                           ),
                            ncol = 2, byrow = T)
 
-reg_2011_2021_pixel_2 <- raster::reclassify(MB_2023_AF_forest_only, reclass_matrix)
+MB_2023_AF_forest_only <- raster::reclassify(MB_2023_AF, reclass_matrix)
 
 
 reg_year <- list.files(dir, pattern = "_1ha.tif")
