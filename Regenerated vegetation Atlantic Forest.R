@@ -1570,7 +1570,7 @@ reclass_matrix <- matrix(c(0, 0,
                            47, 0,
                            35, 0,
                            48, 0,
-                           9, 0,
+                           9,  0,
                            21, 0,
                            22, 0,
                            23, 0,
@@ -1589,7 +1589,7 @@ raster::writeRaster(MB_2023_AF_forest_only,
                     "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2023_AF_forest_only.tif",
                     options = c("COMPRESS=LZW", "ZLEVEL=9"))
 
-MB_2023_AF_forest_only <- terra::rast("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2023_AF_forest_only.tif")
+MB_2023_AF_forest_only <- raster::raster("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2023_AF_forest_only.tif")
 
 reg_year <- list.files(dir, pattern = "_1ha.tif")
 
@@ -1606,7 +1606,7 @@ mtx <- matrix(names_rasters, ncol = 2, nrow = length(names_rasters), byrow = F)
 for(i in 1:length(names(reg_year))){
   
   # Summing annual raster to total reg 2011-2021 with values converted to 2
-  summed_raster <- raster::raster(reg_resampled_AF_stack[[i]]) + reg_2011_2021_pixel_2
+  summed_raster <- raster::raster(reg_resampled_AF_stack[[i]]) + MB_2023_AF_forest_only
   
   # Reclassifying summed raster pixel values
   reclass_matrix_sum <- matrix(c(0, 0,
@@ -1642,5 +1642,5 @@ areas <- data.frame(mtx)
 colnames(areas) <- c("raster_year", "area_ha")
 
 writexl::write_xlsx(areas, "D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/area_annual_losses.xlsx")
-bluet
+
 
