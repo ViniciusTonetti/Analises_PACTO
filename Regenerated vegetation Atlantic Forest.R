@@ -1596,7 +1596,8 @@ for(i in 1:length(names(reg_year))){
 }
 
 areas <- data.frame(mtx)
-
 colnames(areas) <- c("raster_year", "area_ha")
+
+writexl::write_xlsx(areas, "D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/area_annual_losses.xlsx")
 
 
