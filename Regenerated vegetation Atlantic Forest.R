@@ -1576,14 +1576,13 @@ for(i in 1:length(names(reg_year))){
   # Converting summed raster reclassified to SAD69
   reg_anual_reclass_SAD69 <- terra::project(reg_anual_reclass_SAD69, "EPSG:29101", method = "mode")
   
+  # Calculating area of raster
+  pixel_area <- cellSize(reg_anual_reclass_SAD69, unit = "m")
+    
+  reg_anual_reclass_SAD69_Area <- reg_anual_reclass_SAD69 * pixel_area
   
   
-  
-  
-  
-  output_path <- file.path(dir, paste(obj_names, ".tif", sep = ""))
-  terra::writeRaster(x = projected_raster, filename = output_path,
-                     gdal=c("COMPRESS=DEFLATE", "TFW=YES"))
+
 }
 
 
