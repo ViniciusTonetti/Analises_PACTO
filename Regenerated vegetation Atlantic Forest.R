@@ -1606,11 +1606,9 @@ stack_reg_year <- terra::rast(reg_year)
 
 reg_resampled_AF_stack <- terra::resample(stack_reg_year, MB_2023_AF_forest_only, method = "near")
 
-raster::writeRaster(reg_resampled_AF_stack,
-                    "D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001\Tiles Reg 11 - 20 Pacto/annual_reg_stack_resampled.tif",
-                    options = c("COMPRESS=LZW", "ZLEVEL=9"))
-
-
+#raster::writeRaster(reg_resampled_AF_stack,
+#                    "D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 #Pacto/annual_reg_stack_resampled_MB_AF.tif")
+                    
 names_rasters <- gsub(".tif", "", reg_year)
 
 mtx <- data.frame(names_rasters, NA)
@@ -1626,9 +1624,8 @@ for(i in 1:length(reg_year)){
   
   # Reclassifying summed raster pixel values
   reclass_matrix_sum <- matrix(c(0, 0,
-                                 1, 1,
-                                 2, 0,
-                                 3, 0),
+                                 1, 0,
+                                 2, 1),
                                  ncol = 2, byrow = T)
   
   reg_anual_reclass <- raster::reclassify(summed_raster, reclass_matrix_sum)
