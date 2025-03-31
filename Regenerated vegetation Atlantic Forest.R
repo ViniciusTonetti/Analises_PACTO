@@ -1600,7 +1600,9 @@ reg_resampled_AF_stack <- terra::resample(stack_reg_year, MB_2023_AF_forest_only
 
 names_rasters <- gsub(".tif", "", reg_year)
 
-mtx <- matrix(names_rasters, ncol = 2, nrow = length(names_rasters), byrow = F)
+mtx <- data.frame(names_rasters, NA)
+colnames(mtx) <- c("year_reg", "area_defo_ha")
+
 
 MB_2023_AF_forest_only <- raster::raster("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2023_AF_forest_only.tif")
 
@@ -1635,7 +1637,7 @@ for(i in 1:length(reg_year)){
   # Converting values from square meters to hectare
   sum_pixels_ha <- sum_pixels/10000
   
-  mtx[i,2] <- sum_pixels_ha
+  mtx[i,2] <- as.numeric(sum_pixels_ha)
 
 }
 
