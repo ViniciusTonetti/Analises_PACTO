@@ -1535,9 +1535,8 @@ max(forest_2010_higher_zero)
 # cleaning directory 
 rm(list = ls())
 
-dir <- ("D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto")
 
-# Converting MB 2023 to forest only
+# Converting MB 2023 to forest only --------------------------------------------
 MB_2023_AF <- raster::raster("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2023_AF.tif")
 
 
@@ -1585,18 +1584,32 @@ reclass_matrix <- matrix(c(0, 0,
 
 MB_2023_AF_forest_only <- raster::reclassify(MB_2023_AF, reclass_matrix)
 
-raster::writeRaster(MB_2023_AF_forest_only,
-                    "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2023_AF_forest_only.tif",
-                    options = c("COMPRESS=LZW", "ZLEVEL=9"))
+#raster::writeRaster(MB_2023_AF_forest_only,
+#                    "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2023_AF_forest_only.tif",
+#                    options = c("COMPRESS=LZW", "ZLEVEL=9"))
+
+
+# resampling rasters to sum and Loop
+# ------------------------------------------------------------------------------
+
+# cleaning directory 
+rm(list = ls())
+
 
 MB_2023_AF_forest_only <- terra::rast("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2023_AF_forest_only.tif")
 
+dir <- "D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto"
 reg_year <- list.files(dir, pattern = "_1ha.tif")
 
 setwd(dir)
 stack_reg_year <- terra::rast(reg_year)
 
 reg_resampled_AF_stack <- terra::resample(stack_reg_year, MB_2023_AF_forest_only, method = "near")
+
+raster::writeRaster(reg_resampled_AF_stack,
+                    "D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001\Tiles Reg 11 - 20 Pacto/annual_reg_stack_resampled.tif",
+                    options = c("COMPRESS=LZW", "ZLEVEL=9"))
+
 
 names_rasters <- gsub(".tif", "", reg_year)
 
