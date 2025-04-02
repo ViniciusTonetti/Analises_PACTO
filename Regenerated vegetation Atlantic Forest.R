@@ -1649,6 +1649,8 @@ for (i in 1:11) {
 rm(list = ls())
 
 dir <- "D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto"
+setwd(dir)
+getwd()
 
 names <- gsub("_1ha.tif", "", list.files(dir, pattern = "_1ha.tif"))
 
@@ -1674,3 +1676,5 @@ raster::writeRaster(reg_not_persistent_0_1,
                     paste(names[i], "_not_persist_2011_2021.tif", sep = ""),
                     options = c("COMPRESS=LZW", "ZLEVEL=9"))
 }
+
+
