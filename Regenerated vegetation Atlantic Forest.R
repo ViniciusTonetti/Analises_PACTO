@@ -1673,7 +1673,7 @@ reclass_matrix <- matrix(c(0, 0,
 reg_not_persistent_0_1 <- raster::reclassify(reg_not_persistent, reclass_matrix)
 
 raster::writeRaster(reg_not_persistent_0_1,
-                    paste(names[i], "_not_persist_2011_2021.tif", sep = ""),
+                    paste(dir, paste(names[i], "_not_persist_2011_2021.tif", sep = ""), sep = "/"),
                     options = c("COMPRESS=LZW", "ZLEVEL=9"))
 }
 
