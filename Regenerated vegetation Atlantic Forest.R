@@ -1630,7 +1630,14 @@ rm(list = ls())
 
 reg_annual_year_stack <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/annual_reg_stack_resampled_MB_AF.tif")
 
-reg_2011_2021 <- terra::rast("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2023_AF_forest_only.tif")
+forest_only_AF_2023 <- terra::rast("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2023_AF_forest_only.tif")
 
-reg_year_not_forest_2023reg_annual_year_stack[[1]] - reg_2011_2021
+mtx <- matrix(ncol = 11, nrow = 3, byrow = F)
+colnames(mtx) <- 2011:2021
+
+for (i in 1:11) {
+  reg_year_not_forest_2023 <- reg_annual_year_stack[[i]] - forest_only_AF_2023
+  mtx[,i] <- terra::unique(reg_year_not_forest_2023)
+}
+
 
