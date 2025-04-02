@@ -1640,4 +1640,18 @@ for (i in 1:11) {
   mtx[,i] <- terra::unique(reg_year_not_forest_2023)
 }
 
+# ------------------------------------------------------------------------------
+
+# Pixels of annual reg that are not forest in the layer Reg 2011-2021
+
+
+# cleaning directory
+rm(list = ls())
+
+
+reg_annual_year_stack <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/annual_reg_stack_resampled_MB_AF.tif")
+
+reg_2011_2021 <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/_reg_11_21.tif")
+
+
 
