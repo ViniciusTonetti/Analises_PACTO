@@ -1654,27 +1654,27 @@ getwd()
 
 names <- gsub("_1ha.tif", "", list.files(dir, pattern = "_1ha.tif"))
 
-reg_annual_year_stack <- raster::raster("D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/annual_reg_stack_resampled_MB_AF.tif")
+reg_annual_year_stack <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/annual_reg_stack_resampled_MB_AF.tif")
 
-reg_2011_2021 <- raster::raster("D:/__PESSOAL/Vinicius_T/raster_pacto/_reg_11_21_AF_resampled.tif")
+reg_2011_2021 <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/_reg_11_21_AF_resampled.tif")
 
 
 # Loop
 
 for(i in 1:length(names)){
   
-reg_not_persistent <- reg_annual_year_stack[[i]] - reg_2011_2021
+reg_not_persistent <- reg_annual_year_stack[[1]] - reg_2011_2021
 
 reclass_matrix <- matrix(c(0, 0,
                            1, 1,
                           -1, 0),
-                           ncol = 2, byrow = T)
+                         ncol = 2, byrow = T)
 
-reg_not_persistent_0_1 <- raster::reclassify(reg_not_persistent, reclass_matrix)
+reg_not_persistent_0_1 <- terra::classify(reg_not_persistent, reclass_matrix)
 
 raster::writeRaster(reg_not_persistent_0_1,
-                    paste(dir, paste(names[i], "_not_persist_2011_2021.tif", sep = ""), sep = "/"),
-                    options = c("COMPRESS=LZW", "ZLEVEL=9"))
+                    paste(dir, paste(names[1], "_not_persist_2011_2021.tif", sep = ""), sep = "/"),
+                    gdal=c("COMPRESS=DEFLATE", "TFW=YES"), overwrite = T)
 }
 
 
