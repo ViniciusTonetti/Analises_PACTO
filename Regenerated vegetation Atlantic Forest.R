@@ -1659,11 +1659,11 @@ reg_annual_year_stack <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles
 reg_2011_2021 <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/_reg_11_21_AF_resampled.tif")
 
 
-# Loop
+# Loop saving not persistent forests
 
 for(i in 1:length(names)){
   
-reg_not_persistent <- reg_annual_year_stack[[1]] - reg_2011_2021
+reg_not_persistent <- reg_annual_year_stack[[i]] - reg_2011_2021
 
 reclass_matrix <- matrix(c(0, 0,
                            1, 1,
@@ -1673,8 +1673,44 @@ reclass_matrix <- matrix(c(0, 0,
 reg_not_persistent_0_1 <- terra::classify(reg_not_persistent, reclass_matrix)
 
 raster::writeRaster(reg_not_persistent_0_1,
-                    paste(dir, paste(names[1], "_not_persist_2011_2021.tif", sep = ""), sep = "/"),
+                    paste(dir, paste(names[i], "_not_persist_2011_2021.tif", sep = ""), sep = "/"),
                     gdal=c("COMPRESS=DEFLATE", "TFW=YES"), overwrite = T)
 }
 
+# Loop converting projection and calculating area ------------------------------
 
+# cleaning directory
+rm(list = ls())
+
+dir <- "D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto"
+setwd(dir)
+
+names <- gsub("_not_persist_2011_2021.tif", "", list.files(dir, pattern = "_not_persist_2011_2021.tif"))
+
+not_persist_files <- list.files(dir, pattern = "_not_persist_2011_2021.tif")
+
+annual_reg_not_persistent_stack <- terra::rast(not_persist_files)
+
+df <- data.frame(matrix(ncol = 11, nrow = 1))
+colnames(df) <- 2011:2021
+
+for(i in 1:length(names)){
+
+annual_reg_not_persistent  <- terra::project(annual_reg_not_persistent_stack[[i]], "EPSG:29101", method = "mode")
+
+pixel_area <- cellSize(annual_reg_not_persistent, unit = "m")
+
+pixel_area_1_only <- annual_reg_not_persistent * pixel_area
+
+raster::writeRaster(pixel_area_1_only,
+                    paste(dir, paste(names[i], "_not_persist_2011_2021_SAD69_AREA.tif", sep = ""), sep = "/"),
+                    gdal=c("COMPRESS=DEFLATE", "TFW=YES"), overwrite = T)
+
+area_value <- terra::global(pixel_area_1_only, sum, na.rm = T)
+area_value_ha <- area_value/10000
+
+df[1,i] <- area_value_ha 
+
+}
+
+#writexl::write_xlsx(df, "D:/__PESSOAL/Vinicius_T/data_frames_result_areas/annual_reg_lost.xlsx")
