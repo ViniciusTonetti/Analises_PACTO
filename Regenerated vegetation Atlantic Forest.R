@@ -1702,7 +1702,7 @@ pixel_area <- cellSize(annual_reg_not_persistent, unit = "m")
 
 pixel_area_1_only <- annual_reg_not_persistent * pixel_area
 
-raster::writeRaster(pixel_area_1_only,
+terra::writeRaster(pixel_area_1_only,
                     paste(dir, paste(names[i], "_not_persist_2011_2021_SAD69_AREA.tif", sep = ""), sep = "/"),
                     gdal=c("COMPRESS=DEFLATE", "TFW=YES"), overwrite = T)
 
@@ -1713,4 +1713,4 @@ df[1,i] <- area_value_ha
 
 }
 
-#writexl::write_xlsx(df, "D:/__PESSOAL/Vinicius_T/data_frames_result_areas/annual_reg_lost.xlsx")
+writexl::write_xlsx(df, "D:/__PESSOAL/Vinicius_T/data_frames_result_areas/annual_reg_lost.xlsx")
