@@ -1620,61 +1620,17 @@ reg_resampled_AF_stack <- terra::resample(stack_reg_year, MB_2023_AF_forest_only
 #                    "D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 #Pacto/annual_reg_stack_resampled_MB_AF.tif")
 
 
-# resampling rasters to sum and Loop
-# ------------------------------------------------------------------------------
 
-# cleaning directory 
+# ---------------------------------------------------------------------------------------
+## Testing if there are pixels of annual regeneration that are not classified as forest in 2023
+
+# cleaning directory
 rm(list = ls())
 
-dir <- "D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto"
-reg_year <- list.files(dir, pattern = "_1ha.tif")
-                    
-names_rasters <- gsub(".tif", "", reg_year)
 
-setwd(dir)
-stack_reg_year <- raster::raster("D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/annual_reg_stack_resampled_MB_AF.tif")
+reg_annual_year_stack <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/annual_reg_stack_resampled_MB_AF.tif")
 
-mtx <- data.frame(names_rasters, NA)
-colnames(mtx) <- c("year_reg", "area_defo_ha")
+reg_2011_2021 <- terra::rast("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2023_AF_forest_only.tif")
 
-MB_2023_AF_forest_only_pixel_2 <- raster::raster("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2023_AF_forest_only_pixel_2.tif")
-
-for(i in 1:length(reg_year)){
-  
-  # Summing annual raster to total reg 2011-2021 with values converted to 2
-  summed_raster <- stack_reg_year[[i]] + MB_2023_AF_forest_only_pixel_2
-  
-  # Reclassifying summed raster pixel values
-  reclass_matrix_sum <- matrix(c(0, 0,
-                                 1, 1,
-                                 2, 0,
-                                 3, 0),
-                                 ncol = 2, byrow = T)
-  
-  reg_anual_reclass <- raster::reclassify(summed_raster, reclass_matrix_sum)
-  
-  # converting summed raster to a Terra object
-  reg_anual_reclass <- terra::rast(reg_anual_reclass)
-  
-  # Converting summed raster reclassified to SAD69
-  reg_anual_reclass_SAD69 <- terra::project(reg_anual_reclass, "EPSG:29101", method = "mode")
-  
-  # Calculating area of raster
-  pixel_area <- terra::cellSize(reg_anual_reclass_SAD69, unit = "m")
-    
-  reg_anual_reclass_SAD69_Area <- reg_anual_reclass_SAD69 * pixel_area
-  
-  # Sum pixel values
-  sum_pixels <- terra::global(reg_anual_reclass_SAD69_Area, "sum", na.rm = T)
-  
-  # Converting values from square meters to hectare
-  sum_pixels_ha <- sum_pixels/10000
-  
-  mtx[i,2] <- as.numeric(sum_pixels_ha)
-
-}
-
-
-writexl::write_xlsx(mtx, "D:/__PESSOAL/Vinicius_T/data_frames_result_areas/area_annual_losses.xlsx")
-
+reg_year_not_forest_2023reg_annual_year_stack[[1]] - reg_2011_2021
 
