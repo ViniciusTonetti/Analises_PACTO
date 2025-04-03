@@ -1698,7 +1698,7 @@ for(i in 1:length(names)){
 
 annual_reg_not_persistent  <- terra::project(annual_reg_not_persistent_stack[[i]], "EPSG:29101", method = "mode")
 
-pixel_area <- cellSize(annual_reg_not_persistent, unit = "m")
+pixel_area <- terra::cellSize(annual_reg_not_persistent, unit = "m")
 
 pixel_area_1_only <- annual_reg_not_persistent * pixel_area
 
