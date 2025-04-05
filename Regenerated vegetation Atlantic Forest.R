@@ -1356,7 +1356,7 @@ ggplot(annual_loss_reg_long, aes(x = factor(year), y = area_ha, fill = type)) +
   scale_y_continuous(breaks = c(50000, 100000, 150000, 200000, 224000),
                      labels = c("50", "100", "150", "200", "224"),
                      expand = c(0.01, 0))+
-  labs(x = "", y = "Area (ha)", fill = "Process",
+  labs(x = "", y = "Area (thousands ha)", fill = "Process",
        title = "") +
   theme_classic(base_size = 13) +
   theme(
