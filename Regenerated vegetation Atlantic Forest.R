@@ -1714,3 +1714,5 @@ df[1,i] <- area_value_ha
 }
 
 writexl::write_xlsx(df, "D:/__PESSOAL/Vinicius_T/data_frames_result_areas/annual_reg_lost.xlsx")
+
+
