@@ -1416,11 +1416,11 @@ defo_per_state <- defo_per_state %>%
     NM_UF == "Rio Grande do Norte" ~ "RN",
   )) %>%
   select(c("case_when(...)", defo_est)) %>% 
-  rename(state = `case_when(...)`) %>% 
-  mutate(state = factor(state, levels = state_order))
+  rename(state = `case_when(...)`) 
+  #mutate(state = factor(state, levels = state_order))
 
 
-(bar_chart_DEFO_state <- ggplot(defo_per_state, aes(x = state, y = defo_est/10000)) +
+(bar_chart_DEFO_state <- ggplot(defo_per_state, aes(x = reorder(state, defo_est), y = defo_est/10000)) +
     geom_bar(stat = "identity", fill = "#ee6b6e", width = 0.8) +
     labs(x = "", y = "", title = "") +
     scale_y_reverse(  # Reverse the y-axis
