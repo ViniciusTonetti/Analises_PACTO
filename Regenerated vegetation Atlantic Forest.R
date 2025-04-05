@@ -1310,7 +1310,7 @@ st_write(mun, "D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/_biv
 rm(list = ls())
 
 # Loading excel spreadsheet
-reg_per_year <- readxl::read_excel("D:/__PESSOAL/Vinicius_T/data_frames_result_areas/reg_per_year.xlsx")
+reg_per_year <- readxl::read_excel("D:/_Vinicius/artigos/2024.12.d04 - Pacto, secondary forests, natural regeneration/dataframes/dataframes/reg_per_year.xlsx")
 
 (bar_chart <- ggplot(reg_per_year, aes(x = factor(reg_year), y = area_ha))+
              geom_bar(stat = "identity", fill = "gray50") +
@@ -1324,7 +1324,50 @@ reg_per_year <- readxl::read_excel("D:/__PESSOAL/Vinicius_T/data_frames_result_a
                    axis.title.x = element_text(size = 14),      
                    axis.title.y = element_text(size = 14)))
 
-#ggsave("D:/__PESSOAL/Vinicius_T/bar_chart/bar_chart.png", plot = bar_chart, width = 20, height = 15, units = "cm")
+
+# Loading annual loss dataframe ------------------------------------------------
+
+# cleaning directory
+rm(list = ls())
+
+# Loading excel spreadsheet
+reg_per_year_long <- readxl::read_excel("D:/_Vinicius/artigos/2024.12.d04 - Pacto, secondary forests, natural regeneration/dataframes/dataframes/reg_per_year.xlsx")
+
+annual_loss_year <- readxl::read_excel("D:/_Vinicius/artigos/2024.12.d04 - Pacto, secondary forests, natural regeneration/dataframes/dataframes/annual_reg_lost.xlsx")
+
+
+(annual_loss_reg <- dplyr::bind_cols(reg_per_year_long, annual_loss_year %>% 
+                                       pivot_longer(everything(), names_to = "reg_year", values_to = "annual_defo_ha")) %>% 
+  select(-c(3)) %>% 
+  rename(annual_reg_ha = area_ha, year = reg_year...1) %>% 
+  mutate(annual_defo_ha = round(annual_defo_ha))
+)
+
+annual_loss_reg_long <- annual_loss_reg %>%
+  pivot_longer(cols = c(annual_reg_ha, annual_defo_ha),
+               names_to = "type",
+               values_to = "area_ha") %>%
+  mutate(type = factor(type, levels = c("annual_reg_ha", "annual_defo_ha")))  # Blue first
+
+ggplot(annual_loss_reg_long, aes(x = factor(year), y = area_ha, fill = type)) +
+  geom_bar(stat = "identity", width = 0.8, position = position_dodge(width = 0.8)) +
+  scale_fill_manual(values = c("annual_reg_ha" = "#7B9FCF", "annual_defo_ha" = "#ee6b6e"),
+                    labels = c("Restoration", "Deforestation")) +
+  scale_y_continuous(breaks = c(50000, 100000, 150000, 200000, 224000),
+                     labels = c("50", "100", "150", "200", "224"),
+                     expand = c(0.01, 0))+
+  labs(x = "", y = "Area (ha)", fill = "Process",
+       title = "") +
+  theme_classic(base_size = 13) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    axis.text.y = element_text(size = 10),
+    axis.title.y = element_text(size = 11)
+  ) +
+  guides(fill = "none")
+
+
+ggsave("D:/_Vinicius/artigos/2024.12.d04 - Pacto, secondary forests, natural regeneration/Figuras/Bar Chart/annual_reg_defo.png", width = 20, height = 10, units = "cm", dpi = 300)
 
 
 ################################################################################
