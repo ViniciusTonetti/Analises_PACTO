@@ -1430,7 +1430,7 @@ ggsave("D:/_Vinicius/artigos/2024.12.d04 - Pacto, secondary forests, natural reg
 
 ## Defo per state
 
-defo_per_state <- readxl::read_excel("D:/_Vinicius/artigos/2024.12.d04 - Pacto, secondary forests, natural regeneration/dataframes/dataframes/total_defo_states.xlsx")
+defo_per_state <- readxl::read_excel("D:/_Vinicius/artigos/2024.12.d04 - Pacto, secondary forests, natural regeneration/dataframes/dataframes/total_defo_estados.xlsx")
 
 
 state_order <- rev(c("MG", "PR", "BA", "SP",  
@@ -1440,35 +1440,35 @@ state_order <- rev(c("MG", "PR", "BA", "SP",
 
 
 defo_per_state <- defo_per_state %>% 
-  filter(defo_est != 0) %>% 
+  filter(total_defo_ha != 0) %>% 
   mutate(case_when(
-    NM_UF == "Minas Gerais" ~ "MG",
-    NM_UF == "Paraná" ~ "PR",
-    NM_UF == "Bahia" ~ "BA",
-    NM_UF == "São Paulo" ~ "SP",
-    NM_UF == "Santa Catarina" ~ "SC",
-    NM_UF == "Rio Grande do Sul" ~ "RS",
-    NM_UF == "Espírito Santo" ~ "ES",
-    NM_UF == "Rio de Janeiro" ~ "RJ",
-    NM_UF == "Pernambuco" ~ "PE",
-    NM_UF == "Alagoas" ~ "AL",
-    NM_UF == "Sergipe" ~ "SE",
-    NM_UF == "Mato Grosso do Sul" ~ "MS",
-    NM_UF == "Paraíba" ~ "PB",
-    NM_UF == "Goiás" ~ "GO",
-    NM_UF == "Rio Grande do Norte" ~ "RN",
+    Estado == "Minas Gerais" ~ "MG",
+    Estado == "Paraná" ~ "PR",
+    Estado == "Bahia" ~ "BA",
+    Estado == "São Paulo" ~ "SP",
+    Estado == "Santa Catarina" ~ "SC",
+    Estado == "Rio Grande do Sul" ~ "RS",
+    Estado == "Espírito Santo" ~ "ES",
+    Estado == "Rio de Janeiro" ~ "RJ",
+    Estado == "Pernambuco" ~ "PE",
+    Estado == "Alagoas" ~ "AL",
+    Estado == "Sergipe" ~ "SE",
+    Estado == "Mato Grosso do Sul" ~ "MS",
+    Estado == "Paraíba" ~ "PB",
+    Estado == "Goiás" ~ "GO",
+    Estado == "Rio Grande do Norte" ~ "RN",
   )) %>%
-  select(c("case_when(...)", defo_est)) %>% 
+  select(c("case_when(...)", total_defo_ha)) %>% 
   rename(state = `case_when(...)`) 
   #mutate(state = factor(state, levels = state_order))
 
 
-(bar_chart_DEFO_state <- ggplot(defo_per_state, aes(x = reorder(state, defo_est), y = defo_est/10000)) +
+(bar_chart_DEFO_state <- ggplot(defo_per_state, aes(x = reorder(state, total_defo_ha), y = total_defo_ha)) +
     geom_bar(stat = "identity", fill = "#ee6b6e", width = 0.8) +
     labs(x = "", y = "", title = "") +
     scale_y_reverse(  # Reverse the y-axis
-      breaks = c(0, 20000, 40000, 60000, 87755),
-      labels = c("0", "20", "40", "60", "87"),
+      breaks = c(0, 50000, 100000, 156161),
+      labels = c("0", "50", "100", "156"),
       expand = expansion(mult = c(0.19, 0.05))  # Reduce space below the bars
     ) +
     theme_classic() +
