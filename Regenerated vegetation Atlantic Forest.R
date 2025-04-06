@@ -1759,3 +1759,20 @@ df[1,i] <- area_value_ha
 writexl::write_xlsx(df, "D:/__PESSOAL/Vinicius_T/data_frames_result_areas/annual_reg_lost.xlsx")
 
 
+## Calculating total regeneration and regeneration per state
+
+# cleaning directory
+rm(list = ls())
+
+total_defo <- readxl::read_xlsx("D:/_Vinicius/artigos/2024.12.d04 - Pacto, secondary forests, natural regeneration/dataframes/dataframes/total_prop_defo_mun.xlsx")
+
+
+total_defo_estado <- total_defo %>% 
+  group_by(Estado) %>%
+  summarise(
+    total_defo_ha = sum(total_defo_ha, na.rm = TRUE)) %>%
+  arrange(desc(total_defo_ha))
+
+writexl::write_xlsx(total_defo_estado, "D:/_Vinicius/artigos/2024.12.d04 - Pacto, secondary forests, natural regeneration/dataframes/dataframes/total_defo_estados.xlsx")
+
+
