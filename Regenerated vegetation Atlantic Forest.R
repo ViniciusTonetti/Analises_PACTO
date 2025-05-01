@@ -1428,7 +1428,7 @@ reg_per_state <- reg_per_state %>%
       axis.text.x = element_text(angle = 45, hjust = 1)
     ))
 
-ggsave("D:/_Vinicius/artigos/2024.12.d04 - Pacto, secondary forests, natural regeneration/Figuras/Bar Chart/bar_chart_REG_state.png", plot = bar_chart_state, width = 60, height = 20, units = "cm")
+#ggsave("D:/_Vinicius/artigos/2024.12.d04 - Pacto, secondary forests, natural regeneration/Figuras/Bar Chart/bar_chart_REG_state.png", plot = bar_chart_state, width = 60, height = 20, units = "cm")
 
 
 ## Defo per state
@@ -1485,7 +1485,7 @@ defo_per_state <- defo_per_state %>%
     ))
 
 
-ggsave("D:/_Vinicius/artigos/2024.12.d04 - Pacto, secondary forests, natural regeneration/Figuras/Bar Chart/bar_chart_DEFO_state.png", plot = bar_chart_DEFO_state, width = 60, height = 20, units = "cm")
+#ggsave("D:/_Vinicius/artigos/2024.12.d04 - Pacto, secondary forests, natural regeneration/Figuras/Bar Chart/bar_chart_DEFO_state.png", plot = bar_chart_DEFO_state, width = 60, height = 20, units = "cm")
 
 
 
@@ -1516,12 +1516,13 @@ colors <- c("area_reg_ha" = "#7B9FCF", "total_defo_ha" = "#ee6b6e")
 (states_spuerimposed <- ggplot(df_long, aes(x = state, y = value, fill = category)) +
   geom_bar(stat = "identity", position = "identity") +
   scale_fill_manual(values = c("area_reg_ha" = "#7B9FCF", "total_defo_ha" = "#ee6b6e")) +
-  labs(x = "", y = "Area (Thousands ha)", fill = "Category") +
+  labs(x = "", y = "Area (thousands ha)", fill = "Category") +
   theme_classic() +
   theme(
     strip.text = element_blank(),
-    text = element_text(size = 28),
-    axis.text.y = element_text(margin = margin(r = 4)),
+    text = element_text(size = 18),
+    axis.text.y = element_text(size = 18, margin = margin(r = 4)),
+    axis.title.y = element_text(size = 18, margin = margin(r = 15)),
     axis.text.x = element_text(angle = 45, hjust = 1)
   )+
     guides(fill = "none")+
