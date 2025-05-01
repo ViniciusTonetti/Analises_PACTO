@@ -1485,6 +1485,20 @@ defo_per_state <- defo_per_state %>%
 ggsave("D:/_Vinicius/artigos/2024.12.d04 - Pacto, secondary forests, natural regeneration/Figuras/Bar Chart/bar_chart_DEFO_state.png", plot = bar_chart_DEFO_state, width = 60, height = 20, units = "cm")
 
 
+
+### Stacked barplot ------------------------------------------------------------
+
+defo_per_state
+reg_per_state <- reg_per_state[,c(1,2)]
+colnames(reg_per_state) <- c("state", "area_reg_ha")
+
+reg_defo_state <- full_join(reg_per_state, defo_per_state, by = "state")
+
+
+
+
+
+
 ################################################################################
 ## APP FBDS --------------------------------------------------------------------
 
