@@ -12,6 +12,7 @@ library(writexl)
 library(readxl)
 library(future.apply)
 library(classInt)
+library(scales)
 
 
 # cleaning directory -----------------------------------------------------------
@@ -1486,7 +1487,7 @@ ggsave("D:/_Vinicius/artigos/2024.12.d04 - Pacto, secondary forests, natural reg
 
 
 
-### Stacked barplot ------------------------------------------------------------
+### Superimposed barplot -------------------------------------------------------
 
 defo_per_state
 reg_per_state <- reg_per_state[,c(1,2)]
@@ -1495,7 +1496,37 @@ colnames(reg_per_state) <- c("state", "area_reg_ha")
 reg_defo_state <- full_join(reg_per_state, defo_per_state, by = "state")
 
 
+# Converting df to long
 
+df_long <- reg_defo_state %>%
+  pivot_longer(cols = c(area_reg_ha, total_defo_ha),
+               names_to = "category", values_to = "value")%>%
+  mutate(state = factor(state, levels = unique(reg_defo_state$state)))
+
+# colors
+
+colors <- c("area_reg_ha" = "#7B9FCF", "total_defo_ha" = "#ee6b6e")
+
+
+
+# Plot
+
+ggplot(df_long, aes(x = state, y = value, fill = category)) +
+  geom_bar(stat = "identity", position = "identity") +
+  scale_fill_manual(values = c("area_reg_ha" = "#7B9FCF", "total_defo_ha" = "#ee6b6e")) +
+  labs(x = "", y = "Area (Thousands ha)", fill = "Category") +
+  theme_classic() +
+  theme(
+    strip.text = element_blank(),
+    text = element_text(size = 28),
+    axis.text.y = element_text(margin = margin(r = 4)),
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )+
+    guides(fill = "none")+
+  scale_y_continuous(
+    breaks = c(0, 100000, 200000, 300000, 423887),
+    labels = c("0", "100", "200", "300", "423")
+  )
 
 
 
