@@ -1353,7 +1353,7 @@ annual_loss_reg_long <- annual_loss_reg %>%
   mutate(type = factor(type, levels = c("annual_reg_ha", "annual_defo_ha")))
 
 ggplot(annual_loss_reg_long, aes(x = factor(year), y = area_ha, fill = type)) +
-  geom_bar(stat = "identity", width = 0.8, position = position_dodge(width = 0)) +
+  geom_bar(stat = "identity", width = 1.2, position = position_dodge(width = 0)) +
   scale_fill_manual(values = c("annual_reg_ha" = "#7B9FCF", "annual_defo_ha" = "#ee6b6e"),
                     labels = c("Restoration", "Deforestation")) +
   scale_y_continuous(breaks = c(50000, 100000, 150000, 200000, 224000),
