@@ -1511,7 +1511,7 @@ colors <- c("area_reg_ha" = "#7B9FCF", "total_defo_ha" = "#ee6b6e")
 
 # Plot
 
-ggplot(df_long, aes(x = state, y = value, fill = category)) +
+(states_spuerimposed <- ggplot(df_long, aes(x = state, y = value, fill = category)) +
   geom_bar(stat = "identity", position = "identity") +
   scale_fill_manual(values = c("area_reg_ha" = "#7B9FCF", "total_defo_ha" = "#ee6b6e")) +
   labs(x = "", y = "Area (Thousands ha)", fill = "Category") +
@@ -1527,9 +1527,9 @@ ggplot(df_long, aes(x = state, y = value, fill = category)) +
     breaks = c(0, 100000, 200000, 300000, 423887),
     labels = c("0", "100", "200", "300", "423"),
     expand = expansion(mult = c(0.01, 0.05))  # Reduce gap below bars (0.05 is a small amount)
-  )
+  ))
 
-
+ggsave("D:/_Vinicius/artigos/2024.12.d04 - Pacto, secondary forests, natural regeneration/Figuras/Bar Chart/states_spuerimposed.jpg", plot = states_spuerimposed, width = 40, height = 20, units = "cm")
 
 ################################################################################
 ## APP FBDS --------------------------------------------------------------------
