@@ -1525,7 +1525,8 @@ ggplot(df_long, aes(x = state, y = value, fill = category)) +
     guides(fill = "none")+
   scale_y_continuous(
     breaks = c(0, 100000, 200000, 300000, 423887),
-    labels = c("0", "100", "200", "300", "423")
+    labels = c("0", "100", "200", "300", "423"),
+    expand = expansion(mult = c(0.01, 0.05))  # Reduce gap below bars (0.05 is a small amount)
   )
 
 
