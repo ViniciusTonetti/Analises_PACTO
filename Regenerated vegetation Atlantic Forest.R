@@ -1361,16 +1361,16 @@ ggplot(annual_loss_reg_long, aes(x = factor(year), y = area_ha, fill = type)) +
                      expand = c(0.01, 0))+
   labs(x = "", y = "Area (thousands ha)", fill = "Process",
        title = "") +
-  theme_classic(base_size = 13) +
+  theme_classic(base_size = 8) +
   theme(
-    axis.text.x = element_text(angle = 45, hjust = 1),
-    axis.text.y = element_text(size = 10),
-    axis.title.y = element_text(size = 11)
+    axis.text.x = element_text(size = 12.5, angle = 45, hjust = 1),
+    axis.text.y = element_text(size = 12.5),
+    axis.title.y = element_text(size = 12.5, margin = margin(r = 7))
   ) +
   guides(fill = "none")
 
 
-ggsave("D:/_Vinicius/artigos/2024.12.d04 - Pacto, secondary forests, natural regeneration/Figuras/Bar Chart/annual_reg_defo.png", width = 20, height = 10, units = "cm", dpi = 300)
+ggsave("D:/_Vinicius/artigos/2024.12.d04 - Pacto, secondary forests, natural regeneration/Figuras/Bar Chart/annual_reg_defo.png", width = 17, height = 10, units = "cm", dpi = 300)
 
 
 ################################################################################
@@ -1520,9 +1520,9 @@ colors <- c("area_reg_ha" = "#7B9FCF", "total_defo_ha" = "#ee6b6e")
   theme_classic() +
   theme(
     strip.text = element_blank(),
-    text = element_text(size = 18),
-    axis.text.y = element_text(size = 18, margin = margin(r = 4)),
-    axis.title.y = element_text(size = 18, margin = margin(r = 15)),
+    text = element_text(size = 28),
+    axis.text.y = element_text(size = 28, margin = margin(r = 4)),
+    axis.title.y = element_text(size = 28, margin = margin(r = 15)),
     axis.text.x = element_text(angle = 45, hjust = 1)
   )+
     guides(fill = "none")+
