@@ -1353,11 +1353,11 @@ annual_loss_reg_long <- annual_loss_reg %>%
   mutate(type = factor(type, levels = c("annual_reg_ha", "annual_defo_ha")))
 
 ggplot(annual_loss_reg_long, aes(x = factor(year), y = area_ha, fill = type)) +
-  geom_bar(stat = "identity", width = 1.5, position = position_dodge(width = 0)) +
+  geom_bar(stat = "identity", width = 0.7, position = "stack") +
   scale_fill_manual(values = c("annual_reg_ha" = "#7B9FCF", "annual_defo_ha" = "#ee6b6e"),
                     labels = c("Restoration", "Deforestation")) +
-  scale_y_continuous(breaks = c(50000, 100000, 150000, 200000, 224000),
-                     labels = c("50", "100", "150", "200", "224"),
+  scale_y_continuous(breaks = c(50000, 100000, 150000, 200000, 250000, 271099),
+                     labels = c("50", "100", "150", "200", "250","271"),
                      expand = c(0.01, 0))+
   labs(x = "", y = "Area (thousands ha)", fill = "Process",
        title = "") +
@@ -1514,7 +1514,7 @@ colors <- c("area_reg_ha" = "#7B9FCF", "total_defo_ha" = "#ee6b6e")
 # Plot
 
 (states_spuerimposed <- ggplot(df_long, aes(x = state, y = value, fill = category)) +
-  geom_bar(stat = "identity", position = "identity") +
+    geom_bar(stat = "identity", width = 0.7, position = "stack") +
   scale_fill_manual(values = c("area_reg_ha" = "#7B9FCF", "total_defo_ha" = "#ee6b6e")) +
   labs(x = "", y = "Area (thousands ha)", fill = "Category") +
   theme_classic() +
@@ -1527,10 +1527,12 @@ colors <- c("area_reg_ha" = "#7B9FCF", "total_defo_ha" = "#ee6b6e")
   )+
     guides(fill = "none")+
   scale_y_continuous(
-    breaks = c(0, 100000, 200000, 300000, 423887),
-    labels = c("0", "100", "200", "300", "423"),
+    breaks = c(0, 100000, 200000, 300000, 400000, 500000, 580000),
+    labels = c("0", "100", "200", "300", "400", "500", "580"),
     expand = expansion(mult = c(0.01, 0.05))  # Reduce gap below bars (0.05 is a small amount)
   ))
+
+
 
 ggsave("D:/_Vinicius/artigos/2024.12.d04 - Pacto, secondary forests, natural regeneration/Figuras/Bar Chart/states_spuerimposed.jpg", plot = states_spuerimposed, width = 40, height = 20, units = "cm")
 
