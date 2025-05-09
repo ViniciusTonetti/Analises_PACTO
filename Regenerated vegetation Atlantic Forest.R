@@ -208,33 +208,29 @@ raster::writeRaster(MB_2010_AF_forest_only,
                     options = c("COMPRESS=LZW", "ZLEVEL=9"))
 
 
-
-
-
 # Calculating area of forest only ----------------------------------------------
 
-MB_09_AF_2010_WGS84_forest_only <- rast("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/MB_09_AF_2010_WGS84_forest_only.tif")
-MB_09_AF_2010_SAD69_Poly_forest_only <- terra::project(MB_09_AF_2010_WGS84_forest_only,"EPSG:29101", method = "mode")
+AF_2010_forest_only <- rast("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2010_AF_forest_only.tif")
+AF_2010_forest_only_Poly <- terra::project(AF_2010_forest_only,"EPSG:29101", method = "mode")
 
-plot(MB_09_AF_2010_SAD69_Poly_forest_only)
+plot(AF_2010_forest_only_Poly)
 
 #terra::writeRaster(MB_09_AF_2010_SAD69_Poly_forest_only,
-#                    "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/MB_09_AF_2010_SAD69_Poly_forest_only.tif")
-
+#                    "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/AF_2010_forest_only_Poly.tif")
 
 
 # Loading raster 2010 forest only
-MB_09_AF_2010_SAD69_Poly_forest_only <- rast("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/MB_09_AF_2010_SAD69_Poly_forest_only")
+AF_2010_forest_only_Poly <- rast("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/AF_2010_forest_only_Poly.tif")
 
 # Computing the area of each pixel of the secondary forest patches
-pixel_area_forest_only <- cellSize(MB_09_AF_2010_SAD69_Poly_forest_only, unit = "m")
+AF_2010_forest_only_Poly_Area <- cellSize(AF_2010_forest_only_Poly, unit = "m")
 
 # Considering values only for forest pixels
-pixel_area_forest_only_Poly <- MB_09_AF_2010_SAD69_Poly_forest_only * pixel_area_forest_only
-plot(pixel_area_forest_only_Poly)
+AF_2010_forest_only_Poly_Area <- AF_2010_forest_only_Poly_Area * AF_2010_forest_only_Poly
+plot(AF_2010_forest_only_Poly_Area)
 
 #terra::writeRaster(pixel_area_forest_only_Poly,
-#                    "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/pixel_area_forest_only_Poly.tif")
+#                    "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2010_AF_Area.tif")
 
 
 # Extracting values of pixel area in the forest only raster to polygons --------
