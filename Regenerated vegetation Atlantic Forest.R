@@ -203,6 +203,16 @@ reclass_matrix <- matrix(c(0, 0,
 
 MB_2010_AF_forest_only <- raster::reclassify(MB_2010_AF, reclass_matrix)
 
+
+# Cropping to the Atlantic Forest
+
+# AF Limits
+AF <- sf::st_read("D:/__PESSOAL/Vinicius_T/Limite Mata Atlantica/bioma_MA_IBGE_250mil/bioma_MA_IBGE_250mil.shp")
+plot(AF)
+
+MB_2010_AF_forest_only <- mask(crop(MB_2010_AF_forest_only , AF), AF)
+plot(MB_2010_AF_forest_only)
+
 raster::writeRaster(MB_2010_AF_forest_only,
                     "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2010_AF_forest_only.tif",
                     options = c("COMPRESS=LZW", "ZLEVEL=9"))
@@ -211,6 +221,8 @@ raster::writeRaster(MB_2010_AF_forest_only,
 # Calculating area of forest only ----------------------------------------------
 
 AF_2010_forest_only <- rast("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2010_AF_forest_only.tif")
+plot(AF_2010_forest_only)
+
 AF_2010_forest_only_Poly <- terra::project(AF_2010_forest_only,"EPSG:29101", method = "mode")
 
 plot(AF_2010_forest_only_Poly)
