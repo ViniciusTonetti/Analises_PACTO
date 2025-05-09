@@ -141,54 +141,6 @@ sum(df_area[,"sec_for"])
 #writexl::write_xlsx(df_area, "D:/__PESSOAL/Vinicius_T/raster_pacto/reg_by_municipalities_Poly.xlsx")
 
 
-# Analysis by State ------------------------------------------------------------
-
-# Loading state polygon
-state_area <- terra::vect("D:/__PESSOAL/Vinicius_T/estados_Brasil/BR_UF_2023/BR_UF_2023_area.shp")
-plot(state_area)
-
-
-# Converting the CRS of the states to the same CRS of the raster
-state_area_SAD69_Poly <- project(state_area, "EPSG:29101")
-
-# Converting the state polygon to sf object
-state_area_SAD69_sf <- sf::st_as_sf(state_area_SAD69_Poly)
-
-extract_area_state <- exactextractr::exact_extract(reg_11_21_SAD69_area_forest_only_raster, state_area_SAD69_sf, "sum")
-
-# Checking the number of columns
-ncol(state_area_SAD69_sf) #8
-
-# Creating a new column to add area of regenerating forest
-state_area_SAD69_sf[,7] <- extract_area_state
-colnames(state_area_SAD69_sf)[7] <- "sec_for_Poly"
-
-length(extract_area_state)
-nrow(state_area_SAD69_sf)
-
-# Save to shapefile
-#st_write(state_area_SAD69_sf, "D:/__PESSOAL/Vinicius_T/estados_Brasil/BR_UF_2023/BR_UF_2023_area_Poly.shp", delete_dsn = T)
-
-
-# Saving areas of secondary forest by State to Excel ---------------------------
-
-
-# Loading shapefile with the area of regenerated forests in each state
-state_with_area_Poly <- terra::vect("D:/__PESSOAL/Vinicius_T/estados_Brasil/BR_UF_2023/BR_UF_2023_area_Poly.shp")
-
-# Extracting and saving values for the ammount of forest in each municipality and saving as Data Frame
-names(state_with_area_Poly)
-df_area_by_state <- as.data.frame(state_with_area_Poly[,c("NM_UF","sc_fr_P")])
-
-df_area_by_state <- df_area_by_state  %>% 
-  arrange(desc(sc_fr_P))
-
-sum(df_area_by_state[,"sc_fr_P"])
-
-#writexl::write_xlsx(df_area_by_state, "D:/__PESSOAL/Vinicius_T/estados_Brasil/BR_UF_2023/reg_by_states_Poly.xlsx")
-
-
-
 # Calculating the proportion of secondary forest by municipality and state #####
 ################################################################################
 
