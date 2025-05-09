@@ -23,6 +23,71 @@ rm(list = ls())
 numb_cores <- parallel::detectCores() - 1
 plan(multisession, workers =  numb_cores)
 
+
+################################################################################
+# Converting 2010 MB raster to forest only -------------------------------------
+
+# cleaning directory 
+rm(list = ls())
+
+
+# Converting MB 2010 to forest only --------------------------------------------
+MB_2010_AF <- raster::raster("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2010.tif")
+
+
+# Converting pixel values MB 2010
+# The following pixel values are converted to forest (1 value)
+# Forest (3 original value in MapBiomas), Mangrove (5), and Wooded Sandbank vegetation (49)
+
+reclass_matrix <- matrix(c(0, 0,
+                           1, 0,
+                           3, 1,
+                           4, 0,
+                           5, 1,
+                           6, 0,
+                           49, 1,
+                           10, 0,
+                           11, 0,
+                           12, 0,
+                           32, 0,
+                           29, 0,
+                           50, 0,
+                           14, 0,
+                           15, 0,
+                           18, 0,
+                           19, 0,
+                           39, 0,
+                           20, 0,
+                           40, 0,
+                           62, 0,
+                           41, 0,
+                           36, 0,
+                           46, 0,
+                           47, 0,
+                           35, 0,
+                           48, 0,
+                           9,  0,
+                           21, 0,
+                           22, 0,
+                           23, 0,
+                           24, 0,
+                           30, 0,
+                           25, 0,
+                           26, 0,
+                           33, 0,
+                           31, 0,
+                           27, 0),
+                         ncol = 2, byrow = T)
+
+MB_2010_AF_forest_only <- raster::reclassify(MB_2010_AF, reclass_matrix)
+
+raster::writeRaster(MB_2010_AF_forest_only,
+                    "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2010_AF_forest_only.tif",
+                    options = c("COMPRESS=LZW", "ZLEVEL=9"))
+
+
+
+
 #### Reprojecting --------------------------------------------------------------
 ################################################################################
 
