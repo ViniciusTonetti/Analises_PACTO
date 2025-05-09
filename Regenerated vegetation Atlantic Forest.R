@@ -482,12 +482,6 @@ MB_2010 <- terra::rast("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage
 
 # Cropping to the AF limit
 
-MB_2008_AF <- mask(crop(MB_2008, AF), AF)
-#plot(MB_2008_AF)
-
-#terra::writeRaster(MB_2008_AF, "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2008_AF.tif",
-#                   gdal=c("COMPRESS=DEFLATE", "TFW=YES"), overwrite = T)
-
 MB_2010_AF <- mask(crop(MB_2010, AF), AF)
 #plot(MB_2010_AF)
 
