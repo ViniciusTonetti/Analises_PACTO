@@ -24,69 +24,6 @@ numb_cores <- parallel::detectCores() - 1
 plan(multisession, workers =  numb_cores)
 
 
-################################################################################
-# Converting 2010 MB raster to forest only -------------------------------------
-
-# cleaning directory 
-rm(list = ls())
-
-
-# Converting MB 2010 to forest only --------------------------------------------
-MB_2010_AF <- raster::raster("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2010.tif")
-
-
-# Converting pixel values MB 2010
-# The following pixel values are converted to forest (1 value)
-# Forest (3 original value in MapBiomas), Mangrove (5), and Wooded Sandbank vegetation (49)
-
-reclass_matrix <- matrix(c(0, 0,
-                           1, 0,
-                           3, 1,
-                           4, 0,
-                           5, 1,
-                           6, 0,
-                           49, 1,
-                           10, 0,
-                           11, 0,
-                           12, 0,
-                           32, 0,
-                           29, 0,
-                           50, 0,
-                           14, 0,
-                           15, 0,
-                           18, 0,
-                           19, 0,
-                           39, 0,
-                           20, 0,
-                           40, 0,
-                           62, 0,
-                           41, 0,
-                           36, 0,
-                           46, 0,
-                           47, 0,
-                           35, 0,
-                           48, 0,
-                           9,  0,
-                           21, 0,
-                           22, 0,
-                           23, 0,
-                           24, 0,
-                           30, 0,
-                           25, 0,
-                           26, 0,
-                           33, 0,
-                           31, 0,
-                           27, 0),
-                         ncol = 2, byrow = T)
-
-MB_2010_AF_forest_only <- raster::reclassify(MB_2010_AF, reclass_matrix)
-
-raster::writeRaster(MB_2010_AF_forest_only,
-                    "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2010_AF_forest_only.tif",
-                    options = c("COMPRESS=LZW", "ZLEVEL=9"))
-
-
-
 
 #### Reprojecting --------------------------------------------------------------
 ################################################################################
@@ -206,43 +143,72 @@ sum(df_area[,"sec_for"])
 #writexl::write_xlsx(df_area, "D:/__PESSOAL/Vinicius_T/raster_pacto/reg_by_municipalities_Poly.xlsx")
 
 
-# Calculating the proportion of secondary forest by municipality and state #####
+# Calculating the proportion of secondary forest by municipality
 ################################################################################
 
-# Cropping MapBiomas Col09 to Brazil -------------------------------------------
+################################################################################
+# Converting 2010 MB raster to forest only -------------------------------------
 
-# Loading layers
-
-# Atlantic Forest (AF) limit
-AF <- terra::vect("D:/__PESSOAL/Vinicius_T/Limite Mata Atlantica/bioma_MA_IBGE_250mil/bioma_MA_IBGE_250mil.shp")
-plot(AF)
-
-# MapBiomas Col 9 2010
-MB_09_2010 <- terra::rast("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2010.tif")
-
-# Cropping raster
-MB_09_AF_2010 <- mask(crop(MB_09_2010, AF), AF)
-
-# Saving MB raster in WGS84 cropped for the AF considering all land cover types
-#terra::writeRaster(MB_09_AF_2010, "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/MB_09_AF_2010_WGS_84.tif")
+# cleaning directory 
+rm(list = ls())
 
 
-# Converting MB raster cropped by the AF linit to SAD69 Poly
-MB_09_AF_2010_SAD69_Poly  <- terra::project(MB_09_AF_2010, "EPSG:29101", method = "mode")
-
-# Saving MB raster in SAD69 Brazil Polyconic cropped for the AF considering all land cover types
-#terra::writeRaster(MB_09_AF_2010_SAD69_Poly, "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/MB_09_AF_2010_SAD69_Poly.tif")
+# Converting MB 2010 to forest only --------------------------------------------
+MB_2010_AF <- raster::raster("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2010.tif")
 
 
-# Converting raster values to set all forest pixels as 1 and the remaining 0 ------
+# Converting pixel values MB 2010
+# The following pixel values are converted to forest (1 value)
+# Forest (3 original value in MapBiomas), Mangrove (5), and Wooded Sandbank vegetation (49)
 
-MB_09_AF_2010_SAD69_Poly <- terra::rast("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/MB_09_AF_2010_WGS_84.tif")
-MB_09_AF_2010_SAD69_Poly_forest_only <- terra::ifel(MB_09_AF_2010_SAD69_Poly == 3, 1, 0)
-plot(MB_09_AF_2010_SAD69_Poly_forest_only)
+reclass_matrix <- matrix(c(0, 0,
+                           1, 0,
+                           3, 1,
+                           4, 0,
+                           5, 1,
+                           6, 0,
+                           49, 1,
+                           10, 0,
+                           11, 0,
+                           12, 0,
+                           32, 0,
+                           29, 0,
+                           50, 0,
+                           14, 0,
+                           15, 0,
+                           18, 0,
+                           19, 0,
+                           39, 0,
+                           20, 0,
+                           40, 0,
+                           62, 0,
+                           41, 0,
+                           36, 0,
+                           46, 0,
+                           47, 0,
+                           35, 0,
+                           48, 0,
+                           9,  0,
+                           21, 0,
+                           22, 0,
+                           23, 0,
+                           24, 0,
+                           30, 0,
+                           25, 0,
+                           26, 0,
+                           33, 0,
+                           31, 0,
+                           27, 0),
+                         ncol = 2, byrow = T)
 
-# Saving raster MB 2010 forest only
-#terra::writeRaster(MB_09_AF_2010_SAD69_Poly_forest_only,
-#                    "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/MB_09_AF_2010_WGS84_forest_only.tif")
+MB_2010_AF_forest_only <- raster::reclassify(MB_2010_AF, reclass_matrix)
+
+raster::writeRaster(MB_2010_AF_forest_only,
+                    "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2010_AF_forest_only.tif",
+                    options = c("COMPRESS=LZW", "ZLEVEL=9"))
+
+
+
 
 
 # Calculating area of forest only ----------------------------------------------
