@@ -65,7 +65,7 @@ reg_11_21_SAD69_Poly <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/reg_11
 plot(reg_11_21_SAD69_Poly)
 
 
-# Computing the area of each pixel of the secondary forest patches
+# Computing the area of each pixel of secondary forest patches
 pixel_area <- cellSize(reg_11_21_SAD69_Poly, unit = "m")
 
 # Considering values only for forest pixels
