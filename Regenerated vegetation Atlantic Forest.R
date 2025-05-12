@@ -213,9 +213,9 @@ plot(AF)
 MB_2010_AF_forest_only <- mask(crop(MB_2010_AF_forest_only , AF), AF)
 plot(MB_2010_AF_forest_only)
 
-raster::writeRaster(MB_2010_AF_forest_only,
-                    "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2010_AF_forest_only.tif",
-                    options = c("COMPRESS=LZW", "ZLEVEL=9"))
+#raster::writeRaster(MB_2010_AF_forest_only,
+#                    "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2010_AF_forest_only.tif",
+#                    options = c("COMPRESS=LZW", "ZLEVEL=9"))
 
 
 # Calculating area of forest only ----------------------------------------------
@@ -224,15 +224,14 @@ AF_2010_forest_only <- rast("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_cov
 plot(AF_2010_forest_only)
 
 AF_2010_forest_only_Poly <- terra::project(AF_2010_forest_only,"EPSG:29101", method = "mode")
-
 plot(AF_2010_forest_only_Poly)
 
-#terra::writeRaster(MB_09_AF_2010_SAD69_Poly_forest_only,
-#                    "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/AF_2010_forest_only_Poly.tif")
+terra::writeRaster(AF_2010_forest_only_Poly,
+                    "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2010_AF_forest_only_Poly.tif")
 
 
 # Loading raster 2010 forest only
-AF_2010_forest_only_Poly <- rast("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/AF_2010_forest_only_Poly.tif")
+AF_2010_forest_only_Poly <- rast("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2010_AF_forest_only_Poly.tif")
 
 # Computing the area of each pixel of the secondary forest patches
 AF_2010_forest_only_Poly_Area <- cellSize(AF_2010_forest_only_Poly, unit = "m")
@@ -241,8 +240,8 @@ AF_2010_forest_only_Poly_Area <- cellSize(AF_2010_forest_only_Poly, unit = "m")
 AF_2010_forest_only_Poly_Area <- AF_2010_forest_only_Poly_Area * AF_2010_forest_only_Poly
 plot(AF_2010_forest_only_Poly_Area)
 
-#terra::writeRaster(pixel_area_forest_only_Poly,
-#                    "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2010_AF_Area.tif")
+terra::writeRaster(AF_2010_forest_only_Poly_Area,
+                    "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2010_AF_forest_only_Area.tif")
 
 
 # Extracting values of pixel area in the forest only raster to polygons --------
@@ -253,14 +252,10 @@ pixel_area_forest_only <- raster("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/pixel
 # Loading municipalities shp
 mun <- sf::st_read("D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/mun_area_Poly.shp")
 
-# Loading states shp
-estados <- sf::st_read("D:/__PESSOAL/Vinicius_T/estados_Brasil/BR_UF_2023/BR_UF_2023_area_Poly.shp")
 
 # Extracting area to Municipalities
 extract_area_forest_mun <- exactextractr::exact_extract(pixel_area_forest_only, mun, "sum")
 
-# Extracting area to States
-extract_area_forest_states <- exactextractr::exact_extract(pixel_area_forest_only, estados, "sum")
 
 # Creating a new column to add area of forest in 2010
 ncol(mun)
@@ -278,7 +273,7 @@ plot(mun)
 # to the amount of forest in 2010 
 
 # Loading municipalities shp
-mun <- sf::st_read("D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/_mun_all_areas.shp")
+mun <- sf::st_read("D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/_mun_all_areas_prop_total_reg_defo.shp")
 
 
 # Calculating proportion of secondary forest in relation to the total amount of forest in 2010
@@ -1450,7 +1445,7 @@ max(data.frame(mun[,"defo_mun"])) # hectares
 max(data.frame(mun[,"fr_r_mn"])) # square meters
 
 defo_mun <- data.frame(mun[,"defo_mun"])
-forest_area_2010 <- data.frame(mun[,"fr_r_mn"])/10000
+forest_area_2010 <- data.frame(mun[,"fr_r_mn"])/10000 # Converting from square meters to hectare
 
 prop_defo_2010 <- defo_mun/forest_area_2010
 
