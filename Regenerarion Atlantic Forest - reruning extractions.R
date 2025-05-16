@@ -66,7 +66,7 @@ annual_reg_stack_sum <- sum(annual_reg_stack, na.rm = T)
 
 # Converting values higher than 1 to 1
 
-annual_reg_stack_sum_0_1 <- terra::ifel(annual_reg_stack_sum %in% c(2,3), 1, annual_reg_stack_sum )
+annual_reg_stack_sum_0_1 <- terra::ifel(annual_reg_stack_sum %in% c(2,3), 1, annual_reg_stack_sum)
 plot(annual_reg_stack_sum_0_1)
 
 #terra::writeRaster(annual_reg_stack_sum_0_1, paste(dir, "all_reg.tif", sep = "/"),
@@ -80,32 +80,40 @@ total_defo <- annual_reg_stack_sum_0_1 - reg_11_21
 #                   gdal=c("COMPRESS=DEFLATE", "TFW=YES"), overwrite = T)
 
 
-# Estimating annual reg that did not persist until 2023
-
-all_reg <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/annual_reg_AF/all_reg.tif")
 
 
+# Estimating annual reg that did not persist until 2023 ------------------------
+################################################################################
 
-terra::writeRaster(all_reg_2, paste(dir, "all_reg_2.tif", sep = "/"),
+# cleaning directory 
+rm(list = ls())
+
+dir <- ("D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/annual_reg_AF/")
+setwd(dir)
+
+#stack with annual reg raster
+annual_rast_AF <- terra::rast(list.files(dir, pattern = "AF.tif"))
+
+obj_name <- paste0("annual_reg_", 11:21)
+
+reg_11_21 <- rast("D:/__PESSOAL/Vinicius_T/raster_pacto/_reg_11_21_AF.tif")
+
+reg11_21_pixel02 <- terra::ifel(reg_11_21 == 1, 2, reg_11_21) # Reg 2011 / 2021 were converted to pixel values = 2
+
+terra::writeRaster(reg11_21_pixel02, paste(dir, "reg11_21_pixel02.tif", sep = ""),
                    gdal=c("COMPRESS=DEFLATE", "TFW=YES"), overwrite = T)
 
 
-annual_reg_summed <- annual_rast[[1]] + reg_11_21 
-annual_reg_did_not_persist <- terra::ifel(annual_reg_summed_reg_11_21 == 2, 0, annual_reg_summed_reg_11_21)
-
-
-annual_did_not_persist
-
-for (i in 1:length(names(annual_rast))) {
-  annual_reg_summed <- annual_rast[[1]] + reg_11_21
-  annual_reg_did_not_persist <- terra::ifel(annual_reg_summed == 2, 0, annual_reg_summed)
-  terra::writeRaster(annual_reg_did_not_persist, paste(dir, obj_name[i], "AF.tif", sep = ""),
+for (i in 1:length(names(annual_rast_AF))){
+  annual_reg_summed <- annual_rast_AF[[i]] + reg11_21_pixel02
+  annual_reg_did_not_persist <- terra::ifel(annual_reg_summed %in% c(2,3), 0, annual_reg_summed) # pixel values = 2 and 3 converted to zero.
+  terra::writeRaster(annual_reg_did_not_persist, paste(dir, obj_name[i], "_did_not_persist.tif", sep = ""),
                      gdal=c("COMPRESS=DEFLATE", "TFW=YES"), overwrite = T)
 }
 
 
 
-# Converting raster to Albers to calculate areas
+# Converting raster to Albers to calculate areas -------------------------------
 
 MB_2010 <- terra::rast("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2010.tif")
 
