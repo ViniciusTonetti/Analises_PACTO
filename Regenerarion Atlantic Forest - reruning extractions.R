@@ -51,6 +51,10 @@ for (i in 1:length(names(annual_rast))) {
 }
 
 
+## Calculating total regeneration (including what did not persist)
+
+
+
 
 
 
