@@ -53,10 +53,30 @@ for (i in 1:length(names(annual_rast))) {
 
 ## Calculating total regeneration (including what did not persist)
 
+dir <- "D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/annual_reg_AF"
+
+setwd(dir)
+annual_reg_stack <- rast(list.files(dir, pattern = "AF.tif"))
+annual_reg_stack_sum <- sum(annual_reg_stack, na.rm = T)
 
 
+#terra::writeRaster(annual_reg_stack_sum, paste(dir, "annual_reg_stack_sum.tif", sep = "/"),
+#                   gdal=c("COMPRESS=DEFLATE", "TFW=YES"), overwrite = T)
 
 
+# Converting values higher than 1 to 1
 
+annual_reg_stack_sum_0_1 <- terra::ifel(annual_reg_stack_sum %in% c(2,3), 1, annual_reg_stack_sum )
+plot(annual_reg_stack_sum_0_1)
+
+#terra::writeRaster(annual_reg_stack_sum_0_1, paste(dir, "all_reg.tif", sep = "/"),
+#                   gdal=c("COMPRESS=DEFLATE", "TFW=YES"), overwrite = T)
+
+reg_11_21 <- rast("D:/__PESSOAL/Vinicius_T/raster_pacto/_reg_11_21_AF.tif")
+
+total_defo <- annual_reg_stack_sum_0_1 - reg_11_21
+
+terra::writeRaster(total_defo, paste(dir, "total_defo.tif", sep = "/"),
+                   gdal=c("COMPRESS=DEFLATE", "TFW=YES"), overwrite = T)
 
 
