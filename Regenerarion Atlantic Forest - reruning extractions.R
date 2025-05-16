@@ -80,9 +80,37 @@ total_defo <- annual_reg_stack_sum_0_1 - reg_11_21
 #                   gdal=c("COMPRESS=DEFLATE", "TFW=YES"), overwrite = T)
 
 
+# Estimating annual reg that did not persist until 2023
+
+all_reg <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/annual_reg_AF/all_reg.tif")
+
+
+
+terra::writeRaster(all_reg_2, paste(dir, "all_reg_2.tif", sep = "/"),
+                   gdal=c("COMPRESS=DEFLATE", "TFW=YES"), overwrite = T)
+
+
+annual_reg_summed <- annual_rast[[1]] + reg_11_21 
+annual_reg_did_not_persist <- terra::ifel(annual_reg_summed_reg_11_21 == 2, 0, annual_reg_summed_reg_11_21)
+
+
+annual_did_not_persist
+
+for (i in 1:length(names(annual_rast))) {
+  annual_reg_summed <- annual_rast[[1]] + reg_11_21
+  annual_reg_did_not_persist <- terra::ifel(annual_reg_summed == 2, 0, annual_reg_summed)
+  terra::writeRaster(annual_reg_did_not_persist, paste(dir, obj_name[i], "AF.tif", sep = ""),
+                     gdal=c("COMPRESS=DEFLATE", "TFW=YES"), overwrite = T)
+}
+
+
+
 # Converting raster to Albers to calculate areas
 
 MB_2010 <- terra::rast("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2010.tif")
 
 MB_2010_AF <- mask(crop(MB_2010, AF), AF)
+
+
+
 
