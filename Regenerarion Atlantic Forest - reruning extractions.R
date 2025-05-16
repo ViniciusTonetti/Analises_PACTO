@@ -76,7 +76,13 @@ reg_11_21 <- rast("D:/__PESSOAL/Vinicius_T/raster_pacto/_reg_11_21_AF.tif")
 
 total_defo <- annual_reg_stack_sum_0_1 - reg_11_21
 
-terra::writeRaster(total_defo, paste(dir, "total_defo.tif", sep = "/"),
-                   gdal=c("COMPRESS=DEFLATE", "TFW=YES"), overwrite = T)
+#terra::writeRaster(total_defo, paste(dir, "total_defo.tif", sep = "/"),
+#                   gdal=c("COMPRESS=DEFLATE", "TFW=YES"), overwrite = T)
 
+
+# Converting raster to Albers to calculate areas
+
+MB_2010 <- terra::rast("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2010.tif")
+
+MB_2010_AF <- mask(crop(MB_2010, AF), AF)
 
