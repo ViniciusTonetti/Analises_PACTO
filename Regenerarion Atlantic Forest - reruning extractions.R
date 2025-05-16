@@ -17,6 +17,9 @@ mun_WGS <- st_transform(mun, st_crs(AF))
 
 # Municipalities that intersect AF 
 
-mun_AF <- mun_WGS[st_intersects(mun_WGS, AF, sparse = F), ]
+mun_AF_WGS <- mun_WGS[st_intersects(mun_WGS, AF, sparse = F), ]
 
+# Writing vector
+
+st_write(mun_AF_WGS, "D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/mun_AF_WGS.shp")
 
