@@ -282,10 +282,10 @@ mun_af <- sf::st_read("D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2
 reg_11_21 <- raster::raster("D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/annual_reg_AF/raster_albers_SAD69/raster_albers_SAD69_AREA/reg_11_21_ALBERS_AREA.tif")
 
 # I compared the results of extractions using exact_extract() with rasters in QGis and it makes sense
-area_reg_11_21_mun <- round(exactextractr::exact_extract(reg_11_21, mun_af, "sum"), 2)
+area_reg_11_21_mun <- exactextractr::exact_extract(reg_11_21, mun_af, "sum")
 
 ncol(mun_af[,]) #14
-mun_af[,15] <- area_reg_11_21_mun/10000
+mun_af[,15] <- round((area_reg_11_21_mun/10000), 2)
 colnames(mun_af)[15] <- "r11_21"
 
 
@@ -297,7 +297,7 @@ total_reg <- raster::raster("D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 -
 total_reg <- exactextractr::exact_extract(total_reg, mun_af, "sum")
 
 ncol(mun_af[,]) #15
-mun_af[,16] <- total_reg/10000
+mun_af[,16] <- round((total_reg/10000), 2)
 colnames(mun_af)[16] <- "tt_reg"
 
 
@@ -309,7 +309,7 @@ total_defo <- raster::raster("D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 
 total_defo <- exactextractr::exact_extract(total_defo, mun_af, "sum")
 
 ncol(mun_af[,]) #16
-mun_af[,17] <- total_defo/10000
+mun_af[,17] <- round((total_defo/10000), 2)
 colnames(mun_af)[17] <- "tt_defo"
 
 
@@ -322,7 +322,7 @@ forest_2010 <- raster::raster("D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11
 forest_2010 <- exactextractr::exact_extract(forest_2010, mun_af, "sum")
 
 ncol(mun_af[,]) #17
-mun_af[,18] <- total_defo/10000
+mun_af[,18] <- round((forest_2010/10000), 2)
 colnames(mun_af)[18] <- "tt_defo"
 
 
