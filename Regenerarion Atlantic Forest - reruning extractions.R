@@ -234,6 +234,8 @@ for(i in 1:length(names(all_rast_files))){
 }
 
 
+
+
 ################################################################################
 ######## Extracting areas for Municipalities polygons
 ################################################################################
@@ -256,12 +258,43 @@ rm(list = ls())
 mun_af <- sf::st_read("D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/mun_AF_ALBERS.shp")
 
 # Extracting reg 11-21 to Municipalities ---------------------------------------
+# ------------------------------------------------------------------------------
 
 reg_11_21 <- raster::raster("D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/annual_reg_AF/raster_albers_SAD69/raster_albers_SAD69_AREA/reg_11_21_ALBERS_AREA.tif")
 
-
 # I compared the results of extractions using exact_extract() with rasters in QGis and it makes sense
 area_reg_11_21_mun <- exactextractr::exact_extract(reg_11_21, mun_af, "sum")
+
+ncol(mun_af[,]) #14
+mun_af[,15] <- area_reg_11_21_mun/10000
+colnames(mun_af)[15] <- "r11_21"
+
+
+# Extracting total regeneration (also considering what was subsequently lost)---
+# ------------------------------------------------------------------------------
+
+total_reg <- raster::raster("D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/annual_reg_AF/raster_albers_SAD69/raster_albers_SAD69_AREA/all_reg_ALBERS_AREA.tif")
+
+total_reg <- exactextractr::exact_extract(total_reg, mun_af, "sum")
+
+ncol(mun_af[,]) #15
+mun_af[,16] <- total_reg/10000
+colnames(mun_af)[16] <- "tt_reg"
+
+
+# Extracting total deforestation of secondary forest ---------------------------
+# ------------------------------------------------------------------------------
+
+total_defo <- raster::raster("D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/annual_reg_AF/raster_albers_SAD69/raster_albers_SAD69_AREA/total_defo_ALBERS_AREA.tif")
+
+total_defo <- exactextractr::exact_extract(total_defo, mun_af, "sum")
+
+ncol(mun_af[,]) #16
+mun_af[,17] <- total_defo/10000
+colnames(mun_af)[17] <- "tt_defo"
+
+
+
 
 
 
