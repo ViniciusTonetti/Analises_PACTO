@@ -219,7 +219,8 @@ obj_names <- paste(gsub(".tif", "", list.files(dir, pattern = ".tif")), "_AREA",
 
 # Loop to calculate areas
 
-raster_one_area <- rast("D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/annual_reg_AF/raster_albers_SAD69/raster_one_area.tif")
+raster_one_area <- rast("D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/annual_reg_AF/raster_albers_SAD69/raster_albers_SAD69_AREA/raster_one_area.tif")
+
 
 dir <- "D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/annual_reg_AF/raster_albers_SAD69/raster_albers_SAD69_AREA/"
 
@@ -231,6 +232,12 @@ for(i in 1:length(names(all_rast_files))){
     gdal=c("COMPRESS=DEFLATE", "TFW=YES"),
     overwrite = T)
 }
+
+
+################################################################################
+######## Extracting areas for Municipalities polygons
+################################################################################
+
 
 
 
