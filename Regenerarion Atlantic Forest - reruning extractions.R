@@ -238,6 +238,28 @@ for(i in 1:length(names(all_rast_files))){
 ######## Extracting areas for Municipalities polygons
 ################################################################################
 
+# Converting Municipalities shape to Albers
+
+library(terra)
+
+# cleaning directory 
+rm(list = ls())
+
+#mun_af <- vect("D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/mun_AF_WGS.shp")
+#mun_af_ALBERS <- project(mun_af, "ESRI:102033")
+#writeVector(mun_af_ALBERS, "D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/mun_AF_ALBERS.shp")
+
+mun_af_ALBERS <- terra::vect("D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/mun_AF_ALBERS.shp")
+
+
+
+# Extracting reg 11-21 to Municipalities
+
+reg_11_21 <- rast("D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/annual_reg_AF/raster_albers_SAD69/raster_albers_SAD69_AREA/reg_11_21_ALBERS_AREA.tif")
+
+area_reg_11_21_mun <- terra::extract(reg_11_21, mun_af_ALBERS, fun = "sum")
+
+
 
 
 
