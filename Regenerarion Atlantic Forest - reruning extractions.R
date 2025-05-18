@@ -189,6 +189,16 @@ terra::writeRaster(
 }
 
 
+# Converting MB 2010 to Albers -------------------------------------------------
+
+mb_2010_only_forest <- rast("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2010_AF_forest_only.tif")
+
+mb_2010_only_forest_ALBERS <- terra::project(mb_2010_only_forest, "ESRI:102033", method = "near")
+
+#terra::writeRaster(mb_2010_only_forest_ALBERS, "D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/annual_reg_AF/raster_albers_SAD69/mb_2010_only_forest_ALBERS.tif",
+#                   gdal=c("COMPRESS=DEFLATE", "TFW=YES"), overwrite = T)
+
+
 
 ################################################################################
 # Calculating areas for raster in Albers format
@@ -233,6 +243,15 @@ for(i in 1:length(names(all_rast_files))){
     overwrite = T)
 }
 
+# MB 2010 forest only area -----------------------------------------------------
+
+mb_2010_only_forest_ALBERS_AREA <- cellSize(mb_2010_only_forest_ALBERS, unit = "m")
+
+mb_2010_only_forest_ALBERS_AREA <- mb_2010_only_forest_ALBERS * mb_2010_only_forest_ALBERS_AREA
+
+
+#terra::writeRaster(mb_2010_only_forest_ALBERS_AREA, "D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/annual_reg_AF/raster_albers_SAD69/raster_albers_SAD69_AREA/mb_2010_only_forest_ALBERS_AREA.tif",
+#                   gdal=c("COMPRESS=DEFLATE", "TFW=YES"), overwrite = T)
 
 
 
@@ -263,7 +282,7 @@ mun_af <- sf::st_read("D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2
 reg_11_21 <- raster::raster("D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/annual_reg_AF/raster_albers_SAD69/raster_albers_SAD69_AREA/reg_11_21_ALBERS_AREA.tif")
 
 # I compared the results of extractions using exact_extract() with rasters in QGis and it makes sense
-area_reg_11_21_mun <- exactextractr::exact_extract(reg_11_21, mun_af, "sum")
+area_reg_11_21_mun <- round(exactextractr::exact_extract(reg_11_21, mun_af, "sum"), 2)
 
 ncol(mun_af[,]) #14
 mun_af[,15] <- area_reg_11_21_mun/10000
@@ -292,6 +311,19 @@ total_defo <- exactextractr::exact_extract(total_defo, mun_af, "sum")
 ncol(mun_af[,]) #16
 mun_af[,17] <- total_defo/10000
 colnames(mun_af)[17] <- "tt_defo"
+
+
+# Extracting forest area 2010 --------------------------------------------------
+# ------------------------------------------------------------------------------
+
+forest_2010 <- raster::raster("D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/annual_reg_AF/raster_albers_SAD69/raster_albers_SAD69_AREA/mb_2010_only_forest_ALBERS_AREA.tif")
+
+
+forest_2010 <- exactextractr::exact_extract(forest_2010, mun_af, "sum")
+
+ncol(mun_af[,]) #17
+mun_af[,18] <- total_defo/10000
+colnames(mun_af)[18] <- "tt_defo"
 
 
 
