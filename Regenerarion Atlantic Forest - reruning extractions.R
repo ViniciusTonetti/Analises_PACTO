@@ -329,7 +329,7 @@ colnames(mun_af)[18] <- "f_2010"
 # Writing vector with areas
 #sf::st_write(mun_af, "D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/mun_AF_ALBERS_AREA.shp", delete_dsn = T)
 
-sum(data.frame(mun_af[,"r11_21"])[,"r11_21"])
+sum(data.frame(mun_af[,"r11_21"])[,"r11_21"]) # 1.677.412 ha of regenerated forests
 
 # ------------------------------------------------------------------------------
 
