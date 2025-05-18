@@ -323,9 +323,15 @@ forest_2010 <- exactextractr::exact_extract(forest_2010, mun_af, "sum")
 
 ncol(mun_af[,]) #17
 mun_af[,18] <- round((forest_2010/10000), 2)
-colnames(mun_af)[18] <- "tt_defo"
+colnames(mun_af)[18] <- "f_2010"
 
 
+# Writing vector with areas
+#sf::st_write(mun_af, "D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/mun_AF_ALBERS_AREA.shp", delete_dsn = T)
+
+sum(data.frame(mun_af[,"r11_21"])[,"r11_21"])
+
+# ------------------------------------------------------------------------------
 
 
 
