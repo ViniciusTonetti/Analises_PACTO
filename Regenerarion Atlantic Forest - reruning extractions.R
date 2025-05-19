@@ -632,4 +632,8 @@ mun_areas_above_threshold <- mun[mun$f_2010 > 4075.3, ]
 
 plot(mun_areas_above_threshold)
 
+writeVector(mun_areas_above_threshold, "D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/mun_AF_ALBERS_Above_50th.shp")
+
+
+# ------------------------------------------------------------------------------
 
