@@ -5,7 +5,11 @@
 # packages
 
 library(terra)
+library(raster)
+library(tidyverse)
 library(sf)
+library(exactextractr)
+library(writexl)
 
 # cleaning directory 
 rm(list = ls())
@@ -389,16 +393,19 @@ names <- paste0("annual_reg", 11:21)
 mtx <- matrix(names, ncol = 2, nrow = 11)
 
 for (i in 1:length(names)) {
-  mtx[i,2] <- cellStats(stack_annual_reg [[11]], stat = 'sum')
+  mtx[i,2] <- cellStats(stack_annual_reg[[i]], stat = 'sum')
 }
 
+
 areas_reg_per_year <- data.frame(mtx)
-areas_reg_per_year[,2] <- as.numeric(areas_reg_per_year[,2])
+areas_reg_per_year[,2] <- round(as.numeric(areas_reg_per_year[,2]), 2)
 
 areas_reg_per_year[,2] <- areas_reg_per_year[,2]/10000
+areas_reg_per_year[,2] <- round(areas_reg_per_year[,2])
+
 
 colnames(areas_reg_per_year) <- c("reg_year", "area_ha")
-areas_reg_per_year[,2] <- round(areas_reg_per_year[,2])
+
 
 write_xlsx(areas_reg_per_year, "D:/__PESSOAL/Vinicius_T/data_frames_result_areas/reg_per_year.xlsx")
 
