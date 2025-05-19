@@ -1,3 +1,4 @@
+# Forest recovery in the Atlantic Forest
 # Code used to rerun the extraction 
 # Vinicius Tonetti - vrtonetti@ufscar.br
 
@@ -361,6 +362,52 @@ max(pl_2010, na.rm = T)
 
 #data.frame(mun_af %>% 
 #  filter(pl_2010 > 0.5))
+
+
+################################################################################
+# Extracting values reg and did not persist per year ---------------------------
+################################################################################
+
+
+# Calculating area of forest regeneration for each year ------------------------
+
+# cleaning directory
+rm(list = ls())
+
+dir <- "D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/annual_reg_AF/raster_albers_SAD69/raster_albers_SAD69_AREA/"
+setwd(dir)
+
+annual_reg <- list.files(dir, pattern = "annual_reg_.*AF.*ALBERS_AREA\\.tif$")
+
+stack_annual_reg <- raster::stack(annual_reg )
+
+
+# Loop to save area values for each individual pixel and saving in a matrix
+
+names <- paste0("annual_reg", 11:21)
+
+mtx <- matrix(names, ncol = 2, nrow = 11)
+
+for (i in 1:length(names)) {
+  mtx[i,2] <- cellStats(stack_annual_reg [[11]], stat = 'sum')
+}
+
+areas_reg_per_year <- data.frame(mtx)
+areas_reg_per_year[,2] <- as.numeric(areas_reg_per_year[,2])
+
+areas_reg_per_year[,2] <- areas_reg_per_year[,2]/10000
+
+colnames(areas_reg_per_year) <- c("reg_year", "area_ha")
+areas_reg_per_year[,2] <- round(areas_reg_per_year[,2])
+
+write_xlsx(areas_reg_per_year, "D:/__PESSOAL/Vinicius_T/data_frames_result_areas/reg_per_year.xlsx")
+
+
+
+
+
+
+
 
 
 
