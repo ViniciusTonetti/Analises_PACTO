@@ -781,4 +781,221 @@ ggplot(reg_per_state_long, aes(x = state_abbr, y = area_ha, fill = type)) +
 ggsave("D:/_Vinicius/artigos/2024.12.d04 - Pacto, secondary forests, natural regeneration/Figuras/Bar Chart/states_reg_defo.png", plot = bar_chart_state, width = 40, height = 20, units = "cm")
 
 
+################################################################################
+## Plotting bivariate analysis
+################################################################################
+
+# Leandro's code
+
+#script obtido de https://stackoverflow.com/questions/45177590/map-of-bivariate-spatial-correlation-in-r-bivariate-lisa
+
+
+library(boot)
+library(dplyr)
+library(ggplot2)
+library(sf)
+library(spdep)
+library(rgdal)
+library(stringr)
+library(UScensus2000tract)
+install.packages("stringr")
+install.packages("UScensus2000tract")
+install.packages("spatialreg")
+install.packages("rgdal")
+install.packages("terra")
+install.packages("maptools")
+require(spatialreg)
+require(raster)
+require(maptools)
+require(terra)
+
+
+
+
+ma<-vect("C:\\Users\\Leandro\\Google Drive\\Artigos\\PACTO\\mun_reg.shp")
+head(ma)
+tail(ma)
+summary(ma)
+dim(ma)
+ma$CD_MUN<-as.numeric(ma$CD_MUN)
+str(ma$CD_MUN)
+
+#======================================================
+# load data
+
+#LE
+sec_for_area<-ma$sec_for #(square meters) = Amount of forest that regenerated between 2011 and 2021 and persisted until 2023.
+
+for_area<-ma$fr_r_mn # (square meters) = Forest area in each polygon in 2010 (MapBiomas, col 09).
+
+sec_for_prop<-ma$prp_sc_ # = Proportion of regenerated forest between 2011 and 2021 that persisted until 2023 (sec_for) in relation to the amount of forest in 2010 (fr_r_mn).
+
+all_reg<-ma$for_reg # (hectares) = All regeneration that occurred between 2011 and 2021, including forests that were lost up to 2023. Pixels were counted only once, even if they regenerated multiple times.
+
+sec_def_area<-ma$defo_mun # (hectares) = All secondary forest that regenerated between 2011 and 2021 but did not persist until 2023. Pixels were counted only once, even if they were deforested multiple times.
+
+sec_def_prop<-ma$pdefo_10 #= Proportion of all secondary forest that regenerated during 2011-2021 and did not persist until 2023, in relation to the total amount of forest in 2010 (MapBiomas col09). A deforested pixel was counted only once, even if it was regenerated and deforested multiple times.
+
+
+
+x<-ma$fr_r_mn
+#y<-ma$sec_for
+y<-sec_def_area
+y<-ma$defo_mun
+
+x<-ma$sec_for
+y<-ma$defo_mun
+
+
+x<-ma$prp_sc_
+y<-ma$pdefo_10
+# ----------------------------------------------------- #
+# Program a function
+## Permutations for Lee's L statistic
+## Modification of the lee.mc() function within the {spdep} package
+## Saves 'localL' output instead of 'L' output
+simula_lee <- function(x, y, listw, nsim = nsim, zero.policy = NULL, na.action = na.fail) {
+  
+  if (deparse(substitute(na.action)) == "na.pass") 
+    stop ("na.pass not permitted")
+  na.act <- attr(na.action(cbind(x, y)), "na.action")
+  x[na.act] <- NA
+  y[na.act] <- NA
+  x <- na.action(x)
+  y <- na.action(y)
+  if (!is.null(na.act)) {
+    subset <- !(1:length(listw$neighbours) %in% na.act)
+    listw <- subset(listw, subset, zero.policy = zero.policy)
+  }
+  n <- length(listw$neighbours)
+  if ((n != length(x)) | (n != length(y))) 
+    stop ("objects of different length")
+  gamres <- suppressWarnings(nsim > gamma(n + 1))
+  if (gamres) 
+    stop ("nsim too large for this number of observations")
+  if (nsim < 1) 
+    stop ("nsim too small")
+  xy <- data.frame(x, y)
+  S2 <- sum((unlist(lapply(listw$weights, sum)))^2)
+  
+  lee_boot <- function(var, i, ...) {
+    return(lee(x = var[i, 1], y = var[i, 2], ...)$localL)
+  }
+  
+  res <- boot(xy, statistic = lee_boot, R = nsim, sim = "permutation", 
+              listw = listw, n = n, S2 = S2, zero.policy = zero.policy)
+}
+
+# ----------------------------------------------------- #
+# Adjacency Matrix
+
+#LE
+ma2 <- sf::st_as_sf(ma)
+
+nb <- poly2nb(ma2)
+lw <- nb2listw(nb, style = "B", zero.policy = T)
+W  <- as(lw, "symmetricMatrix")
+W  <- as.matrix(W / rowSums(W))
+W[which(is.na(W))] <- 0
+
+
+# ----------------------------------------------------- #
+# Calculate the index and its simulated distribution
+# for global and local values
+
+# Global Lee's L
+lee.test(x = x, y = y, listw = lw, zero.policy = TRUE,
+         alternative = "two.sided", na.action = na.omit)
+
+# Local Lee's L values
+m <- lee(x = x, y = y, listw = lw, n = length(x), 
+         zero.policy = TRUE, NAOK = TRUE)
+
+# Local Lee's L simulations
+local_sims <- simula_lee(x = x, y = y, listw = lw, nsim = 10000,
+                         zero.policy = TRUE, na.action = na.omit)
+
+m_i <- m[[2]]  # local values
+
+# Identify the significant values 
+alpha <- 0.05  # for a 95% confidence interval
+probs <- c(alpha/2, 1-alpha/2)
+intervals <- t(apply(t(local_sims[[2]]), 1, function(x) quantile(x, probs = probs)))
+sig <- (m_i < intervals[ , 1] ) | ( m_i > intervals[ , 2])
+
+#======================================================
+# Preparing for plotting
+
+#LE
+ma.tract<-st_as_sf(ma)
+ma.tract$sig<-sig
+
+# Identifying the Lee's L patterns
+xp <- scale(x)
+yp <- scale(y)
+
+#LE
+patterns <- as.character(interaction(xp > 0, W%*%yp > 0)) 
+patterns <- patterns %>% 
+  str_replace_all("TRUE","High") %>% 
+  str_replace_all("FALSE","Low")
+patterns[ma.tract$sig == 0] <- "Not significant"
+ma.tract$patterns <- patterns
+
+# Plotting
+#LE
+x11()
+ggplot() +
+  geom_sf(data = ma.tract, aes(fill = patterns), color = "NA") +
+  scale_fill_manual(values = c("red", "pink", "light blue", "dark blue", "grey95")) + 
+  guides(fill = guide_legend(title = "Lee's L clusters")) +
+  theme_minimal()
+
+head(ma.tract)
+names(ma.tract)
+dim(ma.tract)
+dim(ma)
+
+
+#aqui vai juntar o resultado da primeira rodada (Forest area x Secondary forest) com o shape original
+ma_for_sec_for<-merge(as.data.frame(ma),ma.tract[,c(1, 22,23)], by="CD_MUN")
+head(ma_for_sec_for)
+names(ma_for_sec_for)
+
+
+#antes de rodar aqui precisa substituir lá no começo (em load data) o objeto z por y e rodar novamente apenas para facilitar
+#aí roda todo o script acima novamente, exceto a parte do "vip2". Com isso vai rodar UC x Absolute E
+#e ai vai juntar o resultado com o shape original
+ma_for_secdefarea<-merge(as.data.frame(ma),ma.tract[,c(1, 22,23)], by="CD_MUN")
+
+
+#antes de rodar aqui precisa substituir lá no começo (em load data) o objeto w por y e rodar novamente apenas para facilitar
+#aí roda todo o script acima novamente, exceto a parte do "vip2" e do "vip3". Com isso vai rodar UC x Relative E
+#e ai vai juntar o resultado com o shape original
+ma_secarea_secdefarea<-merge(as.data.frame(ma),ma.tract[,c(1, 22,23)], by="CD_MUN")
+
+
+#x<-ma$prp_sc_
+#y<-ma$pdefo_10
+ma_secprop_secdefprop<-merge(as.data.frame(ma),ma.tract[,c(1, 22,23)], by="CD_MUN")
+
+colnames(ma_for_sec_for)[21:22]<-c("sig_fsc", "pat_fsc")
+colnames(ma_for_secdefarea)[21:22]<-c("sig_fsd", "pat_fsd")
+colnames(ma_secarea_secdefarea)[21:22]<-c("sig_ssd", "pat_ssd")
+colnames(ma_secprop_secdefprop)[21:22]<-c("sig_spdp", "pat_spdp")
+
+ma3<-merge(ma_for_sec_for, ma_for_secdefarea[,c(1,21,22)], by="CD_MUN")
+ma3<-merge(ma3,ma_secarea_secdefarea[,c(1,21,22)], by="CD_MUN")
+ma3<-merge(ma3,ma_secprop_secdefprop[,c(1,21,22)], by="CD_MUN")
+
+ma_fim<-merge(ma, ma3[,c(1,21:29)], by="CD_MUN")
+#salva os resultados
+writeVector(ma_fim, "C:\\Users\\Leandro\\Google Drive\\Artigos\\PACTO\\ma_pattern.shp", overwrite=T)
+
+
+
+
+
+
+
 
