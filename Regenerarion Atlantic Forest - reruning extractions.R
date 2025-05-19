@@ -669,6 +669,10 @@ reg_per_year <- readxl::read_excel("D:/_Vinicius/artigos/2024.12.d04 - Pacto, se
 # cleaning directory
 rm(list = ls())
 
+# Annual regeneration / deforestation ------------------------------------------
+
+
+
 # Loading excel spreadsheet
 reg_per_year_long <- readxl::read_excel("D:/_Vinicius/artigos/2024.12.d04 - Pacto, secondary forests, natural regeneration/dados/data_frames/reg_per_year.xlsx")
 
@@ -708,7 +712,9 @@ ggplot(annual_loss_reg_long, aes(x = factor(year), y = area_ha, fill = type)) +
   guides(fill = "none")
 
 
-ggsave("D:/_Vinicius/artigos/2024.12.d04 - Pacto, secondary forests, natural regeneration/Figuras/Bar Chart/annual_reg_defo.png", width = 17, height = 10, units = "cm", dpi = 300)
+#ggsave("D:/_Vinicius/artigos/2024.12.d04 - Pacto, secondary forests, natural regeneration/Figuras/Bar Chart/annual_reg_defo.png", width = 17, height = 10, units = "cm", dpi = 300)
+
+
 
 
 
