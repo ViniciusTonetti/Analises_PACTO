@@ -637,3 +637,82 @@ writeVector(mun_areas_above_threshold, "D:/__PESSOAL/Vinicius_T/municipios_Brasi
 
 # ------------------------------------------------------------------------------
 
+################################################################################
+# Bar chart reg per year -------------------------------------------------------
+
+# cleaning directory
+rm(list = ls())
+
+# Loading excel spreadsheet
+reg_per_year <- readxl::read_excel("D:/_Vinicius/artigos/2024.12.d04 - Pacto, secondary forests, natural regeneration/dataframes/dataframes/reg_per_year.xlsx")
+
+(bar_chart <- ggplot(reg_per_year, aes(x = factor(reg_year), y = area_ha))+
+    geom_bar(stat = "identity", fill = "gray50") +
+    labs(x = "", y = "Area of regenerated forest (thousand hectares)", title = "") +
+    scale_y_continuous(breaks = c(50000, 100000, 150000, 200000, 224000),
+                       labels = c("50", "100", "150", "200", "224"),
+                       expand = c(0.01, 0))+
+    theme_classic() + 
+    theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 12),
+          axis.text.y = element_text(size = 12),       
+          axis.title.x = element_text(size = 14),      
+          axis.title.y = element_text(size = 14)))
+
+
+# Loading annual loss dataframe ------------------------------------------------
+
+
+################################################################################
+#### Plotting Bar charts
+################################################################################
+
+# cleaning directory
+rm(list = ls())
+
+# Loading excel spreadsheet
+reg_per_year_long <- readxl::read_excel("D:/_Vinicius/artigos/2024.12.d04 - Pacto, secondary forests, natural regeneration/dados/data_frames/reg_per_year.xlsx")
+
+annual_loss_year <- readxl::read_excel("D:/_Vinicius/artigos/2024.12.d04 - Pacto, secondary forests, natural regeneration/dados/data_frames/did_not_persist_year.xlsx")
+
+annual_loss_long <- annual_loss_year %>%
+  mutate(year = str_extract(did_not_persist, "\\d+")) %>% 
+  mutate(year = as.integer(paste0("20", year))) %>%       
+  select(year, area_ha) %>% 
+  mutate(type = "annual_defo_ha")
+
+
+annual_reg_long <- reg_per_year_long %>%
+  mutate(year = str_extract(reg_year, "\\d+")) %>% 
+  mutate(year = as.integer(paste0("20", year))) %>%       
+  select(year, area_ha) %>% 
+  mutate(type = "annual_reg_ha")
+
+annual_loss_reg_long <- bind_rows(annual_reg_long, annual_loss_long) %>%
+  mutate(year = factor(year)) 
+
+
+ggplot(annual_loss_reg_long, aes(x = factor(year), y = area_ha, fill = type)) +
+  geom_bar(stat = "identity", width = 1.1, position = position_dodge(width = 0)) +
+  scale_fill_manual(values = c("annual_defo_ha" = "#ee6b6e", "annual_reg_ha" = "#7B9FCF")) +
+  scale_y_continuous(breaks = c(50000, 100000, 150000, 200000, 250000, 276000),
+                     labels = c("50", "100", "150", "200", "250","276"),
+                     expand = c(0.01, 0)) +
+  labs(x = "", y = "Area (thousands ha)", fill = "Process",
+       title = "") +
+  theme_classic(base_size = 4) +
+  theme(
+    axis.text.x = element_text(size = 11, angle = 45, hjust = 1),
+    axis.text.y = element_text(size = 12.5),
+    axis.title.y = element_text(size = 12.5, margin = margin(r = 7))
+  ) +
+  guides(fill = "none")
+
+
+ggsave("D:/_Vinicius/artigos/2024.12.d04 - Pacto, secondary forests, natural regeneration/Figuras/Bar Chart/annual_reg_defo.png", width = 17, height = 10, units = "cm", dpi = 300)
+
+
+
+
+
+
+
