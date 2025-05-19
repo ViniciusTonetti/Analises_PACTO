@@ -406,8 +406,44 @@ areas_reg_per_year[,2] <- round(areas_reg_per_year[,2])
 
 colnames(areas_reg_per_year) <- c("reg_year", "area_ha")
 
-
 write_xlsx(areas_reg_per_year, "D:/__PESSOAL/Vinicius_T/data_frames_result_areas/reg_per_year.xlsx")
+
+
+
+# Calculating area of forest that did not persist for each year ----------------
+
+# cleaning directory
+rm(list = ls())
+
+dir <- "D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/annual_reg_AF/raster_albers_SAD69/raster_albers_SAD69_AREA/"
+setwd(dir)
+
+did_not_persist <- list.files(dir, pattern = "did_not_persist.*ALBERS_AREA\\.tif$")
+
+stack_annual_did_not <- raster::stack(did_not_persist)
+
+
+# Loop to save area values for each individual pixel and saving in a matrix
+
+names <- paste0("did_not_persist", 11:21)
+
+mtx <- matrix(names, ncol = 2, nrow = 11)
+
+for (i in 1:length(names)) {
+  mtx[i,2] <- cellStats(stack_annual_did_not[[i]], stat = 'sum')
+}
+
+
+annual_did_not <- data.frame(mtx)
+annual_did_not[,2] <- round(as.numeric(annual_did_not[,2]), 2)
+
+annual_did_not[,2] <- annual_did_not[,2]/10000
+annual_did_not[,2] <- round(annual_did_not[,2])
+
+
+colnames(annual_did_not) <- c("did_not_persist", "area_ha")
+
+write_xlsx(annual_did_not, "D:/__PESSOAL/Vinicius_T/data_frames_result_areas/did_not_persist_year.xlsx")
 
 
 
