@@ -123,7 +123,7 @@ length(extract_area)
 nrow(mun_SAD69_sf)
 
 # Save to shapefile
-#st_write(mun_SAD69_sf, "D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/mun_area_Poly.shp", delete_dsn = T)
+#st_write(mun_SAD69_sf, "D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/mun_area_Poly.shp", )
 
 
 # Saving areas to Excel --------------------------------------------------------
@@ -143,7 +143,7 @@ sum(df_area[,"sec_for"])
 #writexl::write_xlsx(df_area, "D:/__PESSOAL/Vinicius_T/raster_pacto/reg_by_municipalities_Poly.xlsx")
 
 
-# Calculating the proportion of secondary forest by municipality
+# Calculating the proportion of secondary forest loss by municipality
 ################################################################################
 
 ################################################################################
@@ -226,8 +226,8 @@ plot(AF_2010_forest_only)
 AF_2010_forest_only_Poly <- terra::project(AF_2010_forest_only,"EPSG:29101", method = "mode")
 plot(AF_2010_forest_only_Poly)
 
-terra::writeRaster(AF_2010_forest_only_Poly,
-                    "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2010_AF_forest_only_Poly.tif")
+#terra::writeRaster(AF_2010_forest_only_Poly,
+#                    "D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2010_AF_forest_only_Poly.tif")
 
 
 # Loading raster 2010 forest only
@@ -247,14 +247,16 @@ terra::writeRaster(AF_2010_forest_only_Poly_Area,
 # Extracting values of pixel area in the forest only raster to polygons --------
 # ------------------------------------------------------------------------------
 
-pixel_area_forest_only <- raster("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/pixel_area_forest_only_Poly.tif")
+AF_2010_forest_only_Poly_Area <- raster("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2010_AF_forest_only_Poly.tif")
 
 # Loading municipalities shp
-mun <- sf::st_read("D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/mun_area_Poly.shp")
+mun <- sf::st_read("D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/_mun_all_areas_prop_total_reg_defo.shp")
 
 
 # Extracting area to Municipalities
-extract_area_forest_mun <- exactextractr::exact_extract(pixel_area_forest_only, mun, "sum")
+extract_area_forest_mun <- exactextractr::exact_extract(AF_2010_forest_only_Poly_Area, mun, "sum")
+max(extract_area_forest_mun)
+
 
 
 # Creating a new column to add area of forest in 2010
