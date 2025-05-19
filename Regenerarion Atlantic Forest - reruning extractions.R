@@ -473,3 +473,44 @@ write_xlsx(reg_defo_states, "D:/__PESSOAL/Vinicius_T/data_frames_result_areas/re
 
 
 
+
+################################################################################
+# Extracting values reg TI, UC, Reforma Agrária and Quilombolas
+################################################################################
+
+
+# Converting these shapefiles to Albers
+
+# Quilombola -------------------------------------------------------------------
+
+quilombola <- vect("D:/__PESSOAL/Vinicius_T/dados Pacto/CAMADAS/MA_area_quilombola_incra2024.shp")
+quilombola <- project(quilombola, "ESRI:102033")
+writeVector(quilombola, "D:/__PESSOAL/Vinicius_T/dados Pacto/CAMADAS/MA_area_quilombola_incra2024_ALBERS.shp")
+
+
+# Indigenous Land --------------------------------------------------------------
+
+TI <- vect("D:/__PESSOAL/Vinicius_T/dados Pacto/CAMADAS/MA_tis_funai2024.shp")
+TI <- project(TI, "ESRI:102033")
+writeVector(TI, "D:/__PESSOAL/Vinicius_T/dados Pacto/CAMADAS/MA_tis_funai2024_ALBERS.shp")
+
+
+# Protected Areas --------------------------------------------------------------
+
+PA <- vect("D:/__PESSOAL/Vinicius_T/dados Pacto/CAMADAS/MA_UC_mma2024.shp")
+PA <- project(PA, "ESRI:102033")
+writeVector(PA, "D:/__PESSOAL/Vinicius_T/dados Pacto/CAMADAS/MA_UC_mma2024_ALBERS.shp")
+
+
+# Agrarian Settlements ---------------------------------------------------------
+
+
+AS <- vect("D:/__PESSOAL/Vinicius_T/dados Pacto/CAMADAS/MA_assentamento_incra2024.shp")
+AS <- project(AS, "ESRI:102033")
+writeVector(AS, "D:/__PESSOAL/Vinicius_T/dados Pacto/CAMADAS/MA_assentamento_incra2024_ALBERS.shp")
+
+
+
+
+
+
