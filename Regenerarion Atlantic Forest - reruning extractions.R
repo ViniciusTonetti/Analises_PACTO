@@ -265,6 +265,7 @@ library(terra)
 library(raster)
 library(sf)
 library(exactextractr)
+library(tidyverse)
 
 # cleaning directory 
 rm(list = ls())
@@ -333,7 +334,33 @@ sum(data.frame(mun_af[,"r11_21"])[,"r11_21"]) # 1.677.412 ha of regenerated fore
 
 # ------------------------------------------------------------------------------
 
+# Proportion of deforestation in relation to the total amount of forest that regenerated 
 
+prop_loss <- round(data.frame(mun_af[,"tt_defo"])[,"tt_defo"] / 
+                   data.frame(mun_af[,"tt_reg"])[,"tt_reg"], 2)
+
+
+ncol(mun_af) #18
+mun_af[,19] <- prop_loss
+colnames(mun_af)[19] <- "p_loss"
+
+# Proportion of deforestation in relation to forest area in 2010
+
+pl_2010 <- round(data.frame(mun_af[,"tt_defo"])[,"tt_defo"] / 
+                 data.frame(mun_af[,"f_2010"])[,"f_2010"], 2)
+
+
+ncol(mun_af) #19
+mun_af[,20] <- pl_2010
+colnames(mun_af)[20] <- "pl_2010"
+
+max(pl_2010, na.rm = T)
+
+# Writing vector with areas
+#sf::st_write(mun_af, "D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/mun_AF_ALBERS_AREA.shp", delete_dsn = T)
+
+#data.frame(mun_af %>% 
+#  filter(pl_2010 > 0.5))
 
 
 
