@@ -701,8 +701,7 @@ ggplot(annual_loss_reg_long, aes(x = factor(year), y = area_ha, fill = type)) +
   scale_y_continuous(breaks = c(50000, 100000, 150000, 200000, 250000, 276000),
                      labels = c("50", "100", "150", "200", "250","276"),
                      expand = c(0.01, 0)) +
-  labs(x = "", y = "Area (thousands ha)", fill = "Process",
-       title = "") +
+  labs(x = "", y = "Area (thousands ha)", title = "") +
   theme_classic(base_size = 4) +
   theme(
     axis.text.x = element_text(size = 11, angle = 45, hjust = 1),
@@ -712,13 +711,74 @@ ggplot(annual_loss_reg_long, aes(x = factor(year), y = area_ha, fill = type)) +
   guides(fill = "none")
 
 
-#ggsave("D:/_Vinicius/artigos/2024.12.d04 - Pacto, secondary forests, natural regeneration/Figuras/Bar Chart/annual_reg_defo.png", width = 17, height = 10, units = "cm", dpi = 300)
+ggsave("D:/_Vinicius/artigos/2024.12.d04 - Pacto, secondary forests, natural regeneration/Figuras/Bar Chart/annual_reg_defo.png", width = 17, height = 10, units = "cm", dpi = 300)
 
 
+# Reg per state ----------------------------------------------------------------
+
+# cleaning directory
+rm(list = ls())
+
+# Loading excel spreadsheet
+reg_per_state <- readxl::read_excel("D:/_Vinicius/artigos/2024.12.d04 - Pacto, secondary forests, natural regeneration/dados/data_frames/reg_defo_states.xlsx")
+
+reg_per_state <- reg_per_state %>% 
+  rename(state = NM_UF) %>% 
+  mutate(rank = rank(-tt_reg_states)) %>% 
+  mutate(case_when(
+    state == "Minas Gerais" ~ "MG",
+    state == "Paraná" ~ "PR",
+    state == "Bahia" ~ "BA",
+    state == "São Paulo" ~ "SP",
+    state == "Santa Catarina" ~ "SC",
+    state == "Rio Grande do Sul" ~ "RS",
+    state == "Espírito Santo" ~ "ES",
+    state == "Rio de Janeiro" ~ "RJ",
+    state == "Pernambuco" ~ "PE",
+    state == "Alagoas" ~ "AL",
+    state == "Sergipe" ~ "SE",
+    state == "Mato Grosso do Sul" ~ "MS",
+    state == "Paraíba" ~ "PB",
+    state == "Goiás" ~ "GO",
+    state == "Rio Grande do Norte" ~ "RN",
+  ))
 
 
+# Convert to long format if not already
+reg_per_state_long <- reg_per_state %>%
+  rename(state_abbr = `case_when(...)`) %>%
+  pivot_longer(
+    cols = c(tt_reg_states, tt_defo_states),
+    names_to = "type",
+    values_to = "area_ha"
+  )
+
+state_order <- reg_per_state_long %>%
+  filter(type == "tt_reg_states") %>%
+  arrange(desc(area_ha)) %>%
+  pull(state_abbr)
+
+reg_per_state_long <- reg_per_state_long %>%
+  mutate(state_abbr = factor(state_abbr, levels = state_order))
 
 
+(bar_chart_state <- 
+ggplot(reg_per_state_long, aes(x = state_abbr, y = area_ha, fill = type)) +
+  geom_bar(stat = "identity", width = 1.3, position = position_dodge(width = 0)) +
+  scale_fill_manual(values = c("tt_reg_states" = "#7B9FCF", "tt_defo_states" = "#ee6b6e")) +
+  labs(x = "", y = "", title = "") +
+  scale_y_continuous(breaks = c(0, 200000, 400000, 595000),
+                     labels = c("0", "200", "400", "595"),
+                     expand = expansion(mult = c(0.02, 0.05))) +
+  labs(x = "", y = "Area (thousands ha)", title = "") +
+  theme_classic() +
+  theme(strip.text = element_blank(),
+        text = element_text(size = 28),
+        axis.text.y = element_text(margin = margin(r = 4)),
+        axis.text.x = element_text(angle = 45, hjust = 1)) +
+  guides(fill = "none"))
+
+ggsave("D:/_Vinicius/artigos/2024.12.d04 - Pacto, secondary forests, natural regeneration/Figuras/Bar Chart/states_reg_defo.png", plot = bar_chart_state, width = 40, height = 20, units = "cm")
 
 
 
