@@ -511,6 +511,125 @@ writeVector(AS, "D:/__PESSOAL/Vinicius_T/dados Pacto/CAMADAS/MA_assentamento_inc
 
 
 
+################################################################################
+# Extracting Area values -------------------------------------------------------
 
+# cleaning directory
+rm(list = ls())
+
+reg_11_21 <- raster::raster("D:/__PESSOAL/Vinicius_T/raster_pacto/Tiles Reg 11 - 20 Pacto-20250308T211602Z-001/Tiles Reg 11 - 20 Pacto/annual_reg_AF/raster_albers_SAD69/raster_albers_SAD69_AREA/reg_11_21_ALBERS_AREA.tif")
+
+
+
+# Quilombola -------------------------------------------------------------------
+
+quilombola <- st_read("D:/__PESSOAL/Vinicius_T/dados Pacto/CAMADAS/MA_area_quilombola_incra2024_ALBERS.shp")
+quilombola_area <- exactextractr::exact_extract(reg_11_21, quilombola, "sum")
+
+ncol(quilombola) #24
+quilombola[,"25"] <- round(quilombola_area/10000)
+colnames(quilombola)[25] <- "reg_ha"
+st_write(quilombola, "D:/__PESSOAL/Vinicius_T/dados Pacto/CAMADAS/MA_area_quilombola_incra2024_ALBERS_AREA.shp")
+
+
+
+
+# Indigenous Land --------------------------------------------------------------
+
+
+TI <- st_read("D:/__PESSOAL/Vinicius_T/dados Pacto/CAMADAS/MA_tis_funai2024_ALBERS.shp")
+TI_area <- exactextractr::exact_extract(reg_11_21, TI, "sum")
+
+ncol(TI) #19
+TI[,"20"] <- round(TI_area/10000)
+colnames(TI)[20] <- "reg_ha"
+st_write(TI, "D:/__PESSOAL/Vinicius_T/dados Pacto/CAMADAS/MA_tis_funai2024_ALBERS_AREA.shp")
+
+
+# Protected Areas --------------------------------------------------------------
+
+UC <- st_read("D:/__PESSOAL/Vinicius_T/dados Pacto/CAMADAS/MA_UC_mma2024_ALBERS.shp")
+UC_area <- exactextractr::exact_extract(reg_11_21, UC, "sum")
+
+ncol(UC) #33
+UC[,"34"] <- round(UC_area/10000)
+colnames(UC)[34] <- "reg_ha"
+st_write(UC, "D:/__PESSOAL/Vinicius_T/dados Pacto/CAMADAS/MA_UC_mma2024_ALBERS_AREA.shp")
+
+UC_data_frame <- data.frame(UC)
+
+
+UC_data_frame %>% 
+  select(grupo, reg_ha) %>% 
+  group_by(grupo) %>% 
+  summarise(tt_reg = sum(reg_ha))
+
+
+
+
+
+# Agrarian Settlements ---------------------------------------------------------
+
+
+AS <- st_read("D:/__PESSOAL/Vinicius_T/dados Pacto/CAMADAS/MA_assentamento_incra2024_ALBERS.shp")
+AS_area <- exactextractr::exact_extract(reg_11_21, AS, "sum")
+
+ncol(AS) #15
+AS[,"16"] <- round(AS_area/10000)
+colnames(AS)[16] <- "reg_ha"
+st_write(UC, "D:/__PESSOAL/Vinicius_T/dados Pacto/CAMADAS/MA_assentamento_incra2024_ALBERS_AREA.shp")
+
+
+# ------------------------------------------------------------------------------
+
+# Saving data frames with areas
+
+
+mtx <- matrix(ncol = 2, nrow = 5)
+mtx[1,2] <- sum(round(quilombola_area/10000))
+mtx[2,2] <- sum(round(TI_area/10000))
+mtx[3,2] <- sum(round(AS_area/10000))
+mtx[4,2] <- 23927
+mtx[5,2] <- 141338
+
+mtx[1,1] <- "quilombola area"
+mtx[2,1] <- "TI area"
+mtx[3,1] <- "Agrarian Settlement"
+mtx[4,1] <- "UC proteção integral"
+mtx[5,1] <- "UC uso sustentável"
+
+
+mtx <- data.frame(mtx)
+colnames(mtx) <- c("tipo_area" ,"area_reg_ha")
+
+write_xlsx(mtx, "D:/__PESSOAL/Vinicius_T/data_frames_result_areas/UC_TI_PA_AS_Areas.xlsx")
+
+
+
+################################################################################
+# Prop loss of recovered forests in relation to forest area in 2010
+################################################################################
+
+# cleaning directory
+rm(list = ls())
+
+# Municipalities with areas
+
+mun <- vect("D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/mun_AF_ALBERS_AREA.shp")
+
+mun_data_frame <- data.frame(mun)
+colnames(mun_data_frame)
+
+
+# Calculating quantiles to mask Mun with low forest cover
+
+forest_2010 <- mun_data_frame[,"f_2010"]
+
+quantile(forest_2010, probs = 0.5, na.rm = T) # 4075.3
+max(forest_2010)
+
+mun_areas_above_threshold <- mun[mun$f_2010 > 4075.3, ]
+
+plot(mun_areas_above_threshold)
 
 
