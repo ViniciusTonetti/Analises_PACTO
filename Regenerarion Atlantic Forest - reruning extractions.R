@@ -829,31 +829,31 @@ str(ma$CD_MUN)
 # pl_2010 - proporção de floresta que regenerou e foi perdida em relação à área de floresta em 2010
 
 
-
-
-
 #======================================================
 # load data
 
 #LE
-sec_for_area<-ma$r11_21 # Área de flores
+sec_for_area<-ma$r11_21 # área de floresta que regenerou e persisitiu até 2023
 
-for_area<-ma$f_2010 # (square meters) = Forest area in each polygon in 2010 (MapBiomas, col 09).
+for_area<-ma$f_2010 # área de floresta em 2010
 
-sec_for_prop<- (ma$r11_21 / ma$f_2010) # = Proportion of regenerated forest between 2011 and 2021 that persisted until 2023 (sec_for) in relation to the amount of forest in 2010 (fr_r_mn).
+sec_for_prop<- (ma$r11_21 / ma$f_2010) # Proporção do que regenerou e persistiu até 2023 em relação ao que tinha de floresta em 2010
 
-all_reg<-ma$tt_reg # (hectares) = All regeneration that occurred between 2011 and 2021, including forests that were lost up to 2023. Pixels were counted only once, even if they regenerated multiple times.
+all_reg<-ma$tt_reg # Total de floresta que regenerou, incluindo o que foi perdido posteriormente
 
-sec_def_area<-ma$tt_defo # (hectares) = All secondary forest that regenerated between 2011 and 2021 but did not persist until 2023. Pixels were counted only once, even if they were deforested multiple times.
+sec_def_area<-ma$tt_defo # Total de floresta que regenerou e foi perdido
 
-sec_def_prop<-ma$pl_2010 #= Proportion of all secondary forest that regenerated during 2011-2021 and did not persist until 2023, in relation to the total amount of forest in 2010 (MapBiomas col09). A deforested pixel was counted only once, even if it was regenerated and deforested multiple times.
+sec_def_prop<-ma$pl_2010 # Proporção de floresta perdida em relação ao que tinha de floresta em 2010
 
 
 
 x<-ma$f_2010
 #y<-ma$sec_for
 y<-sec_def_area
+y<-ma$defo_mun
 
+x<-ma$sec_for
+y<-ma$defo_mun
 
 
 x<-ma$prp_sc_
