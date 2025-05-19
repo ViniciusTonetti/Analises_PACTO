@@ -446,11 +446,30 @@ colnames(annual_did_not) <- c("did_not_persist", "area_ha")
 write_xlsx(annual_did_not, "D:/__PESSOAL/Vinicius_T/data_frames_result_areas/did_not_persist_year.xlsx")
 
 
+# Extracting reg per state -----------------------------------------------------
 
+# cleaning directory
+rm(list = ls())
 
+mun_AF_AREA <- vect("D:/__PESSOAL/Vinicius_T/municipios_Brasil/BR_Municipios_2023/mun_AF_ALBERS_AREA.shp")
+mun_AF_AREA <- data.frame(mun_AF_AREA)
 
+reg_defo_states <- 
+mun_AF_AREA %>% 
+  select(NM_UF, tt_reg, tt_defo) %>% 
+  group_by(NM_UF) %>% 
+  summarise(tt_reg_states = sum(tt_reg, na.rm = T), 
+            tt_defo_states = sum(tt_defo, na.rm = T)) %>% 
+  arrange(desc(tt_reg_states))
 
+reg_defo_states <- data.frame(reg_defo_states)
 
+reg_defo_states[,"tt_reg_states"] <- round(reg_defo_states[,"tt_reg_states"])
+reg_defo_states[,"tt_defo_states"] <- round(reg_defo_states[,"tt_defo_states"])
+
+reg_defo_states
+
+write_xlsx(reg_defo_states, "D:/__PESSOAL/Vinicius_T/data_frames_result_areas/reg_defo_states.xlsx")
 
 
 
