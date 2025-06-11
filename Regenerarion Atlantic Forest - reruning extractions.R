@@ -781,6 +781,18 @@ ggplot(reg_per_state_long, aes(x = state_abbr, y = area_ha, fill = type)) +
 ggsave("D:/_Vinicius/artigos/2024.12.d04 - Pacto, secondary forests, natural regeneration/Figuras/Bar Chart/states_reg_defo.png", plot = bar_chart_state, width = 40, height = 20, units = "cm")
 
 
+## Previous Land cover type ----------------------------------------------------
+################################################################################
+
+MB_2010_AF <- terra::rast("D:/__PESSOAL/Vinicius_T/MapBiomas_Col_09/brasil_coverage_2010_AF.tif")
+#plot(MB_2010_AF)
+reg_11_21_AF <- terra::rast("D:/__PESSOAL/Vinicius_T/raster_pacto/_reg_11_21_AF_resampled.tif")
+#plot(reg_11_21_AF)
+
+
+
+
+
 ################################################################################
 ## Plotting bivariate analysis
 ################################################################################
